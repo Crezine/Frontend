@@ -1,0 +1,32 @@
+# Dependencies
+/node_modules
+
+# Build artifacts
+/dist
+/build
+/.vite
+/.output
+/.vercel
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE configuration
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS
+.DS_Store
