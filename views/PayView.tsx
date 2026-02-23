@@ -9,15 +9,17 @@ interface PaymentsViewProps {
 const PaymentsView: React.FC<PaymentsViewProps> = ({ navigate }) => {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center mb-8">
-        <button onClick={() => navigate('home')} className="bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors">
+      <header className="mb-6 md:mb-10 flex items-center">
+        <button 
+          onClick={() => navigate('home')} 
+          className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors mr-4 shrink-0"
+        >
           <IoMdArrowRoundBack size={20} className="text-secondary/80" />
         </button>
-      </div>
-
-      <header className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-3">Global Payments</h1>
-        <p className="text-lg md:text-xl text-secondary/70">Professional payment links that work everywhere.</p>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-1 md:mb-3">Global Payments</h1>
+          <p className="text-lg md:text-xl text-secondary/70">Professional payment links that work everywhere.</p>
+        </div>
       </header>
 
       <div className="bg-white rounded-[32px] border border-secondary/10 shadow-sm p-6 md:p-10 mb-12">

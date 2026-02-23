@@ -9,18 +9,20 @@ interface FundingViewProps {
 const FundingView: React.FC<FundingViewProps> = ({ navigate }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center mb-8">
-        <button onClick={() => navigate('home')} className="bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors">
+      <header className="mb-6 md:mb-10 flex items-center">
+        <button 
+          onClick={() => navigate('home')} 
+          className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors mr-4 shrink-0"
+        >
             <IoMdArrowRoundBack size={20} className="text-secondary/80" />
         </button>
-      </div>
-
-      <header className="mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-2">Funding Access Hub</h1>
-        <p className="text-secondary/70 text-lg">Your trusted gateway to global creative opportunities.</p>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-1 md:mb-2">Funding Access Hub</h1>
+          <p className="text-secondary/70 text-lg">Your trusted gateway to global creative opportunities.</p>
+        </div>
       </header>
 
-      <div className="mb-12 flex gap-3 overflow-x-auto pb-4 no-scrollbar">
+      <div className="mb-8 md:mb-12 flex gap-3 overflow-x-auto pb-4 no-scrollbar">
         {['All Opportunities', 'Grants', 'Residencies', 'Fellowships', 'Local Funds'].map((cat, i) => (
           <button 
             key={cat}

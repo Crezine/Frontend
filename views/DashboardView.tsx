@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { AppView, UserData, ViewProps } from '../types';
 import Header from '../components/Header';
 import BottomNavBar from '../components/BottomNavBar';
@@ -31,6 +31,10 @@ interface DashboardViewProps {
 
 const DashboardView: React.FC<DashboardViewProps> = ({ navigate, userData }) => {
   const [activeView, setActiveView] = useState<AppView>('home');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeView]);
 
   const handleNavigation = (view: AppView) => {
     if (view === 'landing') {

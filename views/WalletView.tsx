@@ -11,15 +11,17 @@ const WalletView: React.FC<WalletViewProps> = ({ navigate }) => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center mb-8">
-        <button onClick={() => navigate('home')} className="bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors">
+      <header className="flex items-center mb-6 md:mb-8">
+        <button 
+          onClick={() => navigate('home')} 
+          className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors mr-4 shrink-0"
+        >
           <IoMdArrowRoundBack size={20} className="text-secondary/80" />
         </button>
-      </div>
-
-      <header className="mb-8 text-center">
-        <h1 className="text-2xl md:text-3xl font-bold text-secondary mb-2">The Creative Wallet</h1>
-        <p className="text-secondary/70">Simple, transparent, global.</p>
+        <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-secondary">The Creative Wallet</h1>
+            <p className="text-secondary/70">Simple, transparent, global.</p>
+        </div>
       </header>
 
       {/* Main Wallet Card */}

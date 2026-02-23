@@ -9,17 +9,20 @@ interface EscrowViewProps {
 const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 font-montserrat">
-      <div className="flex items-center mb-8">
-        <button onClick={() => navigate('home')} className="bg-white p-2 rounded-md shadow-sm hover:bg-gray-100 transition-colors">
+      <header className="flex items-center mb-6 md:mb-8">
+        <button 
+          onClick={() => navigate('home')} 
+          className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-gray-100 transition-colors mr-4 shrink-0"
+        >
           <IoMdArrowRoundBack size={20} className="text-secondary/80" />
         </button>
-      </div>
-      <header className="mb-12 text-center md:text-left">
-        <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-4">Creative Escrow</h1>
-        <p className="text-lg md:text-xl text-secondary/70 leading-relaxed">
-          Money is safely held by CREZINE until you deliver the work. <br />
-          No more chasing clients, no more ghosting.
-        </p>
+        <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-secondary">Creative Escrow</h1>
+            <p className="text-lg md:text-xl text-secondary/70 leading-relaxed">
+            Money is safely held by CREZINE until you deliver the work. <br className="hidden md:block" />
+            No more chasing clients, no more ghosting.
+            </p>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">

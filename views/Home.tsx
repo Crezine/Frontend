@@ -68,7 +68,7 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
             </button>
             <button 
               onClick={(e) => { e.stopPropagation(); navigate('wallet'); }}
-              className="bg-primary-focus text-white px-5 py-2.5 md:px-6 md:py-3 rounded-2xl font-bold hover:bg-opacity-80 transition-colors text-sm md:text-base"
+              className="bg-[#800000] text-white px-5 py-2.5 md:px-6 md:py-3 rounded-2xl font-bold hover:bg-[#600000] transition-colors text-sm md:text-base shadow-lg"
             >
               Withdraw
             </button>

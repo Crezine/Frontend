@@ -9,16 +9,18 @@ interface EventsViewProps {
 const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center mb-8">
-            <button onClick={() => navigate('home')} className="bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors">
+      <header className="mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div className="flex items-center">
+            <button 
+              onClick={() => navigate('home')} 
+              className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors mr-4 shrink-0"
+            >
                 <IoMdArrowRoundBack size={20} className="text-secondary/80" />
             </button>
-        </div>
-
-      <header className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-2">Creative Events</h1>
-          <p className="text-secondary/70 text-lg">Monetize your exhibitions, shows, and workshops.</p>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-1 md:mb-2">Creative Events</h1>
+              <p className="text-secondary/70 text-lg">Monetize your exhibitions, shows, and workshops.</p>
+            </div>
         </div>
         <button className="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center gap-2 hover:bg-primary/90 transition-all text-lg">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
