@@ -45,16 +45,16 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                initial={{ opacity: 0, scale: 0.9 }}
                whileInView={{ opacity: 1, scale: 1 }}
                transition={{ delay: 0.3 }}
-               className="flex flex-col sm:flex-row items-center justify-center gap-4"
+               className="flex flex-row items-center justify-center gap-4"
             >
               <button 
                 onClick={() => navigate('onboarding')}
-                className="w-full sm:w-auto bg-primary text-white font-bold py-4 px-10 rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-transform"
+                className="bg-primary text-white font-bold py-3 px-8 rounded-xl shadow-xl shadow-primary/20 hover:scale-105 transition-transform text-sm"
               >
                 Start for Free
               </button>
               <button 
-                className="w-full sm:w-auto border-2 border-secondary/10 text-secondary font-bold py-4 px-10 rounded-2xl hover:bg-secondary/5 transition-colors"
+                className="border-2 border-secondary/10 text-secondary font-bold py-3 px-8 rounded-xl hover:bg-secondary/5 transition-colors text-sm"
               >
                 Watch Demo
               </button>

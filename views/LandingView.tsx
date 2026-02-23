@@ -8,19 +8,19 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
       <PublicHeader navigate={navigate} />
       <main>
         {/* Hero Section */}
-        <section className="flex flex-col justify-center container mx-auto px-6 pt-20 pb-12 md:pt-28 md:pb-20">
+        <section className="flex flex-col justify-center min-h-screen container mx-auto px-6">
           <div className="w-full max-w-4xl text-left">
             <div className="glass-card rounded-full py-1 px-3 inline-block mb-4">
-              <p className="text-xs sm:text-sm text-secondary/90 font-montserrat">
+              <p className="text-sm sm:text-base text-secondary/90 font-montserrat">
                 Your global cashdoor for creative dreams.
               </p>
             </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-century-gothic font-black uppercase tracking-tighter mb-3 md:mb-4">
+            <h1 className="text-4xl md:text-6xl font-montserrat font-semibold uppercase tracking-tighter mb-3 md:mb-4">
               <span className="text-secondary">Global</span> <span className="text-primary">Creative</span>
               <br />
               <span className="text-secondary">Cashdoor</span>
             </h1>
-            <p className="text-sm md:text-base lg:text-lg text-secondary/80 font-montserrat mb-8">
+            <p className="text-lg md:text-xl text-secondary/80 font-montserrat mb-8">
               Get paid as a creative securely and globally in any currency.
               <br />
               Showcase your work, sell experiences, and manage your projects—

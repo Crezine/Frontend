@@ -1,4 +1,4 @@
-export type AppView = 'landing' | 'onboarding' | 'dashboard' | 'home' | 'wallet' | 'pay' | 'escrow' | 'events' | 'fund';
+export type AppView = 'landing' | 'onboarding' | 'dashboard' | 'home' | 'wallet' | 'pay' | 'escrow' | 'events' | 'fund' | 'product' | 'features' | 'pricing' | 'support' | 'help-center' | 'contact';
 
 export interface UserData {
   name: string;
