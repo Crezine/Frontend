@@ -1,0 +1,20 @@
+export enum AppView {
+  // App
+  DASHBOARD,
+  WALLET,
+  PAYMENTS,
+  ONBOARDING,
+  ESCROW,
+  TICKETING,
+  FUNDING,
+
+  // Public Pages
+  LANDING,
+  PRODUCT,
+  FEATURES,
+  PRICING,
+  SUPPORT,
+  HELP_CENTER,
+  CONTACT,
+  WHATSAPP
+}
