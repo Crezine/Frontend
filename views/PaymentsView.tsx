@@ -1,0 +1,93 @@
+import React from 'react';
+import { AppView } from '../types';
+
+interface PaymentsViewProps {
+  navigate: (view: AppView) => void;
+}
+
+const PaymentsView: React.FC<PaymentsViewProps> = ({ navigate }) => {
+  return (
+    <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12">
+      <header className="mb-8 md:mb-12 flex items-center gap-4 md:gap-6">
+        <button 
+          onClick={() => navigate(AppView.DASHBOARD)}
+          className="bg-white p-2.5 md:p-3 rounded-xl md:rounded-2xl shadow-sm text-secondary hover:text-primary hover:scale-110 transition-all border border-secondary/5"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+        </button>
+        <div>
+          <h1 className="text-2xl md:text-4xl font-bold text-secondary font-century-gothic leading-tight">Global Payments</h1>
+          <p className="text-secondary/60 font-medium font-montserrat tracking-wide text-xs md:text-base">Professional payment links that work everywhere.</p>
+        </div>
+      </header>
+
+      <div className="bg-white rounded-[32px] md:rounded-[48px] border border-secondary/5 shadow-2xl shadow-secondary/5 p-6 md:p-12 mb-10 md:mb-12 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-24 md:w-32 h-24 md:h-32 bg-primary/5 rounded-bl-full"></div>
+        <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 font-century-gothic text-secondary">Generate Payment Link</h3>
+        <div className="space-y-4 md:space-y-6 relative z-10">
+          <div>
+            <label className="text-[10px] md:text-xs font-black uppercase tracking-widest text-secondary/40 mb-2 md:mb-3 block font-montserrat">Client Name</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Acme Creative Agency"
+              className="w-full py-3 md:py-4 px-4 md:px-6 bg-accent/30 border-2 border-transparent focus:border-primary rounded-xl md:rounded-2xl focus:outline-none transition-all font-montserrat font-medium text-sm md:text-base"
+            />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div>
+              <label className="text-[10px] md:text-xs font-black uppercase tracking-widest text-secondary/40 mb-2 md:mb-3 block font-montserrat">Amount (USD)</label>
+              <input 
+                type="number" 
+                placeholder="1500"
+                className="w-full py-3 md:py-4 px-4 md:px-6 bg-accent/30 border-2 border-transparent focus:border-primary rounded-xl md:rounded-2xl focus:outline-none transition-all font-montserrat font-medium text-sm md:text-base"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] md:text-xs font-black uppercase tracking-widest text-secondary/40 mb-2 md:mb-3 block font-montserrat">Payment Type</label>
+              <select className="w-full py-3 md:py-4 px-4 md:px-6 bg-accent/30 border-2 border-transparent focus:border-primary rounded-xl md:rounded-2xl focus:outline-none transition-all font-montserrat font-medium appearance-none text-sm md:text-base">
+                <option>Standard Payout</option>
+                <option>Escrow (Recommended)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="text-[10px] md:text-xs font-black uppercase tracking-widest text-secondary/40 mb-2 md:mb-3 block font-montserrat">What's this for?</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Illustration Package - Phase 1"
+              className="w-full py-3 md:py-4 px-4 md:px-6 bg-accent/30 border-2 border-transparent focus:border-primary rounded-xl md:rounded-2xl focus:outline-none transition-all font-montserrat font-medium text-sm md:text-base"
+            />
+          </div>
+          <button className="w-full py-4 md:py-5 bg-primary text-white rounded-xl md:rounded-2xl font-bold text-base md:text-lg hover:bg-secondary transition-all shadow-xl shadow-primary/20 font-montserrat">
+            Create Professional Link
+          </button>
+        </div>
+      </div>
+
+      <h3 className="text-xl md:text-2xl font-bold mb-6 md:mb-8 font-century-gothic text-secondary">History</h3>
+      <div className="space-y-3 md:space-y-4">
+        {[1, 2].map(i => (
+          <div key={i} className="flex items-center justify-between p-4 md:p-6 bg-white rounded-[24px] md:rounded-[32px] border border-secondary/5 shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+            <div className="flex items-center gap-3 md:gap-5">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-accent/50 group-hover:bg-accent text-secondary rounded-xl md:rounded-2xl flex items-center justify-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold text-secondary font-montserrat text-sm md:text-base truncate">Project #{4521 + i}</p>
+                <p className="text-[10px] md:text-xs text-secondary/40 font-bold uppercase tracking-wider font-montserrat truncate max-w-[150px] sm:max-w-none">crezine.me/pay/creative-{i}23</p>
+              </div>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="font-bold text-secondary text-base md:text-lg font-montserrat">$850.00</p>
+              <p className="text-[9px] md:text-[10px] text-amber-600 font-black uppercase tracking-[0.1em]">Pending</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default PaymentsView;
