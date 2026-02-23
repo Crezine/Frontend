@@ -8,7 +8,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
       <PublicHeader navigate={navigate} />
       <main>
         {/* Hero Section */}
-        <section className="flex flex-col justify-center min-h-screen container mx-auto px-6">
+        <section className="container mx-auto px-6 pt-2 pb-20 md:py-28">
           <div className="w-full max-w-4xl text-left">
             <div className="glass-card rounded-full py-1 px-3 inline-block mb-4">
               <p className="text-sm sm:text-base text-secondary/90 font-montserrat">
