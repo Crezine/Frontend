@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
-import Footer from '../components/Footer';
 
 const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   return (
@@ -75,7 +74,6 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           </div>
         </section>
       </main>
-      <Footer navigate={navigate} />
     </div>
   );
 };

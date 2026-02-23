@@ -1,15 +1,16 @@
 import React from 'react';
-import { AppView } from '../types';
+import { AppView, UserData } from '../types';
 import BrandLogo from './BrandLogo';
 import { RiLogoutCircleRLine } from 'react-icons/ri';
 
 interface HeaderProps {
   navigate: (view: AppView) => void;
   activeView: AppView;
+  userData: UserData | null;
 }
 
-const Header: React.FC<HeaderProps> = ({ navigate, activeView }) => {
-  const user = { name: 'Creative User' };
+const Header: React.FC<HeaderProps> = ({ navigate, activeView, userData }) => {
+  const user = { name: userData?.name || 'Creative User' };
 
   const navLinks: { view: AppView; label: string }[] = [
     { view: 'home', label: 'Home' },

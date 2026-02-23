@@ -1,18 +1,13 @@
 import React from 'react';
 import {
-  RiAddLine,
-  RiArrowDownLine,
-  RiArrowRightUpLine,
-  RiArrowUpLine,
   RiBook2Line,
   RiCalendarEventLine,
   RiShieldCheckLine,
   RiSwapLine,
   RiTimeLine
 } from 'react-icons/ri';
-import { AppView } from '../types';
+import { ViewProps } from '../types';
 
-// Sub-components defined within the Home view for encapsulation
 const ActionButton: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void; }> = ({ icon, label, onClick }) => (
   <button 
     onClick={onClick}
@@ -28,12 +23,7 @@ const ActionButton: React.FC<{ icon: React.ReactNode; label: string; onClick: ()
 const TransactionItem: React.FC<{ title: string; date: string; amount: string; type: 'positive' | 'negative' }> = ({ title, date, amount, type }) => (
   <div className="flex items-center justify-between py-2">
     <div className="flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${type === 'positive' ? 'bg-primary/10 text-primary' : 'bg-red-100 text-red-600'}`}>
-        {type === 'positive' ? (
-          <RiArrowUpLine className="h-5 w-5" />
-        ) : (
-          <RiArrowDownLine className="h-5 w-5" />
-        )}
+      <div className={`w-10 h-10 rounded-full flex items-center justify-center bg-red-100 text-red-600'}`}>
       </div>
       <div>
         <p className="font-bold text-secondary text-sm md:text-base">{title}</p>
@@ -44,12 +34,12 @@ const TransactionItem: React.FC<{ title: string; date: string; amount: string; t
   </div>
 );
 
-const Home: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12 font-montserrat">
       <header className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-secondary">Hello, Betu!</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-secondary">Hello, {userData?.name || 'Betu'}!</h1>
           <p className="text-secondary/70 mt-1">Your creative cashdoor is open and ready.</p>
         </div>
         <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full border border-green-200 w-fit">
@@ -58,7 +48,6 @@ const Home: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => 
         </div>
       </header>
 
-      {/* Main Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
         <div 
           className="lg:col-span-2 bg-primary rounded-[32px] p-6 md:p-8 text-white relative overflow-hidden group cursor-pointer shadow-xl"
@@ -108,7 +97,6 @@ const Home: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => 
         </div>
       </div>
 
-      {/* Actions */}
       <h2 className="text-xl font-bold mb-6 text-secondary">Quick Actions</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-12">
         <ActionButton 
@@ -133,7 +121,6 @@ const Home: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => 
         />
       </div>
 
-      {/* Recent Activity */}
       <div className="bg-white rounded-[32px] p-6 md:p-8 border border-secondary/5 shadow-sm">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-xl font-bold text-secondary">Recent History</h2>

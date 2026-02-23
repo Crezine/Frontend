@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { AppView } from './types';
+import { AppView, UserData } from './types';
 import LandingView from './views/LandingView';
 import OnboardingView from './views/OnboardingView';
-import DashboardView from './views/DashboardView'; // Import DashboardView
+import DashboardView from './views/DashboardView';
+import Footer from './components/Footer';
+import './styles/overrides.css';
 
 const App: React.FC = () => {
-  // Default to showing the LandingView for production purposes
   const [currentView, setCurrentView] = useState<AppView>('landing');
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   const navigate = (view: AppView) => {
     setCurrentView(view);
+  };
+
+  const handleOnboarding = (data: UserData) => {
+    setUserData(data);
+    navigate('dashboard');
   };
 
   const renderView = () => {
@@ -17,15 +24,20 @@ const App: React.FC = () => {
       case 'landing':
         return <LandingView navigate={navigate} />;
       case 'onboarding':
-        return <OnboardingView navigate={navigate} />;
-      case 'dashboard': // Add the dashboard case
-        return <DashboardView navigate={navigate} />;
+        return <OnboardingView navigate={navigate} onComplete={handleOnboarding} />;
+      case 'dashboard':
+        return <DashboardView navigate={navigate} userData={userData} />;
       default:
         return <LandingView navigate={navigate} />;
     }
   };
 
-  return <div className="App">{renderView()}</div>;
+  return (
+    <div className="App">
+      {renderView()}
+      {currentView !== 'onboarding' && <Footer />}
+    </div>
+  );
 };
 
 export default App;
