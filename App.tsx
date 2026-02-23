@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { AppView } from './types';
 import LandingView from './views/LandingView';
 import OnboardingView from './views/OnboardingView';
-import DashboardView from './views/DashboardView';
-import FeaturesView from './views/FeaturesView';
-import PricingView from './views/PricingView';
-import ProductView from './views/ProductView';
-import SupportView from './views/SupportView';
+import DashboardView from './views/DashboardView'; // Import DashboardView
 
 const App: React.FC = () => {
+  // Default to showing the LandingView for production purposes
   const [currentView, setCurrentView] = useState<AppView>('landing');
 
   const navigate = (view: AppView) => {
@@ -21,22 +18,14 @@ const App: React.FC = () => {
         return <LandingView navigate={navigate} />;
       case 'onboarding':
         return <OnboardingView navigate={navigate} />;
-      case 'dashboard':
+      case 'dashboard': // Add the dashboard case
         return <DashboardView navigate={navigate} />;
-      case 'features':
-        return <FeaturesView navigate={navigate} />;
-      case 'pricing':
-        return <PricingView navigate={navigate} />;
-      case 'product':
-        return <ProductView navigate={navigate} />;
-      case 'support':
-        return <SupportView navigate={navigate} />;
       default:
         return <LandingView navigate={navigate} />;
     }
   };
 
-  return renderView();
+  return <div className="App">{renderView()}</div>;
 };
 
 export default App;
