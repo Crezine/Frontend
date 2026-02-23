@@ -1,7 +1,7 @@
 import React from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
-import { RiSecurePaymentLine, RiWallet3Line, RiBillLine, RiCalendarEventLine, RiShieldUserLine, RiLineChartLine } from 'react-icons/ri';
+import { RiSecurePaymentLine, RiWallet3Line, RiBillLine, RiCalendarEventLine, RiShieldUserLine, RiLineChartLine, RiGlobalLine } from 'react-icons/ri';
 import { motion } from 'framer-motion';
 
 const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
@@ -89,36 +89,36 @@ const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
         </div>
 
         {/* Integration Section */}
-        <section className="mt-32 bg-secondary rounded-[60px] p-12 md:p-20 text-white flex flex-col md:flex-row items-center gap-16">
-          <div className="md:w-1/2">
-            <h2 className="text-3xl md:text-5xl font-black mb-6">Works where <br /> you work.</h2>
-            <p className="text-white/70 text-lg mb-8">
+        <section className="mt-20 md:mt-32 bg-secondary rounded-[40px] md:rounded-[60px] p-8 md:p-20 text-white flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
+          <div className="lg:w-1/2 text-center lg:text-left">
+            <h2 className="text-3xl md:text-5xl font-black mb-6">Works where <br className="hidden md:block" /> you work.</h2>
+            <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto lg:mx-0">
               Seamlessly integrate your CREZINE cashdoor with your existing workflow. From Instagram shops to professional portfolio sites.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-3 md:gap-4">
               {['Social Commerce', 'Direct Links', 'Embedded Checkout', 'API Access'].map(tag => (
-                <span key={tag} className="bg-white/10 px-4 py-2 rounded-full text-sm font-bold border border-white/20">
+                <span key={tag} className="bg-white/10 px-4 py-2 rounded-full text-xs md:text-sm font-bold border border-white/20 whitespace-nowrap">
                   {tag}
                 </span>
               ))}
             </div>
           </div>
-          <div className="md:w-1/2 grid grid-cols-2 gap-4">
-            <div className="bg-primary aspect-square rounded-[30px] p-8 flex flex-col justify-between shadow-xl">
-               <RiBillLine size={40} />
-               <p className="font-bold text-xl leading-tight">Professional Invoicing</p>
+          <div className="w-full lg:w-1/2 grid grid-cols-2 gap-4 md:gap-6">
+            <div className="bg-primary aspect-square rounded-[24px] md:rounded-[30px] p-5 md:p-8 flex flex-col justify-between shadow-xl">
+               <RiBillLine size={32} className="md:w-10 md:h-10" />
+               <p className="font-bold text-sm md:text-lg lg:text-xl leading-tight">Professional Invoicing</p>
             </div>
-            <div className="bg-white/5 backdrop-blur-md aspect-square rounded-[30px] p-8 flex flex-col justify-between border border-white/10">
-               <RiSecurePaymentLine size={40} />
-               <p className="font-bold text-xl leading-tight">Secure Payouts</p>
+            <div className="bg-white/5 backdrop-blur-md aspect-square rounded-[24px] md:rounded-[30px] p-5 md:p-8 flex flex-col justify-between border border-white/10">
+               <RiSecurePaymentLine size={32} className="md:w-10 md:h-10" />
+               <p className="font-bold text-sm md:text-lg lg:text-xl leading-tight">Secure Payouts</p>
             </div>
-            <div className="bg-white/5 backdrop-blur-md aspect-square rounded-[30px] p-8 flex flex-col justify-between border border-white/10">
-               <RiGlobalLine size={40} />
-               <p className="font-bold text-xl leading-tight">Global Reach</p>
+            <div className="bg-white/5 backdrop-blur-md aspect-square rounded-[24px] md:rounded-[30px] p-5 md:p-8 flex flex-col justify-between border border-white/10">
+               <RiGlobalLine size={32} className="md:w-10 md:h-10" />
+               <p className="font-bold text-sm md:text-lg lg:text-xl leading-tight">Global Reach</p>
             </div>
-            <div className="bg-emerald-500 aspect-square rounded-[30px] p-8 flex flex-col justify-between shadow-xl">
-               <RiWallet3Line size={40} />
-               <p className="font-bold text-xl leading-tight">USD Savings</p>
+            <div className="bg-emerald-500 aspect-square rounded-[24px] md:rounded-[30px] p-5 md:p-8 flex flex-col justify-between shadow-xl">
+               <RiWallet3Line size={32} className="md:w-10 md:h-10" />
+               <p className="font-bold text-sm md:text-lg lg:text-xl leading-tight">USD Savings</p>
             </div>
           </div>
         </section>

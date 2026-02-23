@@ -1,9 +1,9 @@
 import React from 'react';
 import { AppView } from '../types';
-import Footer from '../components/Footer';
 import PublicHeader from '../components/PublicHeader';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
+import Footer from '../components/Footer';
 
 const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   const plans = [
@@ -126,7 +126,6 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           </div>
         </div>
       </main>
-      <Footer navigate={navigate} />
     </div>
   );
 };

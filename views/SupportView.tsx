@@ -1,6 +1,5 @@
 import React from 'react';
 import { AppView } from '../types';
-import Footer from '../components/Footer';
 import PublicHeader from '../components/PublicHeader';
 import { RiQuestionLine, RiMailLine, RiChat3Line, RiBookOpenLine } from 'react-icons/ri';
 import { motion } from 'framer-motion';
@@ -82,7 +81,6 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           </div>
         </div>
       </main>
-      <Footer navigate={navigate} />
     </div>
   );
 };
