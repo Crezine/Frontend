@@ -9,6 +9,7 @@ import PricingView from './views/PricingView';
 import SupportView from './views/SupportView';
 import HelpCenterView from './views/HelpCenterView';
 import ContactView from './views/ContactView';
+import WhatsAppView from './views/WhatsAppView';
 import Footer from './components/Footer';
 import './styles/overrides.css';
 
@@ -49,12 +50,14 @@ const App: React.FC = () => {
         return <HelpCenterView navigate={navigate} />;
       case 'contact':
         return <ContactView navigate={navigate} />;
+      case 'whatsapp':
+        return <WhatsAppView />;
       default:
         return <LandingView navigate={navigate} />;
     }
   };
 
-  const showFooter = !['onboarding'].includes(currentView);
+  const showFooter = !['onboarding', 'whatsapp'].includes(currentView);
 
   return (
     <div className="App">

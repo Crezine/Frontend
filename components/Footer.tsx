@@ -27,10 +27,10 @@ const Footer: React.FC<FooterProps> = ({ navigate }) => {
           <div className="md:col-start-1 lg:col-start-2 lg:col-span-1 flex flex-col items-center">
             <h3 className="font-bold text-secondary mb-4">Follow Us</h3>
             <div className="flex space-x-6">
-              <a href="#" className="text-secondary/70 hover:text-primary transition text-2xl"><FaInstagram /></a>
-              <a href="#" className="text-secondary/70 hover:text-primary transition text-2xl"><FaWhatsapp /></a>
-              <a href="#" className="text-secondary/70 hover:text-primary transition text-2xl"><FaTwitter /></a>
-              <a href="#" className="text-secondary/70 hover:text-primary transition text-2xl"><FaTiktok /></a>
+              <a href="https://www.instagram.com/crezine_/" className="text-secondary/70 hover:text-primary transition text-2xl"><FaInstagram /></a>
+              <a href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18" className="text-secondary/70 hover:text-primary transition text-2xl"><FaWhatsapp /></a>
+              <a href="https://x.com/KevinKirat25622" className="text-secondary/70 hover:text-primary transition text-2xl"><FaTwitter /></a>
+              <a href="https://www.tiktok.com/@crezine_" className="text-secondary/70 hover:text-primary transition text-2xl"><FaTiktok /></a>
             </div>
           </div>
 

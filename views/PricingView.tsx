@@ -63,7 +63,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-black text-secondary mb-6"
+              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-6"
             >
               Simple, <span className="text-primary">transparent</span> pricing.
             </motion.h1>
@@ -84,7 +84,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className={`p-10 rounded-[40px] border border-secondary/5 transition-all relative ${plan.highlight ? 'bg-secondary text-white shadow-2xl scale-105 z-10' : 'bg-white text-secondary'}`}
+                className={`p-10 rounded-[40px] border border-secondary/10 transition-all relative ${plan.highlight ? 'bg-secondary text-white shadow-2xl scale-105 z-10' : 'bg-white text-secondary'}`}
               >
                 {plan.highlight && (
                   <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
@@ -118,7 +118,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           </div>
 
           {/* Transaction Fees Note */}
-          <div className="mt-20 text-center bg-white p-8 rounded-[30px] border border-secondary/5 max-w-2xl mx-auto">
+          <div className="mt-20 text-center bg-white p-8 rounded-[30px] border border-secondary/10 max-w-2xl mx-auto">
             <h4 className="font-bold text-secondary mb-2">Wait, what about transaction fees?</h4>
             <p className="text-secondary/60 text-sm">
               We keep it simple: <strong>2.9% + $0.30</strong> per successful transaction. This covers the global payment processing, currency conversion, and escrow security.

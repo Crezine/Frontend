@@ -21,6 +21,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ navigate }) => {
   }, [isMenuOpen]);
 
   const links = [
+    { label: 'Home', view: 'landing' as AppView },
     { label: 'Product', view: 'product' as AppView },
     { label: 'Features', view: 'features' as AppView },
     { label: 'Pricing', view: 'pricing' as AppView },
@@ -46,7 +47,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ navigate }) => {
                 <button
                   key={link.label}
                   onClick={() => handleLinkClick(link.view)}
-                  className="text-sm font-bold text-secondary/70 hover:text-primary transition-colors duration-300 font-nunito"
+                  className="text-base font-bold text-secondary/70 hover:text-primary transition-colors duration-300 font-nunito"
                 >
                   {link.label}
                 </button>
