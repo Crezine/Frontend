@@ -2,6 +2,7 @@ import React from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import { RiMailLine, RiMapPinLine, RiPhoneLine, RiSendPlaneFill } from 'react-icons/ri';
+import { FaInstagram, FaWhatsapp, FaTwitter, FaTiktok } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const ContactView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
@@ -9,13 +10,13 @@ const ContactView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
     <div className="bg-[#F9F5F0] min-h-screen flex flex-col font-montserrat text-secondary">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+      <main className="flex-grow py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-black mb-6"
+              className="text-3xl md:text-5xl font-black mb-4"
             >
               Get in <span className="text-primary">Touch</span>
             </motion.h1>
@@ -23,83 +24,103 @@ const ContactView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-secondary/60 max-w-2xl mx-auto"
+              className="text-lg text-secondary/60 max-w-xl mx-auto"
             >
               Have questions or feedback? We'd love to hear from you.
             </motion.p>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="grid lg:grid-cols-3 gap-8">
             {/* Contact Info */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               {[
-                { icon: <RiMailLine />, title: "Email Us", detail: "hello@crezine.com", color: "bg-blue-50" },
-                { icon: <RiPhoneLine />, title: "Call Us", detail: "+1 (555) 123-4567", color: "bg-emerald-50" },
-                { icon: <RiMapPinLine />, title: "Visit Us", detail: "Creative Hub, Silicon Valley, CA", color: "bg-orange-50" }
+                { icon: <RiMailLine />, title: "Email Us", detail: "hello@crezine.com", href: "mailto:hello@crezine.com" },
+                { icon: <RiPhoneLine />, title: "Call Us", detail: "+254702862705", href: "tel:+254702862705" },
+                { icon: <RiMapPinLine />, title: "Visit Us", detail: "Currently remote/online", href: "#" }
               ].map((item, i) => (
-                <motion.div 
+                <motion.a 
                   key={i}
+                  href={item.href}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex items-center gap-6"
+                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white transition-all"
                 >
-                  <div className={`${item.color} w-14 h-14 rounded-2xl flex items-center justify-center text-primary shadow-sm border border-secondary/5`}>
+                  <div className={`bg-gray-50 w-12 h-12 rounded-xl flex items-center justify-center text-primary shadow-sm border border-secondary/5`}>
                     {item.icon}
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">{item.title}</h3>
-                    <p className="text-secondary/60 font-medium">{item.detail}</p>
+                    <h3 className="font-bold text-md">{item.title}</h3>
+                    <p className="text-secondary/60 font-medium text-sm">{item.detail}</p>
                   </div>
-                </motion.div>
+                </motion.a>
               ))}
+                <motion.div 
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex items-center gap-4 p-4"
+                >
+                    <div className="bg-gray-50 w-12 h-12 rounded-xl flex items-center justify-center text-primary shadow-sm border border-secondary/5">
+                        <RiSendPlaneFill/>
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-md">Follow Us</h3>
+                        <div className="flex space-x-3">
+                            <a href="https://www.instagram.com/crezine_/" className="text-secondary/70 hover:text-primary transition text-xl"><FaInstagram /></a>
+                            <a href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18" className="text-secondary/70 hover:text-primary transition text-xl"><FaWhatsapp /></a>
+                            <a href="https://x.com/KevinKirat25622" className="text-secondary/70 hover:text-primary transition text-xl"><FaTwitter /></a>
+                            <a href="https://www.tiktok.com/@crezine_" className="text-secondary/70 hover:text-primary transition text-xl"><FaTiktok /></a>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
 
             {/* Contact Form */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="lg:col-span-2 bg-white p-10 md:p-12 rounded-[40px] shadow-xl shadow-secondary/5 border border-secondary/5"
+              className="lg:col-span-2 bg-white p-6 rounded-[24px] shadow-lg shadow-secondary/5 border border-secondary/5"
             >
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold uppercase tracking-wider text-secondary/50">Full Name</label>
+              <form className="space-y-3">
+                <div className="grid md:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-secondary/50">Full Name</label>
                     <input 
                       type="text" 
                       placeholder="Jane Doe" 
-                      className="w-full px-6 py-4 rounded-2xl bg-accent/30 border-transparent focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-montserrat"
+                      className="w-full px-4 py-2.5 rounded-lg bg-accent/30 border-transparent focus:bg-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all font-montserrat text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-bold uppercase tracking-wider text-secondary/50">Email Address</label>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold uppercase tracking-wider text-secondary/50">Email Address</label>
                     <input 
                       type="email" 
                       placeholder="jane@example.com" 
-                      className="w-full px-6 py-4 rounded-2xl bg-accent/30 border-transparent focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-montserrat"
+                      className="w-full px-4 py-2.5 rounded-lg bg-accent/30 border-transparent focus:bg-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all font-montserrat text-sm"
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-secondary/50">Subject</label>
-                  <select className="w-full px-6 py-4 rounded-2xl bg-accent/30 border-transparent focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-montserrat">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-secondary/50">Subject</label>
+                  <select className="w-full px-4 py-2.5 rounded-lg bg-accent/30 border-transparent focus:bg-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all font-montserrat text-sm">
                     <option>General Inquiry</option>
                     <option>Technical Support</option>
                     <option>Billing Question</option>
                     <option>Partnership</option>
                   </select>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-bold uppercase tracking-wider text-secondary/50">Message</label>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold uppercase tracking-wider text-secondary/50">Message</label>
                   <textarea 
-                    rows={5} 
+                    rows={3} 
                     placeholder="How can we help you?" 
-                    className="w-full px-6 py-4 rounded-2xl bg-accent/30 border-transparent focus:bg-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-montserrat resize-none"
+                    className="w-full px-4 py-2.5 rounded-lg bg-accent/30 border-transparent focus:bg-white focus:ring-1 focus:ring-primary focus:border-transparent transition-all font-montserrat resize-none text-sm"
                   ></textarea>
                 </div>
                 <button 
                   type="submit" 
-                  className="w-full bg-secondary text-white font-bold py-5 rounded-2xl text-lg hover:bg-primary transition-all flex items-center justify-center gap-3 shadow-xl shadow-secondary/20"
+                  className="w-full bg-secondary text-white font-bold py-3 rounded-lg text-sm hover:bg-primary transition-all flex items-center justify-center gap-2 shadow-lg shadow-secondary/20"
                 >
                   <RiSendPlaneFill />
                   Send Message

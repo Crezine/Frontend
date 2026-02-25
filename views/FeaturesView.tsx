@@ -53,7 +53,7 @@ const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-black text-secondary mb-6"
+            className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-6"
           >
             Everything you need to <span className="text-primary">prosper.</span>
           </motion.h1>
@@ -91,7 +91,7 @@ const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
         {/* Integration Section */}
         <section className="mt-20 md:mt-32 bg-secondary rounded-[40px] md:rounded-[60px] p-8 md:p-20 text-white flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           <div className="lg:w-1/2 text-center lg:text-left">
-            <h2 className="text-3xl md:text-5xl font-black mb-6">Works where <br className="hidden md:block" /> you work.</h2>
+            <h2 className="text-3xl md:text-5xl font-nunito font-normal mb-6">Works where <br className="hidden md:block" /> you work.</h2>
             <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto lg:mx-0">
               Seamlessly integrate your CREZINE cashdoor with your existing workflow. From Instagram shops to professional portfolio sites.
             </p>

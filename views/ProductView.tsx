@@ -7,28 +7,21 @@ import { RiRocketLine, RiGlobalLine, RiShieldFlashLine, RiMagicLine } from 'reac
 
 const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   return (
-    <div className="bg-[#F9F5F0] min-h-screen flex flex-col font-montserrat">
+    <div className="min-h-screen bg-accent flex flex-col font-montserrat">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Hero Section */}
-        <section className="py-20 md:py-32 px-4 bg-white relative overflow-hidden">
+        <section className="relative overflow-hidden text-center mb-20 py-12">
           <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
           
           <div className="max-w-6xl mx-auto text-center relative z-10">
-            <motion.span 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              className="text-primary font-bold tracking-widest uppercase text-sm mb-4 block"
-            >
-              The Creative Cashdoor
-            </motion.span>
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black text-secondary mb-8 leading-tight"
+              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-8 leading-tight"
             >
               One Link to Rule Your <br /> 
               <span className="text-primary">Creative Economy.</span>
@@ -63,10 +56,10 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* The Concept */}
-        <section className="py-20 px-4 bg-accent/30">
+        <section className="py-20 px-4 bg-white/30 rounded-[40px] md:rounded-[60px] border border-secondary/5 mb-20">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-secondary mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl font-nunito font-normal text-secondary mb-6 leading-tight">
                 What is a <span className="text-primary italic">Cashdoor?</span>
               </h2>
               <p className="text-lg text-secondary/70 mb-8 leading-relaxed">
@@ -98,10 +91,10 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* Features Preview */}
-        <section className="py-20 px-4 bg-white">
+        <section className="mb-20">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-black text-secondary mb-4">Built for Every Creator.</h2>
+              <h2 className="text-3xl md:text-5xl font-nunito font-normal text-secondary mb-4">Built for Every Creator.</h2>
               <p className="text-secondary/60 font-medium">From Designers to Musicians, we've got you covered.</p>
             </div>
             
@@ -128,7 +121,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         <section className="py-20 px-4">
           <div className="max-w-4xl mx-auto bg-secondary rounded-[60px] p-12 md:p-24 text-center text-white relative overflow-hidden">
              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
-             <h2 className="text-4xl md:text-6xl font-black mb-8 relative z-10">Ready to open your cashdoor?</h2>
+             <h2 className="text-4xl md:text-6xl font-nunito font-normal mb-8 relative z-10">Ready to open your cashdoor?</h2>
              <button 
                 onClick={() => navigate('onboarding')}
                 className="bg-primary text-white font-bold py-5 px-12 rounded-2xl text-xl hover:scale-105 transition-transform relative z-10 shadow-2xl shadow-primary/40"

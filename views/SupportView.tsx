@@ -22,7 +22,7 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-black text-secondary mb-6"
+              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-6"
             >
               How can we <span className="text-primary">help?</span>
             </motion.h1>
@@ -52,14 +52,14 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                  <div className={`${box.color} w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
                    {box.icon}
                  </div>
-                 <h3 className="text-2xl font-bold text-secondary mb-2">{box.title}</h3>
+                 <h3 className="text-2xl font-nunito font-normal text-secondary mb-2">{box.title}</h3>
                  <p className="text-secondary/60 text-sm leading-relaxed">{box.desc}</p>
                </motion.div>
              ))}
           </div>
 
           <div className="bg-white rounded-[60px] p-12 md:p-20 border border-secondary/5">
-            <h2 className="text-3xl md:text-4xl font-black text-secondary mb-12 flex items-center gap-4">
+            <h2 className="text-3xl md:text-4xl font-nunito font-normal text-secondary mb-12 flex items-center gap-4">
               <RiQuestionLine className="text-primary" />
               Frequently Asked Questions
             </h2>
@@ -75,7 +75,9 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
           <div className="mt-32 text-center">
              <p className="text-secondary/60 mb-8 font-semibold uppercase tracking-widest text-sm">Still have questions?</p>
-             <button className="bg-secondary text-white font-bold py-5 px-12 rounded-2xl text-xl hover:scale-105 transition-transform shadow-2xl">
+             <button 
+                onClick={() => navigate('whatsapp' as AppView)}
+                className="bg-secondary text-white font-bold py-5 px-12 rounded-2xl text-xl hover:scale-105 transition-transform shadow-2xl">
                Contact Support Team
              </button>
           </div>
