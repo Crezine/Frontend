@@ -10,7 +10,7 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ navigate }) => {
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-12">
       <header className="mb-8 md:mb-12 flex items-center gap-4 md:gap-6">
         <button 
-          onClick={() => navigate(AppView.DASHBOARD)}
+          onClick={() => navigate('dashboard')}
           className="bg-white p-2.5 md:p-3 rounded-xl md:rounded-2xl shadow-sm text-secondary hover:text-primary hover:scale-110 transition-all border border-secondary/5"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

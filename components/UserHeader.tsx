@@ -10,14 +10,14 @@ const UserHeader: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate 
     <header className="bg-white shadow-sm font-montserrat">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <BrandLogo />
+          <div className="flex items-center cursor-pointer">
+            <BrandLogo onClick={() => navigate('landing')} />
           </div>
           <div className="flex items-center space-x-4">
-            <button onClick={() => navigate(AppView.WALLET)} className="text-secondary hover:text-primary transition-colors font-semibold text-sm">
+            <button onClick={() => navigate('wallet')} className="text-secondary hover:text-primary transition-colors font-semibold text-sm">
               Wallet
             </button>
-            <button onClick={() => navigate(AppView.SUPPORT)} className="text-secondary hover:text-primary transition-colors font-semibold text-sm">
+            <button onClick={() => navigate('support')} className="text-secondary hover:text-primary transition-colors font-semibold text-sm">
               Support
             </button>
             <button className="flex items-center space-x-2">
