@@ -62,8 +62,14 @@ const App: React.FC = () => {
   const handleOnboarding = (data: UserData) => {
     setUserData(data);
     localStorage.setItem('userData', JSON.stringify(data));
-    navigate('/dashboard');
   };
+
+  useEffect(() => {
+    // If we just completed onboarding and are still on the onboarding page, redirect to dashboard
+    if (userData && userData.email && location.pathname === '/onboarding') {
+      navigate('/dashboard');
+    }
+  }, [userData, location.pathname, navigate]);
 
   const showFooter = !['/onboarding', '/whatsapp'].includes(location.pathname);
 
