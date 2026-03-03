@@ -25,12 +25,6 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
   const navigate = useNavigate();
   const location = useLocation();
 
-  // SECONDARY GUARD: If for some reason App.tsx lets this through without userData, 
-  // we catch it here and show UnauthorizedView.
-  if (!userData || !userData.email) {
-    return <UnauthorizedView navigate={parentNavigate} />;
-  }
-
   // Determine active view from pathname
   const getActiveView = (): AppView => {
     const pathParts = location.pathname.split('/');

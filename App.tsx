@@ -60,8 +60,20 @@ const App: React.FC = () => {
   };
 
   const handleOnboarding = (data: UserData) => {
-    setUserData(data);
     localStorage.setItem('userData', JSON.stringify(data));
+    setUserData(data);
+    navigate('/dashboard');
+  };
+
+  const handleLogin = () => {
+    // Simulate login by setting a dummy user if none exists
+    const dummyUser: UserData = {
+      name: 'Creative User',
+      email: 'creative@crezine.com',
+      craft: 'Creator'
+    };
+    localStorage.setItem('userData', JSON.stringify(dummyUser));
+    setUserData(dummyUser);
     navigate('/dashboard');
   };
 
@@ -73,18 +85,17 @@ const App: React.FC = () => {
         {/* Landing and Auth */}
         <Route path="/" element={<LandingView navigate={handleNavigate} />} />
         <Route path="/landing" element={<Navigate to="/" replace />} />
-        <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} />} />
+        <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
         
-        {/* Dashboard and related user-specific views - RESTRICTED */}
+        {/* Dashboard and related user-specific views - NOW UNRESTRICTED */}
         <Route 
           path="/dashboard/*" 
           element={
-            userData ? (
-              <DashboardView navigate={handleNavigate} userData={userData} />
-            ) : (
-              <UnauthorizedView navigate={handleNavigate} />
-            )
-          } 
+            <DashboardView 
+              navigate={handleNavigate} 
+              userData={userData || { name: 'Temp User', email: 'temp@crezine.com', craft: 'Creative' }} 
+            />
+          }
         />
         
         {/* Redirect old top-level routes to dashboard */}

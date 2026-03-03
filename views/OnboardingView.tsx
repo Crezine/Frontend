@@ -9,9 +9,10 @@ import { AppView, UserData } from '../types';
 interface OnboardingViewProps {
   navigate: (view: AppView) => void;
   onComplete: (data: UserData) => void;
+  onLogin?: () => void;
 }
 
-const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete }) => {
+const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, onLogin }) => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -120,7 +121,7 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete })
                           Continue
                         </button>
                         <div className="text-center mt-3">
-                          <p className="text-sm text-secondary/70">Already have an account? <button className="font-bold hover:text-secondary">Log In</button></p>
+                          <p className="text-sm text-secondary/70">Already have an account? <button onClick={onLogin} className="font-bold hover:text-secondary">Log In</button></p>
                         </div>
                       </div>
                     )}

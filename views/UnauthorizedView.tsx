@@ -4,7 +4,12 @@ import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import { RiLockPasswordLine } from 'react-icons/ri';
 
-const UnauthorizedView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+interface UnauthorizedViewProps {
+  navigate: (view: AppView) => void;
+  onLogin?: () => void;
+}
+
+const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }) => {
   return (
     <div className="min-h-screen bg-accent font-sans flex flex-col">
       <PublicHeader navigate={navigate} />
@@ -44,18 +49,18 @@ const UnauthorizedView: React.FC<{ navigate: (view: AppView) => void }> = ({ nav
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('onboarding')}
+              onClick={onLogin}
               className="bg-primary text-white font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-primary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
-              Get Authorized
+              Sign In / Log In
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('landing')}
+              onClick={() => navigate('onboarding')}
               className="bg-white text-secondary border-2 border-secondary font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
-              Return Home
+              Get Authorized
             </motion.button>
           </motion.div>
         </div>
