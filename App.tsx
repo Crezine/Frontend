@@ -15,15 +15,27 @@ import About from './views/About';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
 import TicketingView from './views/TicketingView';
+import NotFoundView from './views/NotFoundView';
+import UnauthorizedView from './views/UnauthorizedView';
 
 import Footer from './components/Footer';
 import './styles/overrides.css';
 
 const App: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(() => {
-    // Try to recover userData from localStorage to handle refreshes better
-    const saved = localStorage.getItem('userData');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('userData');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      // Ensure it's a valid user object with at least an email
+      if (parsed && typeof parsed === 'object' && parsed.email) {
+        return parsed as UserData;
+      }
+      return null;
+    } catch (e) {
+      console.error("Failed to parse userData", e);
+      return null;
+    }
   });
   
   const navigate = useNavigate();
@@ -63,8 +75,17 @@ const App: React.FC = () => {
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} />} />
         
-        {/* Dashboard and related user-specific views */}
-        <Route path="/dashboard/*" element={<DashboardView navigate={handleNavigate} userData={userData} />} />
+        {/* Dashboard and related user-specific views - RESTRICTED */}
+        <Route 
+          path="/dashboard/*" 
+          element={
+            userData ? (
+              <DashboardView navigate={handleNavigate} userData={userData} />
+            ) : (
+              <UnauthorizedView navigate={handleNavigate} />
+            )
+          } 
+        />
         
         {/* Redirect old top-level routes to dashboard */}
         <Route path="/home" element={<Navigate to="/dashboard" replace />} />
@@ -88,8 +109,8 @@ const App: React.FC = () => {
         <Route path="/about" element={<About navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
         
-        {/* Catch-all route redirects to landing */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Catch-all route for 404 Page Not Found */}
+        <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
       {showFooter && <Footer navigate={handleNavigate} />}
     </div>

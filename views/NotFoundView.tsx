@@ -1,0 +1,72 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { AppView } from '../types';
+import PublicHeader from '../components/PublicHeader';
+
+const NotFoundView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+  return (
+    <div className="min-h-screen bg-accent font-sans flex flex-col">
+      <PublicHeader navigate={navigate} />
+      
+      <main className="flex-grow flex items-center justify-center px-4 sm:px-6 py-12 md:py-20">
+        <div className="max-w-2xl w-full text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6 md:mb-10 relative"
+          >
+            {/* 404 Background Text - Scaled for mobile */}
+            <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] font-nunito font-black text-primary opacity-20 select-none leading-none">
+              404
+            </h1>
+            
+            {/* Foreground Content - Adjusted positioning for better overlapping */}
+            <div className="-mt-10 sm:-mt-16 md:-mt-20 relative z-10 px-2">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-nunito font-bold text-secondary uppercase tracking-tighter mb-4 leading-tight">
+                Oops! Door not found.
+              </h2>
+              <p className="text-base sm:text-lg md:text-xl text-secondary/70 font-montserrat mb-8 md:mb-12 max-w-md mx-auto">
+                The page you're looking for has been moved, deleted, or never existed in the first place.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Action Buttons - One line from left to right on all screens */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex flex-row items-center justify-center gap-2 sm:gap-4 w-full max-w-lg mx-auto px-2"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('landing')}
+              className="bg-secondary text-white font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+            >
+              Back to Home
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('support')}
+              className="bg-white text-secondary border-2 border-secondary font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+            >
+              Contact Support
+            </motion.button>
+          </motion.div>
+        </div>
+      </main>
+
+      {/* Footer Branding - Responsive Padding */}
+      <div className="py-6 md:py-10 text-center px-4">
+        <p className="text-secondary/40 font-montserrat text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-widest">
+          Crezine — Creative Cashdoor
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default NotFoundView;
