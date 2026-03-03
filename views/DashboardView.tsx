@@ -12,6 +12,7 @@ import FundView from './FundView';
 import FundingView from './FundingView';
 import PaymentsView from './PaymentsView';
 import TicketingView from './TicketingView';
+import UnauthorizedView from './UnauthorizedView';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/styles.css';
 
@@ -24,8 +25,13 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
   const navigate = useNavigate();
   const location = useLocation();
 
+  // SECONDARY GUARD: If for some reason App.tsx lets this through without userData, 
+  // we catch it here and show UnauthorizedView.
+  if (!userData || !userData.email) {
+    return <UnauthorizedView navigate={parentNavigate} />;
+  }
+
   // Determine active view from pathname
-  // Path is /dashboard/viewname or just /dashboard (defaults to home)
   const getActiveView = (): AppView => {
     const pathParts = location.pathname.split('/');
     const subPath = pathParts[2]; // /dashboard/wallet -> wallet

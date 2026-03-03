@@ -36,7 +36,7 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-black text-secondary mb-6"
+              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-6"
             >
               Help <span className="text-primary">Center</span>
             </motion.h1>
@@ -75,7 +75,7 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary mb-6 shadow-sm">
                   {cat.icon}
                 </div>
-                <h3 className="text-2xl font-bold text-secondary mb-6">{cat.title}</h3>
+                <h3 className="text-2xl font-nunito font-normal text-secondary mb-6">{cat.title}</h3>
                 <ul className="space-y-4">
                   {cat.links.map((link, index) => (
                     <li key={index}>
@@ -91,7 +91,7 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
           </div>
 
           <div className="mt-20 bg-secondary rounded-[40px] p-12 text-center text-white">
-            <h2 className="text-3xl font-bold mb-4">Can't find what you're looking for?</h2>
+            <h2 className="text-3xl md:text-4xl font-nunito font-normal mb-4">Can't find what you're looking for?</h2>
             <p className="text-white/70 mb-8">Our support team is available 24/7 to help you with any issues.</p>
             <button 
               onClick={() => navigate('contact')}
