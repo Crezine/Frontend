@@ -11,7 +11,7 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
       <header className="mb-8 md:mb-12 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button 
-            onClick={() => navigate(AppView.DASHBOARD)}
+            onClick={() => navigate('dashboard')}
             className="bg-white p-2.5 md:p-3 rounded-xl md:rounded-2xl shadow-sm text-secondary hover:text-primary hover:scale-110 transition-all border border-secondary/5"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
