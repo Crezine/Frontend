@@ -52,7 +52,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
   };
 
   return (
-    <div className="min-h-screen bg-accent flex flex-col font-montserrat overflow-x-hidden">
+    <div className="min-h-screen bg-accent flex flex-col font-rubik overflow-x-hidden text-secondary">
       <Header navigate={handleNavigation} activeView={activeView} userData={userData} />
       <main className="flex-grow pb-16 md:pb-0 relative">
         <AnimatePresence mode="wait">

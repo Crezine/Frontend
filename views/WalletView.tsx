@@ -74,7 +74,7 @@ const WalletView: React.FC<WalletViewProps> = ({ navigate }) => {
         <div>
           <h4 className="font-bold text-amber-900 mb-1">Protecting Your Value</h4>
           <p className="text-sm text-amber-800 leading-relaxed">
-            CREZINE keeps your primary balance in USD (digital dollars) to protect you from local currency inflation. You only convert to local when you need to spend.
+            Crezine keeps your primary balance in USD (digital dollars) to protect you from local currency inflation. You only convert to local when you need to spend.
           </p>
         </div>
       </div>

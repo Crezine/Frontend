@@ -15,10 +15,13 @@ import About from './views/About';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
 import TicketingView from './views/TicketingView';
+import PrivacyPolicyView from './views/PrivacyPolicyView';
+import TermsOfServiceView from './views/TermsOfServiceView';
 import NotFoundView from './views/NotFoundView';
 import UnauthorizedView from './views/UnauthorizedView';
 
 import Footer from './components/Footer';
+import BackToTop from './components/BackToTop';
 import './styles/overrides.css';
 
 const App: React.FC = () => {
@@ -118,11 +121,14 @@ const App: React.FC = () => {
         <Route path="/help" element={<Navigate to="/help-center" replace />} />
         <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
         <Route path="/about" element={<About navigate={handleNavigate} />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
+        <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
         
         {/* Catch-all route for 404 Page Not Found */}
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
+      {showFooter && <BackToTop />}
       {showFooter && <Footer navigate={handleNavigate} />}
     </div>
   );

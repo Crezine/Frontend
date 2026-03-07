@@ -16,7 +16,7 @@ const BrandLogo: React.FC<BrandLogoProps> = ({ onClick, isLarge = false }) => {
     >
       <img 
         src="/crezine.png" 
-        alt="CREZINE Logo" 
+        alt="Crezine Logo" 
         className={`${logoWidth} ${logoHeight} object-contain`} 
       />
     </div>

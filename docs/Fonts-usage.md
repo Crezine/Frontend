@@ -1,0 +1,5 @@
+Inside buttons - Montserrat (Regular)
+sub-Headers/sub topics - Rubik (Regular)
+Headers - Montserrat (Bold)
+Footer headers - Rubik(Bold)
+Inside text -Rubik (Regular)

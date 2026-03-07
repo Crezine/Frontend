@@ -19,7 +19,7 @@ const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
         <div>
             <h1 className="text-3xl md:text-4xl font-bold text-secondary">Creative Escrow</h1>
             <p className="text-lg md:text-xl text-secondary/70 leading-relaxed">
-            Money is safely held by CREZINE until you deliver the work. <br className="hidden md:block" />
+            Money is safely held by Crezine until you deliver the work. <br className="hidden md:block" />
             No more chasing clients, no more ghosting.
             </p>
         </div>

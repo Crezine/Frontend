@@ -11,7 +11,7 @@ interface UnauthorizedViewProps {
 
 const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }) => {
   return (
-    <div className="min-h-screen bg-accent font-sans flex flex-col">
+    <div className="min-h-screen bg-accent flex flex-col">
       <PublicHeader navigate={navigate} />
       
       <main className="flex-grow flex items-center justify-center px-4 sm:px-6 py-12 md:py-20">
@@ -30,10 +30,10 @@ const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }
             </div>
             
             <div className="relative z-10 px-2">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-nunito font-normal text-secondary uppercase tracking-tighter mb-4 leading-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-montserrat font-bold text-secondary uppercase tracking-tighter mb-4 leading-tight">
                 Private <span className="text-primary">Access</span>
               </h2>
-              <p className="text-base sm:text-lg md:text-xl text-secondary/70 font-montserrat mb-8 md:mb-12 max-w-md mx-auto">
+              <p className="text-base sm:text-lg md:text-xl text-secondary/70 font-rubik font-normal mb-8 md:mb-12 max-w-md mx-auto">
                 You need to be authorized to access your cashdoor. Please sign up or log in to continue.
               </p>
             </div>
@@ -50,7 +50,7 @@ const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onLogin}
-              className="bg-primary text-white font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-primary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+              className="bg-primary text-white font-montserrat font-normal uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-primary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
               Sign In / Log In
             </motion.button>
@@ -58,7 +58,7 @@ const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('onboarding')}
-              className="bg-white text-secondary border-2 border-secondary font-bold font-montserrat uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+              className="bg-white text-secondary border-2 border-secondary font-montserrat font-normal uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
               Get Authorized
             </motion.button>
@@ -67,7 +67,7 @@ const UnauthorizedView: React.FC<UnauthorizedViewProps> = ({ navigate, onLogin }
       </main>
 
       <div className="py-6 md:py-10 text-center px-4">
-        <p className="text-secondary/40 font-montserrat text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-widest">
+        <p className="text-secondary/40 font-rubik font-normal text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-widest">
           Crezine — Creative Cashdoor
         </p>
       </div>
