@@ -71,7 +71,7 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
           <p className="text-white/80 font-rubik font-medium mb-2 uppercase tracking-widest text-xs">Total Balance</p>
           <div className="flex items-baseline gap-2 mb-10">
-            <span className="text-5xl md:text-6xl font-montserrat font-bold">$12,450</span>
+            <span className="text-5xl md:text-6xl font-montserrat font-bold">$0</span>
             <span className="text-2xl md:text-3xl text-white/90 font-montserrat">.00</span>
           </div>
           <div className="flex gap-4 relative z-10">
