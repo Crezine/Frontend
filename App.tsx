@@ -30,7 +30,6 @@ const App: React.FC = () => {
       const saved = localStorage.getItem('userData');
       if (!saved) return null;
       const parsed = JSON.parse(saved);
-      // Ensure it's a valid user object with at least an email
       if (parsed && typeof parsed === 'object' && parsed.email) {
         return parsed as UserData;
       }
@@ -69,7 +68,6 @@ const App: React.FC = () => {
   };
 
   const handleLogin = () => {
-    // Simulate login by setting a dummy user if none exists
     const dummyUser: UserData = {
       name: 'Creative User',
       email: 'creative@crezine.com',
@@ -80,7 +78,8 @@ const App: React.FC = () => {
     navigate('/dashboard');
   };
 
-  const showFooter = !['/onboarding', '/whatsapp'].includes(location.pathname);
+  // Do not show the global footer on dashboard routes as it has its own refurbished footer
+  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard');
 
   return (
     <div className="App">
@@ -90,7 +89,7 @@ const App: React.FC = () => {
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
         
-        {/* Dashboard and related user-specific views - NOW UNRESTRICTED */}
+        {/* Dashboard and related user-specific views */}
         <Route 
           path="/dashboard/*" 
           element={
@@ -128,8 +127,8 @@ const App: React.FC = () => {
         {/* Catch-all route for 404 Page Not Found */}
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
-      {showFooter && <BackToTop />}
-      {showFooter && <Footer navigate={handleNavigate} />}
+      {showGlobalFooter && <BackToTop />}
+      {showGlobalFooter && <Footer navigate={handleNavigate} />}
     </div>
   );
 };

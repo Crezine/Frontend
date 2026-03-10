@@ -1,170 +1,170 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  RiBook2Line,
-  RiCalendarEventLine,
-  RiShieldCheckLine,
-  RiSwapLine,
-  RiTimeLine
+  RiTimeLine,
 } from 'react-icons/ri';
+import { HiSwitchVertical } from "react-icons/hi";
+import { BiHide, BiShow } from "react-icons/bi";
+import { RxSwitch } from "react-icons/rx";
 import { ViewProps } from '../types';
 import { motion } from 'framer-motion';
 
-const ActionButton: React.FC<{ icon: React.ReactNode; label: string; onClick: () => void; }> = ({ icon, label, onClick }) => (
+const ActionButton: React.FC<{ label: string; onClick: () => void; variant?: 'default' | 'maroon' }> = ({ label, onClick, variant = 'default' }) => (
   <motion.button 
-    whileHover={{ scale: 1.05, y: -5 }}
-    whileTap={{ scale: 0.95 }}
+    whileHover={{ scale: 1.02, y: -1 }}
+    whileTap={{ scale: 0.98 }}
     onClick={onClick}
-    className="bg-white p-6 rounded-[24px] md:rounded-[32px] border-2 border-secondary/5 hover:border-primary/20 hover:shadow-xl transition-all flex flex-col items-center gap-3 shadow-sm"
+    className={`${
+      variant === 'maroon' 
+        ? 'bg-secondary text-primary dark:bg-secondary dark:text-primary' 
+        : 'bg-white text-secondary dark:bg-gray-800 dark:text-primary border-gray-100 dark:border-gray-700'
+    } p-3 md:p-4 rounded-[24px] border flex flex-col items-center justify-center shadow-sm h-full w-full overflow-hidden transition-colors`}
   >
-    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-primary/10 text-primary`}>
-      {icon}
-    </div>
-    <span className="font-montserrat font-normal text-secondary/90 text-sm md:text-base">{label}</span>
+    <span className="font-rubik font-normal text-[11px] md:text-sm text-center leading-tight tracking-wide">
+      {label}
+    </span>
   </motion.button>
 );
 
 const TransactionItem: React.FC<{ title: string; date: string; amount: string; type: 'positive' | 'negative' }> = ({ title, date, amount, type }) => (
-  <div className="flex items-center justify-between py-4 border-b border-secondary/5 last:border-0">
+  <div className="flex items-center justify-between py-4 border-b border-secondary/5 dark:border-white/5 last:border-0">
     <div className="flex items-center gap-4">
-      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${type === 'positive' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
-        <RiTimeLine className="h-6 w-6" />
+      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center ${type === 'positive' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}`}>
+        <RiTimeLine className="h-5 w-5 md:h-6 md:w-6" />
       </div>
       <div>
-        <p className="font-rubik font-medium text-secondary text-sm md:text-base">{title}</p>
-        <p className="text-xs text-secondary/60 font-rubik">{date}</p>
+        <p className="font-montserrat font-normal text-secondary dark:text-gray-200 text-sm md:text-base">{title}</p>
+        <p className="text-xs text-secondary/60 dark:text-gray-400 font-montserrat font-normal">{date}</p>
       </div>
     </div>
-    <span className={`font-montserrat font-bold text-sm md:text-base ${type === 'positive' ? 'text-primary' : 'text-secondary'}`}>{amount}</span>
+    <span className={`font-rubik font-normal text-sm md:text-base ${type === 'positive' ? 'text-primary' : 'text-secondary dark:text-secondary'}`}>{amount}</span>
   </div>
 );
 
 const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
+  const [showBalance, setShowBalance] = useState(false);
+  const [currency, setCurrency] = useState<'USD' | 'NGN'>('USD');
+
+  const toggleCurrency = () => {
+    setCurrency(prev => prev === 'USD' ? 'NGN' : 'USD');
+  };
+
+  const balanceData = {
+    USD: { symbol: '$', amount: '12,450', cents: '.00' },
+    NGN: { symbol: '₦', amount: '19,920,000', cents: '.00' }
+  };
+
+  const currentBalance = balanceData[currency];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12 font-rubik">
-      <header className="mb-8 md:mb-12 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 font-montserrat font-normal">
+      <header className="mb-6 md:mb-10 flex justify-between items-start">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl md:text-4xl font-montserrat font-bold text-secondary">Hello, {userData?.name || 'Creative'}!</h1>
-          <p className="text-secondary/70 mt-1 font-rubik">Your creative cashdoor is open and ready.</p>
+          <h1 className="text-3xl md:text-4xl font-montserrat font-medium text-secondary dark:text-primary">Hello, King!</h1>
+          <p className="text-black dark:text-gray-300 mt-1 font-montserrat font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
         </motion.div>
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full border border-green-200 w-fit"
-        >
-          <RiShieldCheckLine/>
-          <span className="text-sm font-rubik font-medium">Account Verified</span>
-        </motion.div>
+
+        <div className="flex flex-col items-center gap-1 text-black dark:text-primary">
+          <RxSwitch size={40} className="text-secondary dark:text-primary font-bold" />
+          <span className="font-montserrat font-normal text-[10px] md:text-xs text-center dark:text-gray-300">Account verified!</span>
+        </div>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-12">
+      {/* Main Dashboard Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-10 items-stretch">
+        
+        {/* Left: Balance Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="lg:col-span-2 bg-primary rounded-[32px] p-6 md:p-10 text-white relative overflow-hidden group cursor-pointer shadow-2xl"
-          onClick={() => navigate('wallet')}
+          className="bg-primary rounded-[32px] p-8 md:p-10 text-white relative overflow-hidden shadow-xl flex flex-col justify-center min-h-[160px] md:min-h-[200px] h-full"
         >
-          <div className="absolute -right-12 -bottom-12 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
-          <p className="text-white/80 font-rubik font-medium mb-2 uppercase tracking-widest text-xs">Total Balance</p>
-          <div className="flex items-baseline gap-2 mb-10">
-            <span className="text-5xl md:text-6xl font-montserrat font-bold">$0</span>
-            <span className="text-2xl md:text-3xl text-white/90 font-montserrat">.00</span>
+          {/* Top Right Icon: Currency Switch */}
+          <button 
+            onClick={toggleCurrency}
+            className="absolute top-4 right-4 p-2 text-secondary dark:text-secondary hover:opacity-80 transition-opacity z-20"
+            title="Switch Currency"
+          >
+            <HiSwitchVertical size={24} />
+          </button>
+
+          {/* Bottom Right Icon: Hide/Show Balance */}
+          <button 
+            onClick={() => setShowBalance(!showBalance)}
+            className="absolute bottom-4 right-4 p-2 text-secondary dark:text-secondary hover:opacity-80 transition-opacity z-20"
+            title={showBalance ? "Hide Balance" : "Show Balance"}
+          >
+            {showBalance ? <BiHide size={24} /> : <BiShow size={24} />}
+          </button>
+
+          <div className="relative z-10">
+            <p className="text-white/90 font-montserrat font-normal mb-1 uppercase tracking-widest text-[10px]">Total Balance ({currency})</p>
+            <div className="flex items-baseline gap-1">
+              <span 
+                className={`text-4xl md:text-6xl font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}
+              >
+                {currentBalance.symbol} {currentBalance.amount}
+              </span>
+              <span className={`text-xl md:text-2xl text-white/90 font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}>
+                {currentBalance.cents}
+              </span>
+            </div>
           </div>
-          <div className="flex gap-4 relative z-10">
-            <button 
-              onClick={(e) => { e.stopPropagation(); navigate('pay'); }}
-              className="bg-white text-primary px-8 py-3.5 rounded-2xl font-montserrat font-normal hover:bg-white/90 transition-all text-sm md:text-base shadow-lg active:scale-95"
-            >
-              Add Money
-            </button>
-            <button 
-              onClick={(e) => { e.stopPropagation(); navigate('wallet'); }}
-              className="bg-secondary text-white px-8 py-3.5 rounded-2xl font-montserrat font-normal hover:bg-secondary/90 transition-all text-sm md:text-base shadow-lg active:scale-95"
-            >
-              Withdraw
-            </button>
-          </div>
+          
+          <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
         </motion.div>
 
+        {/* Right: Quick Actions Grid */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-[32px] p-6 md:p-8 border-2 border-secondary/5 shadow-xl flex flex-col justify-between"
+          className="grid grid-cols-3 gap-2 md:gap-3 h-full"
         >
-          <div>
-            <p className="text-secondary/60 font-rubik font-medium mb-6 uppercase tracking-widest text-xs">Active Escrows</p>
-            <div className="flex items-center gap-6 mb-8">
-              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-                <RiTimeLine className="h-8 w-8" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-montserrat font-bold text-secondary">$2,100</h3>
-                <p className="text-secondary/70 text-sm font-rubik">Waiting for delivery</p>
-              </div>
-            </div>
-          </div>
-          <button 
+          <ActionButton 
+            label="Deposit"
+            onClick={() => navigate('fund')}
+          />
+          <ActionButton 
+            label="Pay"
+            onClick={() => navigate('pay')}
+          />
+          <ActionButton 
+            label="Manage Escrow"
             onClick={() => navigate('escrow')}
-            className="w-full py-4 border-2 border-secondary/10 rounded-2xl font-montserrat font-normal text-secondary hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all active:scale-95"
-          >
-            Manage Escrow
-          </button>
+            variant="maroon"
+          />
+          <ActionButton 
+            label="Send"
+            onClick={() => navigate('payments')}
+          />
+          <ActionButton 
+            label="Withdraw"
+            onClick={() => navigate('wallet')}
+          />
+          <ActionButton 
+            label="Ticketing"
+            onClick={() => navigate('events')}
+            variant="maroon"
+          />
         </motion.div>
       </div>
 
-      <motion.h2 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-2xl font-montserrat font-bold mb-8 text-secondary"
+        className="bg-white dark:bg-gray-800 rounded-[32px] p-8 md:p-10 border-2 border-secondary/5 dark:border-white/5 shadow-2xl transition-colors"
       >
-        Quick Actions
-      </motion.h2>
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-16"
-      >
-        <ActionButton 
-          icon={<RiBook2Line className="h-7 w-7"/>}
-          label="Invoicing"
-          onClick={() => navigate('pay')}
-        />
-        <ActionButton 
-          icon={<RiCalendarEventLine className="h-7 w-7" />}
-          label="Ticketing"
-          onClick={() => navigate('events')}
-        />
-        <ActionButton 
-          icon={<RiSwapLine className="h-7 w-7" />}
-          label="FX Swap"
-          onClick={() => navigate('wallet')}
-        />
-        <ActionButton 
-          icon={<RiShieldCheckLine className="h-7 w-7" />}
-          label="Grants"
-          onClick={() => navigate('fund')}
-        />
-      </motion.div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="bg-white rounded-[32px] p-8 md:p-10 border-2 border-secondary/5 shadow-2xl"
-      >
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="text-2xl font-montserrat font-bold text-secondary">Recent History</h2>
-          <button onClick={() => navigate('wallet')} className="text-primary font-montserrat font-bold text-sm hover:underline">View All History</button>
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-montserrat font-medium text-secondary dark:text-primary">Recent History</h2>
+          <button onClick={() => navigate('wallet')} className="text-primary font-montserrat font-normal text-sm hover:underline">View All History</button>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-1">
           <TransactionItem title="Escrow Release: Brand Identity" date="Oct 24, 2024" amount="+ $1,200.00" type="positive" />
           <TransactionItem title="Workshop Ticket Sold" date="Oct 23, 2024" amount="+ $45.00" type="positive" />
           <TransactionItem title="Payout to Local Bank" date="Oct 22, 2024" amount="- $500.00" type="negative" />

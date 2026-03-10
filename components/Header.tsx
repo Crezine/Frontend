@@ -1,80 +1,50 @@
 import React from 'react';
 import { AppView, UserData } from '../types';
-import BrandLogo from './BrandLogo';
-import { RiLogoutCircleRLine } from 'react-icons/ri';
+import { RiUserFill, RiSunLine, RiMoonLine } from 'react-icons/ri';
+import { RxHamburgerMenu } from 'react-icons/rx';
 
 interface HeaderProps {
   navigate: (view: AppView) => void;
   activeView: AppView;
   userData: UserData | null;
+  onMenuToggle: () => void;
+  isDarkMode: boolean;
+  onThemeToggle: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ navigate, activeView, userData }) => {
-  const user = { name: userData?.name || 'Creative User' };
-
-  const navLinks: { view: AppView; label: string }[] = [
-    { view: 'home', label: 'Home' },
-    { view: 'wallet', label: 'Wallet' },
-    { view: 'pay', label: 'Pay' },
-    { view: 'escrow', label: 'Escrow' },
-    { view: 'events', label: 'Events' },
-    { view: 'fund', label: 'Fund' },
-  ];
-
+const Header: React.FC<HeaderProps> = ({ navigate, activeView, userData, onMenuToggle, isDarkMode, onThemeToggle }) => {
   return (
-    <>
-      {/* Desktop Header */}
-      <header className="hidden md:block bg-white shadow-sm font-montserrat sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
-            <div className="flex-shrink-0">
-              <BrandLogo onClick={() => navigate('home')} />
-            </div>
-            
-            <nav className="flex items-center space-x-8">
-              {navLinks.map((link) => (
-                <button
-                  key={link.view}
-                  onClick={() => navigate(link.view)}
-                  className={`text-sm font-bold transition-colors duration-300 ${
-                    activeView === link.view
-                      ? 'text-primary'
-                      : 'text-secondary/70 hover:text-primary'
-                  }`}
-                >
-                  {link.label}
-                </button>
-              ))}
-            </nav>
-            
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 cursor-pointer">
-                <div className="w-9 h-9 bg-primary rounded-full"></div>
-                <span className="text-secondary font-semibold text-sm">{user.name}</span>
-              </div>
-              <button onClick={() => navigate('landing')} className="text-secondary/70 hover:text-primary transition-colors">
-                <RiLogoutCircleRLine size={24} />
-              </button>
-            </div>
-          </div>
+    <header className="bg-white dark:bg-gray-800 border-b border-secondary/10 dark:border-white/10 font-montserrat sticky top-0 z-50 px-4 sm:px-6 transition-colors">
+      <div className="max-w-7xl mx-auto flex items-center justify-between h-16 sm:h-20">
+        
+        {/* Left: User Icon in Maroon Circle - Navigates to Profile */}
+        <div 
+          className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-secondary dark:border-primary rounded-full flex items-center justify-center cursor-pointer hover:bg-secondary/5 dark:hover:bg-primary/5 transition-colors shadow-sm"
+          onClick={() => navigate('profile')}
+          title="Creative Profile"
+        >
+          <RiUserFill size={24} className="text-secondary dark:text-primary" />
         </div>
-      </header>
 
-      {/* Mobile Header */}
-      <header className="md:hidden bg-white shadow-sm font-montserrat sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16">
-            <BrandLogo onClick={() => navigate('home')} />
-            <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-primary rounded-full cursor-pointer"></div>
-              <button onClick={() => navigate('landing')} className="text-secondary/70 hover:text-primary transition-colors">
-                <RiLogoutCircleRLine size={24} />
-              </button>
-            </div>
-          </div>
+        {/* Right: Theme Toggler & Hamburger */}
+        <div className="flex items-center gap-3 sm:gap-4">
+          <button 
+            onClick={onThemeToggle}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-secondary dark:text-primary"
+            title="Toggle Theme"
+          >
+            {isDarkMode ? <RiSunLine size={22} /> : <RiMoonLine size={22} />}
+          </button>
+
+          <button 
+            onClick={onMenuToggle}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-secondary dark:text-primary font-black"
+          >
+            <RxHamburgerMenu size={28} className="font-black" />
+          </button>
         </div>
-      </header>
-    </>
+      </div>
+    </header>
   );
 };
 

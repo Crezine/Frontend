@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaInstagram, FaTwitter, FaYoutube, FaPhoneAlt, FaEnvelope, FaWhatsapp, FaTiktok } from 'react-icons/fa';
+import { FaInstagram, FaTwitter, FaYoutube, FaPhoneAlt, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
 import BrandLogo from './BrandLogo';
 import { AppView } from '../types';
 
@@ -36,7 +36,6 @@ const Footer: React.FC<FooterProps> = () => {
               </button>
             </div>
           </div>
-          {/* Subtle background element */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full -ml-12 -mb-12 blur-2xl"></div>
         </div>
@@ -64,10 +63,8 @@ const Footer: React.FC<FooterProps> = () => {
             </div>
           </div>
 
-          {/* Right Columns Container - Pushed to Right and Grouped Closely */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:justify-end gap-10 sm:gap-12 lg:gap-10 xl:gap-16 w-full lg:w-auto lg:ml-auto lg:pt-8 font-rubik font-light">
             
-            {/* Column 2: Company */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[130px]">
               <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-light">Company</h3>
               <ul className="space-y-3 lg:space-y-4">
@@ -78,7 +75,6 @@ const Footer: React.FC<FooterProps> = () => {
               </ul>
             </div>
 
-            {/* Column 3: Support */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[130px]">
               <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-light">Support</h3>
               <ul className="space-y-3 lg:space-y-4">
@@ -87,9 +83,8 @@ const Footer: React.FC<FooterProps> = () => {
               </ul>
             </div>
 
-            {/* Column 4: Contact Us */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[200px] sm:col-span-2 md:col-span-1">
-              <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[120px] font-rubik font-light">Contact Us</h3>
+              <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[120px] font-rubik font-light">Reach Out</h3>
               <ul className="space-y-5 lg:space-y-6 w-full">
                 <li className="flex items-center gap-4 group">
                   <div className="bg-primary/10 p-2.5 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
@@ -106,24 +101,14 @@ const Footer: React.FC<FooterProps> = () => {
                     <span className="text-black text-sm md:text-base break-all font-rubik font-light">crezinecashdoor@gmail.com</span>
                   </div>
                 </li>
-                <li className="flex items-center gap-4 group cursor-pointer" onClick={() => navigate('whatsapp' as any)}>
-                  <div className="bg-primary/10 p-2.5 rounded-full text-primary group-hover:bg-green-500 group-hover:text-white transition-all shadow-sm">
-                    <FaWhatsapp className="text-xs" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-black/60 text-[9px] uppercase tracking-wider font-rubik font-light">Feedback</span>
-                    <span className="text-black text-sm md:text-base group-hover:text-primary transition-colors font-rubik font-light">Click to Get Help</span>
-                  </div>
-                </li>
               </ul>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright and Links */}
         <div className="pt-10 border-t border-secondary/10 flex flex-col md:flex-row justify-between items-center gap-8 font-rubik font-light">
           <p className="text-black text-sm md:text-base text-center md:text-left font-rubik font-light">
-            CrezineCashdoor 2026. All rights reserved
+            &copy; CrezineCashdoor 2026. All rights reserved
           </p>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
             <button onClick={() => navigate('/privacy-policy' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors underline-offset-4 hover:underline font-rubik font-light">Privacy Policy</button>

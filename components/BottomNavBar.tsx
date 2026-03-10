@@ -1,6 +1,15 @@
 import React from 'react';
 import { AppView } from '../types';
-import { RiHome3Line, RiWallet3Line, RiArrowLeftRightLine, RiShieldCheckLine, RiCalendarEventLine, RiFundsLine } from 'react-icons/ri';
+import { 
+  RiHome4Line, 
+  RiHome4Fill, 
+  RiWallet3Line, 
+  RiWallet3Fill,
+  RiExchangeDollarLine,
+  RiExchangeDollarFill,
+  RiCalendarEventLine,
+  RiCalendarEventFill
+} from 'react-icons/ri';
 
 interface BottomNavBarProps {
   navigate: (view: AppView) => void;
@@ -8,36 +17,35 @@ interface BottomNavBarProps {
 }
 
 const BottomNavBar: React.FC<BottomNavBarProps> = ({ navigate, activeView }) => {
-  const navLinks: { view: AppView; label: string; icon: JSX.Element }[] = [
-    { view: 'home', label: 'Home', icon: <RiHome3Line size={24} /> },
-    { view: 'wallet', label: 'Wallet', icon: <RiWallet3Line size={24} /> },
-    { view: 'pay', label: 'Pay', icon: <RiArrowLeftRightLine size={24} /> },
-    { view: 'escrow', label: 'Escrow', icon: <RiShieldCheckLine size={24} /> },
-    { view: 'events', label: 'Events', icon: <RiCalendarEventLine size={24} /> },
-    { view: 'fund', label: 'Fund', icon: <RiFundsLine size={24} /> },
+  const navItems = [
+    { view: 'home' as AppView, label: 'Home', icon: RiHome4Line, activeIcon: RiHome4Fill },
+    { view: 'wallet' as AppView, label: 'Wallet', icon: RiWallet3Line, activeIcon: RiWallet3Fill },
+    { view: 'pay' as AppView, label: 'Pay', icon: RiExchangeDollarLine, activeIcon: RiExchangeDollarFill },
+    { view: 'events' as AppView, label: 'Events', icon: RiCalendarEventLine, activeIcon: RiCalendarEventFill },
   ];
 
   return (
-    <div className="md:hidden fixed bottom-4 inset-x-4 bg-white/70 backdrop-blur-lg shadow-lg z-50 rounded-full border border-gray-300">
-      <div className="max-w-7xl mx-auto px-2 sm:px-6">
-        <div className="flex justify-around items-center h-16">
-          {navLinks.map((link) => (
-            <button
-              key={link.view}
-              onClick={() => navigate(link.view)}
-              className={`flex flex-col items-center justify-center w-full transition-colors duration-300 ${
-                activeView === link.view
-                  ? 'text-primary'
-                  : 'text-secondary/60 hover:text-primary'
-              }`}
-            >
-              {link.icon}
-              <span className="text-xs font-bold mt-1">{link.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-secondary/10 dark:border-white/10 px-6 py-3 flex justify-between items-center z-50 transition-colors">
+      {navItems.map((item) => {
+        const isActive = activeView === item.view || (item.view === 'home' && activeView === 'dashboard');
+        const Icon = isActive ? item.activeIcon : item.icon;
+        
+        return (
+          <button
+            key={item.view}
+            onClick={() => navigate(item.view)}
+            className="flex flex-col items-center gap-1 transition-all"
+          >
+            <div className={`p-1 rounded-lg transition-colors ${isActive ? 'text-secondary dark:text-primary' : 'text-secondary/40 dark:text-gray-500'}`}>
+              <Icon size={24} />
+            </div>
+            <span className={`text-[10px] font-montserrat transition-colors ${isActive ? 'text-secondary dark:text-primary font-bold' : 'text-secondary/40 dark:text-gray-500'}`}>
+              {item.label}
+            </span>
+          </button>
+        );
+      })}
+    </nav>
   );
 };
 
