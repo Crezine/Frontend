@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaInstagram, FaTwitter, FaYoutube, FaPhoneAlt, FaEnvelope, FaWhatsapp } from 'react-icons/fa';
+import { FiInstagram, FiTwitter, FiYoutube, FiPhone, FiMail } from 'react-icons/fi';
+import { PiWhatsappLogoThin } from 'react-icons/pi';
 import BrandLogo from './BrandLogo';
 import { AppView } from '../types';
 
@@ -12,14 +13,14 @@ const Footer: React.FC<FooterProps> = () => {
   const navigate = useNavigate();
 
   return (
-    <footer className="bg-accent pt-10 pb-8 text-black overflow-hidden border-t border-secondary/5 font-rubik font-light">
+    <footer className="bg-accent pt-10 pb-8 text-black overflow-hidden border-t border-secondary/5 font-rubik font-light transition-colors duration-300">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 max-w-7xl font-rubik font-light">
         
         {/* Join The Movement Card - Maroon, Curved, Compact */}
         <div className="bg-secondary text-white rounded-[40px] p-8 md:p-12 mb-16 text-center max-w-5xl mx-auto shadow-2xl relative overflow-hidden font-rubik font-light">
           <div className="relative z-10 flex flex-col items-center">
-            <h2 className="text-2xl md:text-4xl mb-4 tracking-tighter font-rubik font-light">Join The Movement!</h2>
-            <p className="text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed opacity-90 font-rubik font-light">
+            <h2 className="text-2xl md:text-4xl mb-4 tracking-tighter font-rubik font-normal">Join The Movement!</h2>
+            <p className="text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed opacity-90 font-rubik font-light text-white/90">
               Crezine is the infrastructure for modern creativity.
               We provide tools to get paid, Manage creative gigs Safely and grow your
               Creative Business Globally without any financial friction!
@@ -48,25 +49,25 @@ const Footer: React.FC<FooterProps> = () => {
             <div className="flex items-center gap-2">
                 <BrandLogo onClick={() => navigate('/')} isLarge={false} />
             </div>
-            <p className="text-black text-sm md:text-base leading-relaxed font-rubik font-light">
+            <p className="text-black text-sm md:text-base leading-relaxed font-rubik font-light opacity-80">
               Empowering Creatives Worldwide with the ultimate
               Global Cashdoor. Get paid safely for your long distance
               creative gigs through our ESCROW system,
             </p>
             <div className="pt-2">
-              <h4 className="font-bold text-black mb-4 text-sm font-rubik font-light">Follow us:</h4>
+              <h4 className="text-black mb-4 text-sm font-rubik font-normal">Follow us:</h4>
               <div className="flex space-x-6">
-                <a href="#" className="text-black hover:text-primary transition-all text-xl" aria-label="YouTube"><FaYoutube /></a>
-                <a href="https://www.instagram.com/crezine_/" className="text-black hover:text-primary transition-all text-xl" aria-label="Instagram"><FaInstagram /></a>
-                <a href="https://x.com/KevinKirat25622" className="text-black hover:text-primary transition-all text-xl" aria-label="Twitter"><FaTwitter /></a>
+                <a href="https://www.youtube.com/@crezine_official" target="_blank" rel="noopener noreferrer" className="text-black hover:text-[#FF0000] transition-all text-2xl md:text-3xl" aria-label="YouTube"><FiYoutube /></a>
+                <a href="https://www.instagram.com/crezine_/" target="_blank" rel="noopener noreferrer" className="text-black hover:text-[#E4405F] transition-all text-2xl md:text-3xl" aria-label="Instagram"><FiInstagram /></a>
+                <a href="https://x.com/KevinKirat25622" target="_blank" rel="noopener noreferrer" className="text-black hover:text-[#1DA1F2] transition-all text-2xl md:text-3xl" aria-label="Twitter"><FiTwitter /></a>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:justify-end gap-10 sm:gap-12 lg:gap-10 xl:gap-16 w-full lg:w-auto lg:ml-auto lg:pt-8 font-rubik font-light">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-row lg:justify-end gap-10 sm:gap-12 lg:gap-10 xl:gap-16 w-full lg:w-auto lg:ml-auto lg:pt-24 font-rubik font-light">
             
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[130px]">
-              <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-light">Company</h3>
+              <h3 className="text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-normal">Company</h3>
               <ul className="space-y-3 lg:space-y-4">
                 <li><button onClick={() => navigate('/contact' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Contact Us</button></li>
                 <li><button onClick={() => navigate('/about' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">About Us</button></li>
@@ -76,7 +77,7 @@ const Footer: React.FC<FooterProps> = () => {
             </div>
 
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[130px]">
-              <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-light">Support</h3>
+              <h3 className="text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[70px] font-rubik font-normal">Support</h3>
               <ul className="space-y-3 lg:space-y-4">
                 <li><button onClick={() => navigate('/help-center' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Help Centre</button></li>
                 <li><button className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Feedback</button></li>
@@ -84,22 +85,25 @@ const Footer: React.FC<FooterProps> = () => {
             </div>
 
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[200px] sm:col-span-2 md:col-span-1">
-              <h3 className="font-bold text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[120px] font-rubik font-light">Reach Out</h3>
+              <h3 className="text-secondary text-sm md:text-base border-b-2 border-primary/20 pb-1 w-full sm:max-w-[120px] font-rubik font-normal">Reach Out</h3>
               <ul className="space-y-5 lg:space-y-6 w-full">
-                <li className="flex items-center gap-4 group">
-                  <div className="bg-primary/10 p-2.5 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                    <FaPhoneAlt className="text-[10px]" />
+                <li className="flex items-center gap-4 group cursor-pointer" onClick={() => window.open('tel:0702862705', '_self')}>
+                  <div className="bg-primary/5 p-2 rounded-full text-black group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                    <FiPhone className="text-lg" />
                   </div>
-                  <span className="text-black text-sm md:text-base font-rubik font-light">0702862705</span>
+                  <span className="text-black text-sm md:text-base font-rubik font-light group-hover:text-primary transition-colors">0702862705</span>
                 </li>
-                <li className="flex items-center gap-4 group">
-                  <div className="bg-primary/10 p-2.5 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                    <FaEnvelope className="text-[10px]" />
+                <li className="flex items-center gap-4 group cursor-pointer" onClick={() => window.open('mailto:crezinecashdoor@gmail.com', '_self')}>
+                  <div className="bg-primary/5 p-2 rounded-full text-black group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                    <FiMail className="text-lg" />
                   </div>
-                  <div className="flex flex-col">
-                    <span className="text-black/60 text-[9px] uppercase tracking-wider font-rubik font-light">Email us</span>
-                    <span className="text-black text-sm md:text-base break-all font-rubik font-light">crezinecashdoor@gmail.com</span>
+                  <span className="text-black text-sm md:text-base break-all font-rubik font-light group-hover:text-primary transition-colors">crezinecashdoor@gmail.com</span>
+                </li>
+                <li className="flex items-center gap-4 group cursor-pointer" onClick={() => window.open('https://wa.me/254702862705', '_blank')}>
+                  <div className="bg-green-500/5 p-2 rounded-full text-black group-hover:bg-green-600 group-hover:text-white transition-all shadow-sm">
+                    <PiWhatsappLogoThin className="text-2xl" />
                   </div>
+                  <span className="text-black text-sm md:text-base font-rubik font-light group-hover:text-primary transition-colors">Click to Get Help</span>
                 </li>
               </ul>
             </div>

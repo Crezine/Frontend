@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaInstagram, FaTwitter, FaYoutube, FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { FiInstagram, FiTwitter, FiYoutube, FiPhone, FiMail } from 'react-icons/fi';
+import { PiWhatsappLogoThin } from 'react-icons/pi';
 import BrandLogo from './BrandLogo';
 import { AppView } from '../types';
 
@@ -29,21 +30,21 @@ const DashboardFooter: React.FC<DashboardFooterProps> = () => {
               creative gigs through our ESCROW system.
             </p>
             <div className="pt-2">
-              <h4 className="text-secondary dark:text-primary mb-4 text-xs uppercase tracking-widest font-normal">Follow us:</h4>
+              <h4 className="text-secondary dark:text-primary mb-4 text-sm font-rubik font-normal">Follow us</h4>
               <div className="flex space-x-6">
-                <a href="#" className="text-black dark:text-gray-300 hover:text-primary transition-all text-xl" aria-label="YouTube"><FaYoutube /></a>
-                <a href="https://www.instagram.com/crezine_/" className="text-black dark:text-gray-300 hover:text-primary transition-all text-xl" aria-label="Instagram"><FaInstagram /></a>
-                <a href="https://x.com/KevinKirat25622" className="text-black dark:text-gray-300 hover:text-primary transition-all text-xl" aria-label="Twitter"><FaTwitter /></a>
+                <a href="https://www.youtube.com/@crezine_official" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#FF0000] transition-all text-3xl" aria-label="YouTube"><FiYoutube /></a>
+                <a href="https://www.instagram.com/crezine_/" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#E4405F] transition-all text-3xl" aria-label="Instagram"><FiInstagram /></a>
+                <a href="https://x.com/KevinKirat25622" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#1DA1F2] transition-all text-3xl" aria-label="Twitter"><FiTwitter /></a>
               </div>
             </div>
           </div>
 
           {/* Right Columns Container */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-16 w-full lg:w-auto lg:ml-auto lg:pt-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 lg:gap-16 w-full lg:w-auto lg:ml-auto lg:pt-24">
             
             {/* Column 2: Company */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6">
-              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-normal">Company</h3>
+              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-rubik font-normal">Company</h3>
               <ul className="space-y-3">
                 <li><button onClick={() => navigate('/community' as any)} className="hover:text-primary text-sm md:text-base transition-colors">Community</button></li>
               </ul>
@@ -51,7 +52,7 @@ const DashboardFooter: React.FC<DashboardFooterProps> = () => {
 
             {/* Column 3: Support */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6">
-              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-normal">Support</h3>
+              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-rubik font-normal">Support</h3>
               <ul className="space-y-3">
                 <li><button onClick={() => navigate('/help-center' as any)} className="hover:text-primary text-sm md:text-base transition-colors">Help Centre</button></li>
                 <li><button className="hover:text-primary text-sm md:text-base transition-colors">Feedback</button></li>
@@ -60,19 +61,25 @@ const DashboardFooter: React.FC<DashboardFooterProps> = () => {
 
             {/* Column 4: Reach Out */}
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[200px]">
-              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-normal">Reach Out</h3>
+              <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-rubik font-normal">Reach Out</h3>
               <ul className="space-y-4 w-full">
-                <li className="flex items-center gap-3 group">
-                  <div className="bg-primary/5 p-2 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <FaPhoneAlt className="text-[10px]" />
+                <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('tel:0702862705', '_self')}>
+                  <div className="bg-primary/5 dark:bg-primary/10 p-2 rounded-full text-black dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                    <FiPhone className="text-lg" />
                   </div>
-                  <span className="text-sm md:text-base">0702862705</span>
+                  <span className="text-sm md:text-base group-hover:text-primary transition-colors">0702862705</span>
                 </li>
-                <li className="flex items-center gap-3 group">
-                  <div className="bg-primary/5 p-2 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <FaEnvelope className="text-[10px]" />
+                <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('mailto:crezinecashdoor@gmail.com', '_self')}>
+                  <div className="bg-primary/5 dark:bg-primary/10 p-2 rounded-full text-black dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                    <FiMail className="text-lg" />
                   </div>
-                  <span className="text-sm md:text-base break-all">crezinecashdoor@gmail.com</span>
+                  <span className="text-sm md:text-base break-all group-hover:text-primary transition-colors">crezinecashdoor@gmail.com</span>
+                </li>
+                <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('https://wa.me/254702862705', '_blank')}>
+                  <div className="bg-green-500/5 dark:bg-green-500/10 p-2 rounded-full text-black dark:text-gray-300 group-hover:bg-green-600 group-hover:text-white transition-all shadow-sm">
+                    <PiWhatsappLogoThin className="text-2xl" />
+                  </div>
+                  <span className="text-sm md:text-base group-hover:text-primary transition-colors">Click to Get Help</span>
                 </li>
               </ul>
             </div>

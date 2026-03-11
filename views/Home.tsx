@@ -67,9 +67,13 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           <p className="text-black dark:text-gray-300 mt-1 font-montserrat font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
         </motion.div>
 
-        <div className="flex flex-col items-center gap-1 text-black dark:text-primary">
-          <RxSwitch size={40} className="text-secondary dark:text-primary font-bold" />
-          <span className="font-montserrat font-normal text-[10px] md:text-xs text-center dark:text-gray-300">Account verified!</span>
+        <div className="flex flex-col items-center gap-2">
+          <img 
+            src="/verified.png" 
+            alt="Verified" 
+            className="w-16 h-16 md:w-20 md:h-20 object-contain"
+          />
+          <span className="font-montserrat font-medium text-[11px] md:text-sm text-center text-black dark:text-gray-300 tracking-wide">Account verified!</span>
         </div>
       </header>
 

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppView } from '../types';
 import BrandLogo from './BrandLogo';
-import { PiHamburgerLight } from "react-icons/pi";
+import { FaBarsStaggered } from "react-icons/fa6";
 import { FiX, FiChevronDown } from 'react-icons/fi';
 
 interface NavItem {
@@ -93,9 +93,6 @@ const PublicHeader: React.FC = () => {
 
   const handleLogoClick = (path: string) => {
     navigate(path);
-    // Specifically NOT closing the menu for logo clicks if needed, 
-    // though navigating to "/" will reload LandingView which has its own state.
-    // However, keeping the state consistent if it's a SPA.
   };
 
   const toggleDropdown = (label: string) => {
@@ -170,13 +167,14 @@ const PublicHeader: React.FC = () => {
                     </button>
                 </div>
               <div className="md:hidden ml-2">
-                <button 
+                <motion.button 
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="p-1 rounded-md text-secondary/70"
+                  className="p-1 rounded-md text-secondary"
                   aria-label="Open main menu"
                 >
-                  <PiHamburgerLight className={`h-7 w-7 transition-transform duration-300 ${isMenuOpen ? 'rotate-90' : ''}`} />
-                </button>
+                  <FaBarsStaggered className={`h-6 w-6 stroke-[2px] transition-all duration-300 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+                </motion.button>
               </div>
             </div>
           </div>
@@ -186,9 +184,10 @@ const PublicHeader: React.FC = () => {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="md:hidden fixed inset-0 bg-accent z-50 overflow-y-auto"
           >
             <div className="flex flex-col p-6 pt-8">
@@ -197,12 +196,13 @@ const PublicHeader: React.FC = () => {
                   <BrandLogo onClick={() => handleLogoClick('/')} />
                 </div>
                 
-                <button 
+                <motion.button 
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => setIsMenuOpen(false)} 
                   className="p-2.5 rounded-full bg-white shadow-lg text-secondary flex-shrink-0"
                 >
-                  <FiX className="h-5 w-5" />
-                </button>
+                  <FiX className="h-6 w-6 stroke-[3px]" />
+                </motion.button>
               </div>
 
               <nav className="flex flex-col space-y-1 px-2 pb-10">
@@ -244,7 +244,6 @@ const PublicHeader: React.FC = () => {
                   </div>
                 ))}
               </nav>
-
             </div>
           </motion.div>
         )}

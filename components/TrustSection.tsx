@@ -39,12 +39,12 @@ const AnimatedStat: React.FC<StatProps> = ({ value, suffix, label, duration = 2 
   }, [isInView, value, duration]);
 
   return (
-    <div ref={ref} className="flex flex-col items-center text-center p-4">
-      <div className="text-4xl md:text-5xl lg:text-6xl font-montserrat font-medium text-secondary mb-2 flex items-baseline leading-none">
+    <div ref={ref} className="flex flex-col items-center text-center p-4 font-rubik">
+      <div className="text-4xl md:text-5xl lg:text-6xl text-secondary mb-2 flex items-baseline leading-none font-light">
         <span>{count.toLocaleString()}</span>
-        <span className="text-secondary ml-0.5">{suffix}</span>
+        <span className="ml-0.5">{suffix}</span>
       </div>
-      <p className="text-black font-rubik font-normal tracking-wide text-[10px] md:text-xs">
+      <p className="text-black tracking-tight text-base md:text-lg font-normal font-rubik">
         {label}
       </p>
     </div>
@@ -118,12 +118,17 @@ const TrustSection: React.FC = () => {
 
   return (
     <section className="py-16 md:py-24 bg-accent/40 overflow-hidden">
-      <div className="container mx-auto px-6 mb-16 md:mb-20">
+      <div className="container mx-auto px-6 mb-12 md:mb-16">
+        <h2 className="text-xl md:text-2xl font-rubik font-normal text-black text-center mb-10 tracking-tight">Trusted by</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
           <AnimatedStat value={20} suffix="K" label="Creatives onboard" />
           <AnimatedStat value={98} suffix="%" label="Creatives satisfied" />
           <AnimatedStat value={100} suffix="K" label="Protected transactions" />
         </div>
+      </div>
+
+      <div className="container mx-auto px-6 mb-10">
+        <h2 className="text-xl md:text-2xl font-rubik font-normal text-black text-center tracking-tight">Testimonials</h2>
       </div>
 
       {/* Desktop Ticker */}
@@ -176,7 +181,7 @@ const TrustSection: React.FC = () => {
         </div>
 
         {/* Carousel Controls */}
-        <div className="flex justify-center items-center gap-6 mt-8">
+        <div className="flex justify-center items-center gap-6 mt-8 font-rubik font-light">
           <button 
             onClick={prev}
             className="w-10 h-10 rounded-full bg-white shadow-md border border-secondary/5 flex items-center justify-center text-secondary hover:text-primary transition-all active:scale-90"

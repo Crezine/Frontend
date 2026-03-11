@@ -286,14 +286,14 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* Community / Story Sharing Section */}
-        <section className="py-16 md:py-20 lg:py-0 bg-accent overflow-hidden relative lg:h-[600px] flex items-stretch">
-          {/* Desktop Only: Image on Right - Reduced width and height impact */}
+        <section className="py-12 lg:py-0 bg-accent overflow-hidden relative lg:h-[600px] flex items-stretch">
+          {/* Desktop Only: Image on Right */}
           <motion.div 
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1, ease: "easeOut" }}
-            className="hidden lg:block absolute top-0 right-0 w-[45%] h-full z-0"
+            className="hidden lg:block absolute top-0 right-0 w-[40%] h-full z-0"
           >
             <img 
               src="/art.png" 
@@ -302,39 +302,59 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             />
           </motion.div>
 
-          <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col justify-between py-12 lg:py-20 w-full">
-            {/* Top: Title in 3 Lines */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
+          <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col justify-between py-10 lg:py-16 w-full">
+            {/* Top: Header - Strictly 3 Lines, Bold */}
+            <div className="w-full lg:w-2/3 text-center lg:text-left mb-8 lg:mb-0">
               <motion.h2 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal leading-[1.1] tracking-tighter"
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-2xl md:text-4xl lg:text-5xl font-montserrat font-medium leading-[1.2] tracking-tighter"
               >
-                <span className="text-secondary">Would you like to share your </span><br className="hidden lg:block" />
-                <span className="text-yellow-400 font-medium">story</span> <span className="text-secondary">as a Creative and be </span><br className="hidden lg:block" />
-                <span className="text-primary">part of our Community?</span>
+                <span className="text-secondary block">Would you like to share your</span>
+                <span className="block mt-1">
+                  <span className="text-yellow-500 italic">story</span> 
+                  <span className="text-secondary"> as a Creative and be</span>
+                </span>
+                <span className="text-secondary block mt-1">
+                  part of our <span className="text-primary">Community?</span>
+                </span>
               </motion.h2>
             </div>
 
-            {/* Bottom Left: Contact Details */}
-            <div className="w-full lg:w-1/2 mt-16 lg:mt-0 flex flex-col items-center lg:items-start">
-              {/* Email section: White ovular background */}
+            {/* Middle: Mobile/Tablet Image - Shorter */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="lg:hidden flex justify-center my-8"
+            >
+              <div className="relative w-full max-w-[280px]">
+                 <img 
+                  src="/art.png" 
+                  alt="Creative Art" 
+                  className="w-full h-auto object-cover rounded-[30px]"
+                />
+              </div>
+            </motion.div>
+
+            {/* Bottom: Contact Details - One line email */}
+            <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mt-auto">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="bg-white px-8 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 mb-8 shadow-sm"
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-white px-6 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 mb-6 shadow-sm hover:shadow-md transition-all whitespace-nowrap overflow-hidden"
               >
-                <span className="text-black font-montserrat font-normal text-sm md:text-base">Email Us: </span>
-                <a href="mailto:crezinecashdoor@gmail.com" className="text-secondary font-montserrat font-normal text-sm md:text-base hover:underline transition-all">
+                <span className="text-black font-montserrat font-normal text-xs sm:text-sm md:text-base">Email Us: </span>
+                <a href="mailto:crezinecashdoor@gmail.com" className="text-secondary font-montserrat font-normal text-xs sm:text-sm md:text-base hover:underline transition-all">
                   crezinecashdoor@gmail.com
                 </a>
               </motion.div>
 
-              {/* WhatsApp Section */}
               <motion.a
                 href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18"
                 target="_blank"
@@ -342,38 +362,20 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
                 className="flex flex-col sm:flex-row items-center gap-4 group cursor-pointer"
               >
-                {/* PiWhatsappLogoThin - No background border, just the icon */}
-                <div className="flex-shrink-0 text-[#25D366] transition-all duration-300 group-hover:scale-110">
+                <div className="flex-shrink-0 text-[#25D366] transition-all duration-500 group-hover:scale-110">
                   <PiWhatsappLogoThin size={56} />
                 </div>
                 <div className="flex flex-col text-center lg:text-left">
                   <h4 className="text-lg md:text-xl font-bold text-black font-montserrat font-normal">Join our Whatsapp channel</h4>
-                  <p className="text-xs md:text-sm lg:text-base text-black font-montserrat font-normal max-w-md leading-relaxed">
-                    connect and share your work with other Creatives.
+                  <p className="text-xs md:text-sm text-black/80 font-montserrat font-normal max-w-md">
+                    Connect and share your work with other Creatives globally.
                   </p>
                 </div>
               </motion.a>
             </div>
-
-            {/* Mobile Only Image */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="w-full lg:hidden flex justify-center mt-10"
-            >
-              <div className="relative w-full max-w-sm">
-                 <img 
-                  src="/art.png" 
-                  alt="Creative Art" 
-                  className="relative z-10 w-full h-auto object-contain"
-                />
-              </div>
-            </motion.div>
           </div>
         </section>
       </main>
