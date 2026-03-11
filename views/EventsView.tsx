@@ -1,6 +1,5 @@
 import React from 'react';
 import { AppView } from '../types';
-import { IoMdArrowRoundBack } from 'react-icons/io';
 
 interface EventsViewProps {
   navigate: (view: AppView) => void;
@@ -8,18 +7,12 @@ interface EventsViewProps {
 
 const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 font-montserrat">
       <header className="mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="flex items-center">
-            <button 
-              onClick={() => navigate('home')} 
-              className="hidden md:flex bg-white p-2 rounded-md shadow-sm hover:bg-secondary/10 transition-colors mr-4 shrink-0"
-            >
-                <IoMdArrowRoundBack size={20} className="text-secondary/80" />
-            </button>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-secondary mb-1 md:mb-2">Creative Events</h1>
-              <p className="text-secondary/70 text-lg">Monetize your exhibitions, shows, and workshops.</p>
+              <h1 className="text-3xl md:text-4xl font-medium text-secondary dark:text-primary mb-1 md:mb-2">Creative Events</h1>
+              <p className="text-secondary/70 dark:text-gray-400 text-lg">Monetize your exhibitions, shows, and workshops.</p>
             </div>
         </div>
         <button className="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-primary/20 flex items-center gap-2 hover:bg-primary/90 transition-all text-lg">
@@ -34,7 +27,7 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
           { title: 'Soul Jazz Night', date: 'Dec 05, 2024', price: 45, sold: 42, total: 50, image: 'jazz' },
           { title: 'Photography Pop-up', date: 'Nov 28, 2024', price: 15, sold: 5, total: 20, image: 'photography' }
         ].map((event, i) => (
-          <div key={i} className="bg-white rounded-[32px] border border-secondary/10 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300">
+          <div key={i} className="bg-white dark:bg-gray-800 rounded-[32px] border border-secondary/10 dark:border-white/10 shadow-sm overflow-hidden group cursor-pointer hover:shadow-lg transition-all duration-300">
             <div className="h-40 relative">
                <img src={`https://picsum.photos/seed/${event.image}/600/400`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={event.title} />
                <div className="absolute inset-0 bg-primary/20"></div>
@@ -43,21 +36,21 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
                </div>
             </div>
             <div className="p-6">
-              <h3 className="text-xl font-bold text-secondary mb-1">{event.title}</h3>
-              <p className="text-secondary/60 text-sm mb-6">{event.date}</p>
+              <h3 className="text-xl font-bold text-secondary dark:text-gray-200 mb-1">{event.title}</h3>
+              <p className="text-secondary/60 dark:text-gray-400 text-sm mb-6">{event.date}</p>
               
               <div className="flex justify-between items-end mb-4">
                 <div>
-                  <p className="text-xs text-secondary/60 uppercase font-bold tracking-widest mb-1">Tickets Sold</p>
-                  <p className="text-2xl font-bold text-secondary">{event.sold} / {event.total}</p>
+                  <p className="text-xs text-secondary/60 dark:text-gray-400 uppercase font-bold tracking-widest mb-1">Tickets Sold</p>
+                  <p className="text-2xl font-bold text-secondary dark:text-primary">{event.sold} / {event.total}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-secondary/60 uppercase font-bold tracking-widest mb-1">Price</p>
+                  <p className="text-xs text-secondary/60 dark:text-gray-400 uppercase font-bold tracking-widest mb-1">Price</p>
                   <p className="text-2xl font-bold text-primary">${event.price}</p>
                 </div>
               </div>
               
-              <div className="w-full bg-secondary/10 h-2.5 rounded-full overflow-hidden">
+              <div className="w-full bg-secondary/10 dark:bg-white/5 h-2.5 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-primary" 
                   style={{ width: `${(event.sold / event.total) * 100}%` }}

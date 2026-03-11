@@ -7,21 +7,21 @@ import { RiRocketLine, RiGlobalLine, RiShieldFlashLine, RiMagicLine } from 'reac
 
 const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   return (
-    <div className="min-h-screen bg-accent flex flex-col font-montserrat">
+    <div className="min-h-screen bg-accent flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
         {/* Hero Section */}
-        <section className="relative overflow-hidden text-center mb-20 py-12">
+        <section className="relative overflow-hidden mb-20 py-12 flex flex-col items-center text-center">
           <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
           
-          <div className="max-w-6xl mx-auto text-center relative z-10">
+          <div className="max-w-4xl relative z-10 flex flex-col items-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-8 leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal text-secondary mb-8 leading-tight tracking-tighter"
             >
               One Link to Rule Your <br /> 
               <span className="text-primary">Creative Economy.</span>
@@ -30,9 +30,9 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-secondary/70 max-w-2xl mx-auto mb-12 leading-relaxed"
+              className="text-base md:text-lg font-rubik font-normal text-secondary/70 max-w-2xl mb-12 leading-relaxed"
             >
-              CREZINE is the infrastructure for modern creativity. We provide the tools to get paid, manage clients, and grow your global creative business without the financial friction.
+              Crezine is the infrastructure for modern creativity. We provide the tools to get paid, manage clients, and grow your global creative business without the financial friction.
             </motion.p>
             <motion.div 
                initial={{ opacity: 0, scale: 0.9 }}
@@ -42,12 +42,12 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             >
               <button 
                 onClick={() => navigate('onboarding')}
-                className="bg-primary text-white font-bold py-3 px-8 rounded-xl shadow-xl shadow-primary/20 hover:scale-105 transition-transform text-sm"
+                className="bg-primary text-white font-montserrat font-normal py-3 px-8 rounded-xl shadow-xl shadow-primary/20 hover:scale-105 transition-transform text-xs md:text-sm"
               >
                 Start for Free
               </button>
               <button 
-                className="border-2 border-secondary/10 text-secondary font-bold py-3 px-8 rounded-xl hover:bg-secondary/5 transition-colors text-sm"
+                className="border-2 border-secondary text-secondary font-montserrat font-normal py-3 px-8 rounded-xl hover:bg-secondary/5 transition-colors text-xs md:text-sm"
               >
                 Watch Demo
               </button>
@@ -59,10 +59,10 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         <section className="py-20 px-4 bg-white/30 rounded-[40px] md:rounded-[60px] border border-secondary/5 mb-20">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-nunito font-normal text-secondary mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl font-rubik font-normal text-secondary mb-6 leading-tight">
                 What is a <span className="text-primary italic">Cashdoor?</span>
               </h2>
-              <p className="text-lg text-secondary/70 mb-8 leading-relaxed">
+              <p className="text-lg font-rubik font-normal text-secondary/70 mb-8 leading-relaxed">
                 A Cashdoor is more than a wallet—it's your financial identity. It's a single entry point where clients pay, funds are secured in escrow, and you access global opportunities like grants and residencies.
               </p>
               <ul className="space-y-4">
@@ -71,7 +71,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   { icon: <RiShieldFlashLine />, text: "Automated Escrow for every gig" },
                   { icon: <RiMagicLine />, text: "Access to Creative Grants & Funding" }
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-4 text-secondary/80 font-semibold">
+                  <li key={i} className="flex items-center gap-4 text-secondary/80 font-rubik font-normal">
                     <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm border border-secondary/5">
                       {item.icon}
                     </div>
@@ -93,9 +93,9 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         {/* Features Preview */}
         <section className="mb-20">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-5xl font-nunito font-normal text-secondary mb-4">Built for Every Creator.</h2>
-              <p className="text-secondary/60 font-medium">From Designers to Musicians, we've got you covered.</p>
+            <div className="text-center mb-16 flex flex-col items-center">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary mb-4 tracking-tighter leading-tight">Built for Every Creator.</h2>
+              <p className="text-secondary/60 font-rubik font-normal max-w-2xl">From Designers to Musicians, we've got you covered.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -108,9 +108,9 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary mb-6 shadow-sm">
                     <RiRocketLine size={32} />
                   </div>
-                  <h3 className="text-2xl font-bold text-secondary mb-4">{card.title}</h3>
-                  <p className="text-secondary/70 leading-relaxed mb-8">{card.desc}</p>
-                  <button onClick={() => navigate('onboarding')} className="font-bold text-primary hover:underline">Get Started &rarr;</button>
+                  <h3 className="text-2xl font-rubik font-normal text-secondary mb-4">{card.title}</h3>
+                  <p className="text-secondary/70 font-rubik font-normal leading-relaxed mb-8">{card.desc}</p>
+                  <button onClick={() => navigate('onboarding')} className="font-montserrat font-normal text-primary hover:underline">Get Started &rarr;</button>
                 </div>
               ))}
             </div>
@@ -118,19 +118,18 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* Final CTA */}
-        <section className="py-20 px-4">
-          <div className="max-w-4xl mx-auto bg-secondary rounded-[60px] p-12 md:p-24 text-center text-white relative overflow-hidden">
-             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
-             <h2 className="text-4xl md:text-6xl font-nunito font-normal mb-8 relative z-10">Ready to open your cashdoor?</h2>
-             <button 
+        <section className="py-16 px-4">
+          <div className="max-w-3xl mx-auto bg-secondary rounded-[40px] md:rounded-[56px] p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl">
+             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
+             <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal mb-6 relative z-10 tracking-tighter leading-tight">Ready to open your cashdoor?</h2>
+             <button
                 onClick={() => navigate('onboarding')}
-                className="bg-primary text-white font-bold py-5 px-12 rounded-2xl text-xl hover:scale-105 transition-transform relative z-10 shadow-2xl shadow-primary/40"
+                className="bg-primary text-white font-montserrat font-normal py-4 px-10 rounded-full text-lg hover:scale-105 transition-transform relative z-10 shadow-xl shadow-primary/30"
              >
                Open My Account Now
              </button>
           </div>
-        </section>
-      </main>
+        </section>      </main>
     </div>
   );
 };

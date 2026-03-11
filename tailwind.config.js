@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./*.{tsx,ts}",
@@ -15,6 +16,7 @@ export default {
       },
       fontFamily: {
         'montserrat': ["Montserrat", "sans-serif"],
+        'rubik': ["Rubik", "sans-serif"],
         'century-gothic': ["Century Gothic", "sans-serif"],
         'nunito': ["Nunito", "sans-serif"],
       },

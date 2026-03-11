@@ -27,16 +27,16 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
   ];
 
   return (
-    <div className="bg-[#F9F5F0] min-h-screen flex flex-col font-montserrat">
+    <div className="bg-[#F9F5F0] min-h-screen flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow py-20 px-4">
+      <main className="flex-grow pt-32 pb-20 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-6xl font-nunito font-normal text-secondary mb-6"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal text-secondary mb-6 tracking-tighter leading-tight"
             >
               Help <span className="text-primary">Center</span>
             </motion.h1>
@@ -44,9 +44,9 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl text-secondary/60 max-w-2xl mx-auto"
+              className="text-xl font-rubik font-normal text-secondary/60 max-w-2xl mx-auto"
             >
-              Everything you need to know about using CREZINE to power your creative business.
+              Everything you need to know about using Crezine to power your creative business.
             </motion.p>
           </div>
 
@@ -55,7 +55,7 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
               <input
                 type="text"
                 placeholder="Search for answers..."
-                className="w-full px-8 py-5 rounded-[25px] border border-secondary/10 focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-montserrat text-lg shadow-sm"
+                className="w-full px-8 py-5 rounded-[25px] border border-secondary/10 focus:ring-2 focus:ring-primary focus:border-transparent transition-all font-rubik font-normal text-lg shadow-sm"
               />
               <button className="absolute right-4 top-1/2 -translate-y-1/2 bg-primary text-white p-3 rounded-xl">
                 <RiQuestionLine size={24} />
@@ -75,11 +75,11 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
                 <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-primary mb-6 shadow-sm">
                   {cat.icon}
                 </div>
-                <h3 className="text-2xl font-nunito font-normal text-secondary mb-6">{cat.title}</h3>
+                <h3 className="text-2xl font-rubik font-normal text-secondary mb-6">{cat.title}</h3>
                 <ul className="space-y-4">
                   {cat.links.map((link, index) => (
                     <li key={index}>
-                      <button className="text-secondary/70 hover:text-primary transition font-medium flex items-center gap-2">
+                      <button className="text-secondary/70 hover:text-primary transition font-rubik font-normal flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40"></span>
                         {link}
                       </button>
@@ -91,11 +91,11 @@ const HelpCenterView: React.FC<{ navigate: (view: AppView) => void }> = ({ navig
           </div>
 
           <div className="mt-20 bg-secondary rounded-[40px] p-12 text-center text-white">
-            <h2 className="text-3xl md:text-4xl font-nunito font-normal mb-4">Can't find what you're looking for?</h2>
-            <p className="text-white/70 mb-8">Our support team is available 24/7 to help you with any issues.</p>
+            <h2 className="text-3xl md:text-4xl font-montserrat font-bold mb-4">Can't find what you're looking for?</h2>
+            <p className="text-white/70 font-rubik font-normal mb-8">Our support team is available 24/7 to help you with any issues.</p>
             <button 
               onClick={() => navigate('contact')}
-              className="bg-primary text-white font-bold py-4 px-10 rounded-2xl hover:scale-105 transition-transform"
+              className="bg-primary text-white font-montserrat font-normal py-4 px-10 rounded-2xl hover:scale-105 transition-transform"
             >
               Contact Support
             </button>

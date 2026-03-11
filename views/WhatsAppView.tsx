@@ -6,8 +6,8 @@ const WhatsAppView: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#F9F5F0] min-h-screen flex flex-col justify-center items-center font-montserrat text-secondary">
-        <h1 className="text-2xl font-bold">Redirecting to WhatsApp...</h1>
+    <div className="bg-[#F9F5F0] min-h-screen flex flex-col justify-center items-center text-secondary font-rubik">
+        <h1 className="text-2xl font-montserrat font-bold">Redirecting to WhatsApp...</h1>
     </div>
   );
 };
