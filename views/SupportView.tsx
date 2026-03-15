@@ -30,7 +30,7 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl font-rubik font-normal text-secondary/60"
+              className="text-xl font-rubik font-normal text-black"
             >
               Our support team is always ready to help you unlock your creative potential.
             </motion.p>
@@ -53,7 +53,7 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                    {box.icon}
                  </div>
                  <h3 className="text-2xl font-rubik font-normal text-secondary mb-2">{box.title}</h3>
-                 <p className="text-secondary/60 font-rubik font-normal text-sm leading-relaxed">{box.desc}</p>
+                 <p className="text-black font-rubik font-normal text-sm leading-relaxed">{box.desc}</p>
                </motion.div>
              ))}
           </div>
@@ -66,7 +66,7 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               {faqs.map((faq, i) => (
                 <div key={i}>
                   <h4 className="text-xl font-rubik font-normal text-secondary mb-4">{faq.q}</h4>
-                  <p className="text-secondary/70 font-rubik font-normal leading-relaxed">{faq.a}</p>
+                  <p className="text-black font-rubik font-normal leading-relaxed">{faq.a}</p>
                 </div>
               ))}
             </div>

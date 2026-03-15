@@ -71,7 +71,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl font-rubik font-normal text-secondary/60"
+              className="text-xl font-rubik font-normal text-black"
             >
               No hidden fees. No creative tax. Just tools to help you grow.
             </motion.p>
@@ -92,7 +92,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   </span>
                 )}
                 <h3 className="text-2xl font-rubik font-normal mb-2">{plan.name}</h3>
-                <p className={`text-sm font-rubik font-normal mb-8 ${plan.highlight ? 'text-white/70' : 'text-secondary/60'}`}>{plan.desc}</p>
+                <p className={`text-sm font-rubik font-normal mb-8 ${plan.highlight ? 'text-white/70' : 'text-black'}`}>{plan.desc}</p>
                 <div className="flex items-baseline gap-1 mb-8">
                    <span className="text-5xl md:text-6xl font-montserrat font-medium leading-none">${plan.price}</span>
                    <span className="text-lg font-rubik font-normal opacity-60">/mo</span>
@@ -120,7 +120,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           {/* Transaction Fees Note */}
           <div className="mt-20 text-center bg-white p-8 rounded-[30px] border border-secondary/30 max-w-2xl mx-auto">
             <h4 className="font-rubik font-normal text-secondary mb-2">Wait, what about transaction fees?</h4>
-            <p className="text-secondary/60 font-rubik font-normal text-sm">
+            <p className="text-black font-rubik font-normal text-sm">
               We keep it simple: <strong>2.9% + $0.30</strong> per successful transaction. This covers the global payment processing, currency conversion, and escrow security.
             </p>
           </div>

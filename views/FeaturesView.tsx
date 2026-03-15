@@ -61,7 +61,7 @@ const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xl font-rubik font-normal text-secondary/60 leading-relaxed"
+            className="text-xl font-rubik font-normal text-black leading-relaxed"
           >
             Crezine replaces your fragmented tools with one cohesive financial ecosystem built specifically for the creative workflow.
           </motion.p>
@@ -81,7 +81,7 @@ const FeaturesView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
                 {feature.icon}
               </div>
               <h2 className="text-2xl font-rubik font-normal text-secondary mb-4">{feature.title}</h2>
-              <p className="text-secondary/70 font-rubik font-normal leading-relaxed">
+              <p className="text-black font-rubik font-normal leading-relaxed">
                 {feature.desc}
               </p>
             </motion.div>

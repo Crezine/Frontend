@@ -63,7 +63,7 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl md:text-4xl font-montserrat font-medium text-secondary dark:text-primary">Hello, King!</h1>
+          <h1 className="text-3xl md:text-4xl font-montserrat font-medium text-secondary dark:text-primary">Hello, {userData?.name || 'Creative'}!</h1>
           <p className="text-black dark:text-gray-300 mt-1 font-montserrat font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
         </motion.div>
 

@@ -136,7 +136,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
           
           <div className="space-y-2">
             <h1 className="text-4xl md:text-6xl font-montserrat font-normal text-secondary dark:text-primary leading-tight">
-              {userData?.name || 'King'}
+              {userData?.name || 'Creative'}
             </h1>
             <p className="text-secondary/60 dark:text-gray-400 text-lg md:text-2xl font-rubik font-light tracking-wide">{userData?.craft || 'Visual Artist'}</p>
           </div>
