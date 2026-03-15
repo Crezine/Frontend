@@ -30,7 +30,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-base md:text-lg font-rubik font-normal text-secondary/70 max-w-2xl mb-12 leading-relaxed"
+              className="text-base md:text-lg font-rubik font-normal text-black max-w-2xl mb-12 leading-relaxed"
             >
               Crezine is the infrastructure for modern creativity. We provide the tools to get paid, manage clients, and grow your global creative business without the financial friction.
             </motion.p>
@@ -62,7 +62,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               <h2 className="text-3xl md:text-4xl font-rubik font-normal text-secondary mb-6 leading-tight">
                 What is a <span className="text-primary italic">Cashdoor?</span>
               </h2>
-              <p className="text-lg font-rubik font-normal text-secondary/70 mb-8 leading-relaxed">
+              <p className="text-lg font-rubik font-normal text-black mb-8 leading-relaxed">
                 A Cashdoor is more than a wallet—it's your financial identity. It's a single entry point where clients pay, funds are secured in escrow, and you access global opportunities like grants and residencies.
               </p>
               <ul className="space-y-4">
@@ -95,7 +95,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 flex flex-col items-center">
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary mb-4 tracking-tighter leading-tight">Built for Every Creator.</h2>
-              <p className="text-secondary/60 font-rubik font-normal max-w-2xl">From Designers to Musicians, we've got you covered.</p>
+              <p className="text-black font-rubik font-normal max-w-2xl">From Designers to Musicians, we've got you covered.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -109,7 +109,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                     <RiRocketLine size={32} />
                   </div>
                   <h3 className="text-2xl font-rubik font-normal text-secondary mb-4">{card.title}</h3>
-                  <p className="text-secondary/70 font-rubik font-normal leading-relaxed mb-8">{card.desc}</p>
+                  <p className="text-black font-rubik font-normal leading-relaxed mb-8">{card.desc}</p>
                   <button onClick={() => navigate('onboarding')} className="font-montserrat font-normal text-primary hover:underline">Get Started &rarr;</button>
                 </div>
               ))}

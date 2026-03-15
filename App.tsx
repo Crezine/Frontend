@@ -95,7 +95,7 @@ const App: React.FC = () => {
           element={
             <DashboardView 
               navigate={handleNavigate} 
-              userData={userData || { name: 'Temp User', email: 'temp@crezine.com', craft: 'Creative' }} 
+              userData={userData || { name: 'Creative', email: 'creative@crezine.com', craft: 'Creative' }} 
             />
           }
         />

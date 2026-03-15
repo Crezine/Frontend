@@ -43,15 +43,15 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
       <PublicHeader />
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="container mx-auto px-6 pt-24 pb-16 md:pt-36 md:pb-24 flex flex-col items-start">
-          <div className="w-full max-w-4xl text-left flex flex-col items-start">
+        <section className="container mx-auto px-6 pt-28 pb-12 md:pt-20 md:pb-16 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden">
+          <div className="w-full lg:w-1/2 xl:w-3/5 text-left flex flex-col items-start relative z-10 lg:pt-12">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-white/40 backdrop-blur-sm rounded-full py-1.5 px-5 inline-block mb-6 border border-secondary/10"
+              className="bg-white/40 backdrop-blur-sm rounded-full py-1.5 px-5 inline-block mb-4 md:mb-6 border border-secondary/10"
             >
-              <p className="text-xs sm:text-sm md:text-base text-black font-montserrat font-normal tracking-wide">
+              <p className="text-xs sm:text-sm md:text-base text-black font-rubik font-light tracking-wide">
                 Your global cashdoor for creative dreams.
               </p>
             </motion.div>
@@ -59,7 +59,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               variants={sentence}
               initial="hidden"
               animate="visible"
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-6 leading-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight"
             >
               <span className="text-black">
                   {splitText('The Global', 'global')}
@@ -76,7 +76,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-10 max-w-2xl leading-relaxed"
+              className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl leading-relaxed"
             >
               Secure Global payments for Creatives, Transact across the world Simple and Easy,
               Sell Experiences, Ticket Events and access creative fund and residencies
@@ -106,6 +106,81 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               </motion.button>
             </motion.div>
           </div>
+
+          {/* Right Side Image - Creative Mobile Display */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
+            className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-16 lg:mt-0"
+          >
+            <div className="relative">
+              {/* Static glow effects for visual depth */}
+              <div 
+                className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40"
+              />
+              <div 
+                className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30"
+              />
+              
+              {/* The Mobile Image - One-time entrance only - INCREASED SIZE */}
+              <div className="relative z-10">
+                <img 
+                  src="/mobile.png" 
+                  alt="Crezine Mobile App" 
+                  className="w-full max-w-[340px] sm:max-w-[380px] md:max-w-[420px] lg:max-w-[450px] xl:max-w-[500px] h-auto drop-shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
+                />
+              </div>
+
+              {/* Floating UI Elements (Montserrat Regular) */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ 
+                  opacity: 1, 
+                  x: 0,
+                  y: [0, -10, 0] 
+                }}
+                viewport={{ once: true }}
+                transition={{ 
+                  x: { delay: 0.8, duration: 0.6 },
+                  y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                }}
+                className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/90 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100"
+              >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
+                  <span className="text-xs md:text-sm font-bold font-montserrat">$</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] md:text-xs text-black/50 font-montserrat font-normal uppercase tracking-tighter">Received</span>
+                  <span className="text-xs md:text-sm text-black font-normal font-montserrat">Global Payment</span>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ 
+                  opacity: 1, 
+                  x: 0,
+                  y: [0, 10, 0] 
+                }}
+                viewport={{ once: true }}
+                transition={{ 
+                  x: { delay: 1, duration: 0.6 },
+                  y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
+                }}
+                className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/90 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100"
+              >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center text-secondary">
+                   <span className="text-xs md:text-sm font-bold font-montserrat">✓</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] md:text-xs text-black/50 font-montserrat font-normal uppercase tracking-tighter">Verified</span>
+                  <span className="text-xs md:text-sm text-black font-normal font-montserrat">Escrow Protected</span>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
         </section>
 
         {/* Trust Section */}
