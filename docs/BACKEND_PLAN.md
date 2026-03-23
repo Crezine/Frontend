@@ -111,6 +111,14 @@ Essential for the "Ticketing" and "Grant Scraping" stories.
     *   `GrantSyncJob`: Runs every Monday at 3 AM.
     *   `TicketExpireJob`: Runs every 10 minutes to release unpaid tickets back into inventory.
 
+### 5.5 Social Auth (Google & Apple OAuth)
+Integration via **Passport.js** to ensure secure, streamlined onboarding.
+1.  **Google:** Backend uses `google-auth-library` to verify the `id_token`. If valid, it extracts `email`, `name`, and `picture`.
+2.  **Apple (The "Gotcha"):** 
+    *   Backend verifies the Apple JWT using Apple's public keys.
+    *   **Logic:** Apple only sends the user's `name` (firstName, lastName) on the **first ever** login. The backend must capture and store this immediately in the `User` record, otherwise, it is lost forever.
+3.  **Account Linking:** If a user signed up with Email but later logs in with Google (using the same email), the backend automatically links the two to prevent duplicate accounts.
+
 ---
 
 ## 6. Deep Dive: Prisma & Database Lifecycle
@@ -138,7 +146,53 @@ await this.prisma.$transaction(async (tx) => {
 ---
 
 ## 7. Complete API Endpoint Inventory
-(Refer to Section 6 of the previous plan for the full list of Auth, Wallet, Shop, and Ticketing endpoints).
+
+### 7.1 Auth & Onboarding
+*   `POST /auth/register`: Manual email signup. Body: `{ name, email, password, craft }`.
+*   `POST /auth/login`: Traditional credential login. Returns JWT.
+*   `POST /auth/social`: Google/Apple OAuth token exchange. Body: `{ token, provider }`.
+*   `POST /auth/otp/verify`: Verify email/phone. Body: `{ email, code, type }`.
+*   `GET /user/handle/check?handle=name`: Real-time availability for `crezine.me/handle`.
+
+### 7.2 User & Profile Management
+*   `GET /user/profile/me`: Full data for the Dashboard (Private).
+*   `PATCH /user/profile/update`: Update editable fields (Name, Bio, Craft, Handle).
+*   `POST /user/profile/avatar`: Generate Cloudinary signature for secure direct-to-cloud upload.
+*   `POST /user/email/change`: Initiation of email update flow (requires old verification).
+*   `GET /kyc/init`: Initialize Sumsub/Veriff KYC session.
+
+### 7.3 Wallet & Finance (The Cashdoor Engine)
+*   `GET /wallet/balance`: Real-time balance for USD and Local (NGN/KES).
+*   `GET /wallet/transactions`: Paginated history of all movements.
+*   `POST /wallet/deposit`: Initiate deposit flow. Returns Checkout URL.
+*   `POST /wallet/convert`: Swap USD for Local. Uses OANDA/Fixer API.
+*   `POST /wallet/withdraw`: Request payout to linked Bank/M-Pesa.
+*   `POST /payments/link/create`: Generate Standard or Escrow link.
+*   `POST /escrow/:id/release`: Request/Approve milestone fund release.
+*   `POST /payments/webhook`: Unified entry point for Paystack/Stripe callbacks.
+
+### 7.4 Shop & Merch (User-Generated)
+*   `POST /shop/products`: Create a new Art/Merch item with Cloudinary metadata.
+*   `GET /shop/public/:handle`: Public shop view for a specific creative.
+*   `POST /shop/checkout`: Initiate purchase flow for physical/digital items.
+*   `GET /shop/orders`: Creative's dashboard to track sales and shipping status.
+
+### 7.5 Ticketing & Events (High Concurrency)
+*   `POST /events/create`: Setup event with capacity and pricing tiers.
+*   `GET /events/all`: Public feed of active creative events.
+*   `POST /ticketing/purchase/:eventId`: High-concurrency atomic purchase engine.
+*   `GET /ticketing/my-tickets`: User's secure vault of JWT-signed QR codes.
+*   `POST /ticketing/verify`: QR scanning endpoint for event organizers.
+
+### 7.6 Global Opportunities (Aggregation)
+*   `GET /funding/opportunities`: Filtered grants/residencies (Categories: Grant, Residency, Local Fund).
+*   `POST /funding/apply/:id`: One-click application using Crezine Verified Profile.
+
+### 7.7 Support & Operations
+*   `POST /contact/submit`: Handle contact form submissions (support, partnerships).
+*   `POST /newsletter/subscribe`: Add email to marketing/updates list.
+*   `GET /content/faqs`: Fetch latest dynamic FAQ categories.
+*   `GET /content/legal/:type`: Fetch latest Terms or Privacy content (CMS-driven).
 
 ---
 
