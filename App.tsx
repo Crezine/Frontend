@@ -12,6 +12,7 @@ import HelpCenterView from './views/HelpCenterView';
 import ContactView from './views/ContactView';
 import WhatsAppView from './views/WhatsAppView';
 import About from './views/About';
+import ShopView from './views/ShopView';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
 import TicketingView from './views/TicketingView';
@@ -120,6 +121,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<Navigate to="/help-center" replace />} />
         <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
         <Route path="/about" element={<About navigate={handleNavigate} />} />
+        <Route path="/shop" element={<ShopView navigate={handleNavigate} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
         <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
@@ -128,7 +130,7 @@ const App: React.FC = () => {
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
       {showGlobalFooter && <BackToTop />}
-      {showGlobalFooter && <Footer navigate={handleNavigate} />}
+      {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}
     </div>
   );
 };

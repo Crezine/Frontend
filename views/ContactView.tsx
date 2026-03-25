@@ -67,9 +67,9 @@ const ContactView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                     <div>
                         <h3 className="font-rubik font-normal text-md">Follow Us</h3>
                         <div className="flex space-x-3">
-                            <a href="https://www.instagram.com/crezine_/" className="text-secondary/70 hover:text-primary transition text-xl"><FaInstagram /></a>
+                            <a href="https://www.instagram.com/crezinecashdoor/" className="text-secondary/70 hover:text-primary transition text-xl"><FaInstagram /></a>
                             <a href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18" className="text-secondary/70 hover:text-primary transition text-xl"><FaWhatsapp /></a>
-                            <a href="https://x.com/KevinKirat25622" className="text-secondary/70 hover:text-primary transition text-xl"><FaTwitter /></a>
+                            <a href="https://x.com/CrezineCashdoor" className="text-secondary/70 hover:text-primary transition text-xl"><FaTwitter /></a>
                             <a href="https://www.tiktok.com/@crezine_" className="text-secondary/70 hover:text-primary transition text-xl"><FaTiktok /></a>
                         </div>
                     </div>

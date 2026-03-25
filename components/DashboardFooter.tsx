@@ -32,9 +32,9 @@ const DashboardFooter: React.FC<DashboardFooterProps> = () => {
             <div className="pt-2">
               <h4 className="text-secondary dark:text-primary mb-4 text-sm font-rubik font-normal">Follow us</h4>
               <div className="flex space-x-6">
-                <a href="https://www.youtube.com/@crezine_official" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#FF0000] transition-all text-3xl" aria-label="YouTube"><FiYoutube /></a>
-                <a href="https://www.instagram.com/crezine_/" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#E4405F] transition-all text-3xl" aria-label="Instagram"><FiInstagram /></a>
-                <a href="https://x.com/KevinKirat25622" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#1DA1F2] transition-all text-3xl" aria-label="Twitter"><FiTwitter /></a>
+                <a href="https://www.youtube.com/@crezine_official" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#FF0000] dark:hover:text-[#FF0000] transition-all text-3xl" aria-label="YouTube"><FiYoutube /></a>
+                <a href="https://www.instagram.com/crezinecashdoor/" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#E4405F] dark:hover:text-[#E4405F] transition-all text-3xl" aria-label="Instagram"><FiInstagram /></a>
+                <a href="https://x.com/CrezineCashdoor" target="_blank" rel="noopener noreferrer" className="text-black dark:text-gray-300 hover:text-[#1DA1F2] dark:hover:text-[#1DA1F2] transition-all text-3xl" aria-label="Twitter"><FiTwitter /></a>
               </div>
             </div>
           </div>
@@ -63,11 +63,11 @@ const DashboardFooter: React.FC<DashboardFooterProps> = () => {
             <div className="flex flex-col items-start space-y-4 lg:space-y-6 min-w-[200px]">
               <h3 className="text-secondary dark:text-primary text-sm md:text-base border-b border-primary/20 pb-1 w-fit font-rubik font-normal">Reach Out</h3>
               <ul className="space-y-4 w-full">
-                <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('tel:0702862705', '_self')}>
+                <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('tel:+254702862705', '_self')}>
                   <div className="bg-primary/5 dark:bg-primary/10 p-2 rounded-full text-black dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                     <FiPhone className="text-lg" />
                   </div>
-                  <span className="text-sm md:text-base group-hover:text-primary transition-colors">0702862705</span>
+                  <span className="text-sm md:text-base group-hover:text-primary transition-colors">+254702862705</span>
                 </li>
                 <li className="flex items-center gap-3 group cursor-pointer" onClick={() => window.open('mailto:crezinecashdoor@gmail.com', '_self')}>
                   <div className="bg-primary/5 dark:bg-primary/10 p-2 rounded-full text-black dark:text-gray-300 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
