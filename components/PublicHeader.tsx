@@ -36,6 +36,7 @@ const PublicHeader: React.FC = () => {
       label: 'Resources',
       subItems: [
         { label: 'Home', path: '/' },
+        { label: 'Shop', path: '/shop' },
         { label: 'Share', path: '/share' },
       ]
     },
