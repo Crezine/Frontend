@@ -33,9 +33,9 @@ const Footer: React.FC<FooterProps> = ({ hideMovementCard = false }) => {
                 </p>
                 <button 
                   onClick={() => navigate('/onboarding' as any)}
-                  className="bg-white text-secondary px-8 py-3.5 rounded-full text-base hover:scale-105 transition-all shadow-xl shadow-black/10 active:scale-95 font-rubik font-light"
+                  className="bg-white text-black px-8 py-3.5 rounded-full text-base hover:scale-105 transition-all shadow-xl shadow-black/10 active:scale-95 font-montserrat font-normal"
                 >
-                  Create Your Cashdoor
+                  Create my cashdoor
                 </button>
               </div>
             </div>

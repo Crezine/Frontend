@@ -1,6 +1,5 @@
 import React from 'react';
 import { AppView } from '../types';
-import Footer from '../components/Footer';
 import PublicHeader from '../components/PublicHeader';
 import { motion } from 'framer-motion';
 import { RiRocketLine, RiGlobalLine, RiShieldFlashLine, RiMagicLine } from 'react-icons/ri';
@@ -30,7 +29,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-base md:text-lg font-rubik font-normal text-black max-w-2xl mb-12 leading-relaxed"
+              className="text-base md:text-lg font-montserrat font-normal text-black max-w-2xl mb-12 leading-relaxed"
             >
               Crezine is the infrastructure for modern creativity. We provide the tools to get paid, manage clients, and grow your global creative business without the financial friction.
             </motion.p>
@@ -62,7 +61,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               <h2 className="text-3xl md:text-4xl font-rubik font-normal text-secondary mb-6 leading-tight">
                 What is a <span className="text-primary italic">Cashdoor?</span>
               </h2>
-              <p className="text-lg font-rubik font-normal text-black mb-8 leading-relaxed">
+              <p className="text-lg font-montserrat font-normal text-black mb-8 leading-relaxed">
                 A Cashdoor is more than a wallet—it's your financial identity. It's a single entry point where clients pay, funds are secured in escrow, and you access global opportunities like grants and residencies.
               </p>
               <ul className="space-y-4">
@@ -71,7 +70,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   { icon: <RiShieldFlashLine />, text: "Automated Escrow for every gig" },
                   { icon: <RiMagicLine />, text: "Access to Creative Grants & Funding" }
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-4 text-secondary/80 font-rubik font-normal">
+                  <li key={i} className="flex items-center gap-4 text-black font-montserrat font-normal">
                     <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary shadow-sm border border-secondary/5">
                       {item.icon}
                     </div>
@@ -95,7 +94,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 flex flex-col items-center">
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary mb-4 tracking-tighter leading-tight">Built for Every Creator.</h2>
-              <p className="text-black font-rubik font-normal max-w-2xl">From Designers to Musicians, we've got you covered.</p>
+              <p className="text-black font-montserrat font-normal max-w-2xl">From Designers to Musicians, we've got you covered.</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -109,7 +108,7 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                     <RiRocketLine size={32} />
                   </div>
                   <h3 className="text-2xl font-rubik font-normal text-secondary mb-4">{card.title}</h3>
-                  <p className="text-black font-rubik font-normal leading-relaxed mb-8">{card.desc}</p>
+                  <p className="text-black font-montserrat font-normal leading-relaxed mb-8">{card.desc}</p>
                   <button onClick={() => navigate('onboarding')} className="font-montserrat font-normal text-primary hover:underline">Get Started &rarr;</button>
                 </div>
               ))}
@@ -129,7 +128,8 @@ const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                Open My Account Now
              </button>
           </div>
-        </section>      </main>
+        </section>
+      </main>
     </div>
   );
 };

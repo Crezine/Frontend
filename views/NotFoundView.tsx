@@ -43,17 +43,17 @@ const NotFoundView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('landing')}
-              className="bg-secondary text-white font-montserrat font-normal uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+              className="bg-secondary text-white font-montserrat font-normal tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
-              Back to Home
+              Back to home
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('support')}
-              className="bg-white text-secondary border-2 border-secondary font-montserrat font-normal uppercase tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+              className="bg-white text-secondary border-2 border-secondary font-montserrat font-normal tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
             >
-              Contact Support
+              Contact support
             </motion.button>
           </motion.div>
         </div>

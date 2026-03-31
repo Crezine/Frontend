@@ -92,17 +92,17 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('onboarding' as AppView)}
-                className="bg-secondary text-white font-normal font-montserrat uppercase tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap"
+                className="bg-secondary text-white font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap"
               >
-                Create Your Cashdoor
+                Create your cashdoor
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('features' as AppView)}
-                className="bg-white text-secondary border-2 border-secondary font-normal font-montserrat uppercase tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform whitespace-nowrap"
+                className="bg-white text-black border-2 border-secondary font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform whitespace-nowrap"
               >
-                Explore Features
+                Explore features
               </motion.button>
             </motion.div>
           </div>
@@ -188,13 +188,13 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
         {/* About Us Section */}
         <section className="py-20 md:py-28 container mx-auto px-6 flex flex-col justify-center">
-          <div className="max-w-4xl mx-auto text-center mb-16 md:mb-20">
+          <div className="w-full text-center mb-16 md:mb-20">
             <motion.h2 
               initial={{ opacity: 0, y: -10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-tight mb-6 tracking-tighter"
+              className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-none mb-6 tracking-tighter whitespace-nowrap"
             >
               Everything You need to know about us
             </motion.h2>
@@ -204,17 +204,17 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-sm md:text-base text-black/70 font-rubik font-normal leading-relaxed max-w-2xl mx-auto"
+              className="text-base md:text-xl text-black font-montserrat font-normal leading-none max-w-full mx-auto mt-4"
             >
-              Powerful tools built exclusively for the Creative hustle, redefined and simplified to suite you
+              Powerful tools built exclusively for the Creative hustle, redefined and simplified to suite you.
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch">
             {[
               {
                 num: "01",
-                title: "Global Creative Cashdoor",
+                title: <>Global Creative <br/> Cashdoor</>,
                 desc: "Receive and Transact with Global clients through a fast, secure multicurrency digital creative wallet."
               },
               {
@@ -224,12 +224,12 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               },
               {
                 num: "03",
-                title: "Ticketing",
+                title: "Ticketing & Events",
                 desc: "Sell and track your ticket sales through your wallet Dashboard keeping you as the creative in the loop."
               },
               {
                 num: "04",
-                title: "Residencies & Funds",
+                title: <>Residencies <br/> & Funds</>,
                 desc: "Discover Residencies and Creative Funds curated specifically for powering and boosting your creative career."
               }
             ].map((item, idx) => (
@@ -240,11 +240,13 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ scale: 1.02, translateY: -3 }}
-                className="bg-white p-8 md:p-10 rounded-[32px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-secondary"
+                className="bg-white p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-secondary overflow-hidden"
               >
-                <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-6 tracking-widest">{item.num}</div>
-                <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight capitalize">{item.title}</h3>
-                <p className="text-base md:text-lg text-black font-montserrat font-normal leading-relaxed">
+                <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">{item.num}</div>
+                <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight min-h-[3.5rem] flex items-center justify-center capitalize">
+                  {item.title}
+                </h3>
+                <p className="text-sm md:text-base text-black font-montserrat font-light leading-relaxed">
                   {item.desc}
                 </p>
               </motion.div>
@@ -385,7 +387,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-2xl md:text-4xl lg:text-5xl font-montserrat font-medium leading-[1.2] tracking-tighter"
+                className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal leading-[1.1] tracking-tighter"
               >
                 <span className="text-secondary block">Would you like to share your</span>
                 <span className="block mt-1">

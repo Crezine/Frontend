@@ -3,7 +3,6 @@ import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
-import Footer from '../components/Footer';
 
 const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   const plans = [
@@ -54,7 +53,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
   ];
 
   return (
-    <div className="bg-[#F9F5F0] min-h-screen flex flex-col">
+    <div className="bg-accent min-h-screen flex flex-col">
       <PublicHeader navigate={navigate} />
       
       <main className="flex-grow pt-32 pb-20 px-4">
@@ -71,7 +70,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl font-rubik font-normal text-black"
+              className="text-xl font-montserrat font-normal text-black"
             >
               No hidden fees. No creative tax. Just tools to help you grow.
             </motion.p>
@@ -92,10 +91,10 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   </span>
                 )}
                 <h3 className="text-2xl font-rubik font-normal mb-2">{plan.name}</h3>
-                <p className={`text-sm font-rubik font-normal mb-8 ${plan.highlight ? 'text-white/70' : 'text-black'}`}>{plan.desc}</p>
+                <p className={`text-sm font-montserrat font-normal mb-8 ${plan.highlight ? 'text-white/70' : 'text-black'}`}>{plan.desc}</p>
                 <div className="flex items-baseline gap-1 mb-8">
                    <span className="text-5xl md:text-6xl font-montserrat font-medium leading-none">${plan.price}</span>
-                   <span className="text-lg font-rubik font-normal opacity-60">/mo</span>
+                   <span className="text-lg font-montserrat font-normal opacity-60">/mo</span>
                 </div>
                 
                 <button 
@@ -107,9 +106,9 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
                 <ul className="space-y-4">
                   {plan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-3 font-rubik font-normal text-sm">
+                    <li key={index} className="flex items-center gap-3 font-montserrat font-normal text-sm text-black">
                       <RiCheckboxCircleFill className={plan.highlight ? 'text-primary' : 'text-primary'} size={20} />
-                      {feature}
+                      <span className={plan.highlight ? 'text-white' : 'text-black'}>{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -120,7 +119,7 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           {/* Transaction Fees Note */}
           <div className="mt-20 text-center bg-white p-8 rounded-[30px] border border-secondary/30 max-w-2xl mx-auto">
             <h4 className="font-rubik font-normal text-secondary mb-2">Wait, what about transaction fees?</h4>
-            <p className="text-black font-rubik font-normal text-sm">
+            <p className="text-black font-montserrat font-normal text-sm">
               We keep it simple: <strong>2.9% + $0.30</strong> per successful transaction. This covers the global payment processing, currency conversion, and escrow security.
             </p>
           </div>

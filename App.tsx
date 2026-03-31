@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import { AppView, UserData } from './types';
 import LandingView from './views/LandingView';
 import OnboardingView from './views/OnboardingView';
@@ -84,6 +85,7 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      <Analytics />
       <Routes>
         {/* Landing and Auth */}
         <Route path="/" element={<LandingView navigate={handleNavigate} />} />

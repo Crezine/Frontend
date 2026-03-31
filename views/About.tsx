@@ -11,7 +11,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
   const cards = [
     {
       number: "01",
-      title: "Global Creative Cashdoor",
+      title: <>Global Creative <br/> Cashdoor</>,
       description: "Receive and Transact with Global clients through a fast, secure multicurrency digital creative wallet."
     },
     {
@@ -21,12 +21,12 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
     },
     {
       number: "03",
-      title: "Ticketing",
+      title: "Ticketing & Events",
       description: "Sell and track your ticket sales through your wallet Dashboard keeping you as the creative in the loop."
     },
     {
       number: "04",
-      title: "Residencies & Fund Access",
+      title: <>Residencies <br/> & Funds</>,
       description: "Discover Residencies and Creative Funds curated specifically for powering and boosting your creative career."
     }
   ];
@@ -180,7 +180,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
 
   return (
     <div className="bg-accent min-h-screen overflow-x-hidden flex flex-col">
-      <PublicHeader />
+      <PublicHeader navigate={navigate} />
       
       <main className="flex-1 flex flex-col px-6 pt-32 pb-20">
         {/* Hero Section */}
@@ -190,7 +190,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal text-secondary leading-tight mb-6 tracking-tighter">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-none mb-6 tracking-tighter whitespace-nowrap">
               Everything You need to know about us
             </h1>
           </motion.div>
@@ -199,9 +199,9 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-base md:text-lg text-black font-montserrat font-normal leading-relaxed max-w-2xl mx-auto mt-4"
+            className="text-base md:text-xl text-black font-montserrat font-normal leading-none max-w-full mx-auto mt-4"
           >
-            Powerful tools built exclusively for the Creative hustle, redefined and simplified to suit you.
+            Powerful tools built exclusively for the Creative hustle, redefined and simplified to suite you.
           </motion.p>
         </section>
 
@@ -214,22 +214,22 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch"
           >
             {cards.map((card, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
-                whileHover={{ scale: 1.02, translateY: -5 }}
-                className="bg-white p-8 rounded-[32px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-lg transition-all border-2 border-secondary"
+                whileHover={{ scale: 1.02, translateY: -3 }}
+                className="bg-accent p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border border-secondary/30 overflow-hidden"
               >
-                <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-6 tracking-widest">
+                <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">
                   {card.number}
                 </div>
-                <h3 className="text-xl font-montserrat font-bold text-primary mb-3 tracking-tight leading-tight capitalize">
+                <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight min-h-[3.5rem] flex items-center justify-center capitalize">
                   {card.title}
                 </h3>
-                <p className="text-base text-black font-montserrat font-normal leading-relaxed">
+                <p className="text-sm md:text-base text-black font-montserrat font-light leading-relaxed">
                   {card.description}
                 </p>
               </motion.div>
@@ -246,7 +246,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             transition={{ duration: 0.6 }}
             className="bg-secondary text-accent p-10 rounded-[40px] shadow-xl"
           >
-            <h2 className="text-3xl font-montserrat font-bold mb-6">Our Mission</h2>
+            <h2 className="text-3xl font-rubik font-normal text-white mb-6">Our Mission</h2>
             <p className="text-lg font-montserrat font-normal leading-relaxed opacity-90">
               To bridge the gap between creative talent and global opportunities by providing a seamless, secure, and empowering financial infrastructure tailored specifically for creators.
             </p>
@@ -258,7 +258,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl font-montserrat font-bold text-black mb-6">Our Vision</h2>
+            <h2 className="text-3xl font-rubik font-normal text-secondary mb-6">Our Vision</h2>
             <p className="text-lg font-montserrat font-normal text-black/80 leading-relaxed">
               We envision a world where every creative professional, regardless of their location, has access to the tools they need to manage their finances, protect their work, and scale their impact globally.
             </p>
@@ -267,7 +267,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
 
         {/* Values Section */}
         <section className="w-full max-w-6xl mx-auto mb-24">
-          <h2 className="text-3xl font-montserrat font-bold text-black text-center mb-12">Our Values</h2>
+          <h2 className="text-3xl font-rubik font-normal text-secondary text-center mb-12">Our Values</h2>
           <div className="grid md:grid-cols-3 gap-8">
             {values.map((value, index) => (
               <motion.div
@@ -281,7 +281,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
                 <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
                   <div className="w-8 h-8 bg-primary rounded-full" />
                 </div>
-                <h4 className="text-xl font-montserrat font-bold text-black mb-3">{value.title}</h4>
+                <h4 className="text-xl font-rubik font-normal text-secondary mb-3">{value.title}</h4>
                 <p className="text-black/70 font-montserrat font-normal">{value.description}</p>
               </motion.div>
             ))}
