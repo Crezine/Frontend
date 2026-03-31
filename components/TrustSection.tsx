@@ -44,7 +44,7 @@ const AnimatedStat: React.FC<StatProps> = ({ value, suffix, label, duration = 2 
         <span>{count.toLocaleString()}</span>
         <span className="ml-0.5">{suffix}</span>
       </div>
-      <p className="text-black tracking-tight text-base md:text-lg font-normal font-rubik">
+      <p className="text-black tracking-tight text-base md:text-lg font-normal font-montserrat">
         {label}
       </p>
     </div>
