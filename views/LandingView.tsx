@@ -39,7 +39,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
   };
 
   return (
-    <div className="bg-accent font-rubik relative">
+    <div className="bg-accent font-rubik relative overflow-x-hidden">
       <PublicHeader />
       <main className="relative z-10">
         {/* Hero Section */}
@@ -194,7 +194,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-none mb-6 tracking-tighter whitespace-nowrap"
+              className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-none mb-6 tracking-tighter"
             >
               Everything You need to know about us
             </motion.h2>

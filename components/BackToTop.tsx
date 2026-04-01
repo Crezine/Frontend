@@ -32,21 +32,21 @@ const BackToTop: React.FC = () => {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           onClick={scrollToTop}
-          className="fixed bottom-24 right-8 z-50 bg-secondary text-white w-12 h-12 rounded-full shadow-2xl flex items-center justify-center hover:bg-secondary/90 transition-all active:scale-90"
+          className="fixed bottom-24 right-4 md:right-8 z-50 bg-secondary text-white w-10 h-10 md:w-12 md:h-12 rounded-full shadow-xl flex items-center justify-center hover:bg-secondary/90 transition-all active:scale-95 group"
           aria-label="Back to top"
         >
           <svg 
-            width="24" 
-            height="24" 
+            width="20" 
+            height="20" 
             viewBox="0 0 24 24" 
             fill="none" 
             stroke="currentColor" 
             strokeWidth="3" 
             strokeLinecap="round" 
             strokeLinejoin="round"
-            className="transform -rotate-180" // Rotated V to point up
+            className="md:w-6 md:h-6 transition-transform group-hover:-translate-y-1"
           >
-            <path d="M6 9l6 6 6-6" />
+            <path d="M18 15l-6-6-6 6" />
           </svg>
         </motion.button>
       )}
