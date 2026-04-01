@@ -96,10 +96,6 @@ const PublicHeader: React.FC = () => {
     navigate(path);
   };
 
-  const toggleDropdown = (label: string) => {
-    setActiveDropdown(activeDropdown === label ? null : label);
-  };
-
   const toggleMobileItem = (label: string) => {
     setExpandedMobileItem(expandedMobileItem === label ? null : label);
   };
@@ -119,9 +115,13 @@ const PublicHeader: React.FC = () => {
             
             <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
               {navLinks.map((link) => (
-                <div key={link.label} className="relative">
+                <div 
+                  key={link.label} 
+                  className="relative group py-2"
+                  onMouseEnter={() => setActiveDropdown(link.label)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                >
                   <button
-                    onClick={() => toggleDropdown(link.label)}
                     className="flex items-center space-x-1 text-sm lg:text-base font-normal text-secondary/80 hover:text-primary transition-colors duration-300 font-rubik py-2"
                   >
                     <span>{link.label}</span>
@@ -140,7 +140,7 @@ const PublicHeader: React.FC = () => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl border border-secondary/5 overflow-hidden py-2"
+                        className="absolute top-full left-0 mt-0 w-48 bg-white rounded-2xl shadow-xl border border-secondary/5 overflow-hidden py-2"
                       >
                         {link.subItems?.map((sub) => (
                           <button

@@ -133,7 +133,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 />
               </div>
 
-              {/* Floating UI Elements (Montserrat Regular) */}
+              {/* Floating UI Elements (Rubik Bold) */}
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ 
@@ -146,14 +146,14 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   x: { delay: 0.8, duration: 0.6 },
                   y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
                 }}
-                className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/90 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100"
+                className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100"
               >
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                  <span className="text-xs md:text-sm font-bold font-montserrat">$</span>
+                  <span className="text-xs md:text-sm font-bold font-rubik">$</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-xs text-black/50 font-montserrat font-normal uppercase tracking-tighter">Received</span>
-                  <span className="text-xs md:text-sm text-black font-normal font-montserrat">Global Payment</span>
+                  <span className="text-[10px] md:text-xs text-black/70 font-rubik font-bold uppercase tracking-tighter leading-none mb-1">Received</span>
+                  <span className="text-xs md:text-sm text-black font-bold font-rubik leading-none">Global Payment</span>
                 </div>
               </motion.div>
               
@@ -169,14 +169,14 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   x: { delay: 1, duration: 0.6 },
                   y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
                 }}
-                className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/90 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100"
+                className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100"
               >
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center text-secondary">
-                   <span className="text-xs md:text-sm font-bold font-montserrat">✓</span>
+                   <span className="text-xs md:text-sm font-bold font-rubik">✓</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-xs text-black/50 font-montserrat font-normal uppercase tracking-tighter">Verified</span>
-                  <span className="text-xs md:text-sm text-black font-normal font-montserrat">Escrow Protected</span>
+                  <span className="text-[10px] md:text-xs text-black/70 font-rubik font-bold uppercase tracking-tighter leading-none mb-1">Verified</span>
+                  <span className="text-xs md:text-sm text-black font-bold font-rubik leading-none">Escrow Protected</span>
                 </div>
               </motion.div>
             </div>
@@ -240,7 +240,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{ scale: 1.02, translateY: -3 }}
-                className="bg-white p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border-2 border-secondary overflow-hidden"
+                className="bg-accent p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border border-secondary/30 overflow-hidden"
               >
                 <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">{item.num}</div>
                 <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight min-h-[3.5rem] flex items-center justify-center capitalize">
