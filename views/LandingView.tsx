@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import TrustSection from '../components/TrustSection';
@@ -6,10 +6,31 @@ import AnimatedButton from '../components/AnimatedButton';
 import { motion } from 'framer-motion';
 import { PiWhatsappLogoThin } from "react-icons/pi";
 
-const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+interface LandingViewProps {
+  navigate: (view: AppView) => void;
+  hasInitialAnimated?: boolean;
+  onAnimationComplete?: () => void;
+  resetAnimation?: () => void;
+}
+
+const LandingView: React.FC<LandingViewProps> = ({ 
+  navigate, 
+  hasInitialAnimated = false, 
+  onAnimationComplete,
+  resetAnimation 
+}) => {
+
+  useEffect(() => {
+    if (!hasInitialAnimated && onAnimationComplete) {
+      const timer = setTimeout(() => {
+        onAnimationComplete();
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [hasInitialAnimated, onAnimationComplete]);
 
   const sentence = {
-    hidden: { opacity: 1 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
@@ -41,13 +62,13 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
   return (
     <div className="bg-accent font-rubik relative overflow-x-hidden">
-      <PublicHeader />
+      <PublicHeader onLogoClick={resetAnimation} />
       <main className="relative z-10">
         {/* Hero Section */}
         <section className="container mx-auto px-6 pt-28 pb-12 md:pt-20 md:pb-16 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden">
           <div className="w-full lg:w-1/2 xl:w-3/5 text-left flex flex-col items-start relative z-10 lg:pt-12">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="bg-white/40 backdrop-blur-sm rounded-full py-1.5 px-5 inline-block mb-4 md:mb-6 border border-secondary/10"
@@ -58,7 +79,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             </motion.div>
             <motion.h1 
               variants={sentence}
-              initial="hidden"
+              initial={hasInitialAnimated ? "visible" : "hidden"}
               animate="visible"
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight"
             >
@@ -74,7 +95,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               </span>
             </motion.h1>
             <motion.p 
-              initial={{ opacity: 0, y: 20 }}
+              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl leading-relaxed"
@@ -84,7 +105,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               all Behind One Cashdoor.
             </motion.p>
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.6 }}
               className="flex flex-col sm:flex-row items-start justify-start gap-3 sm:gap-4 w-full sm:w-auto"
@@ -103,22 +124,16 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
           {/* Right Side Image - Creative Mobile Display */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+            initial={hasInitialAnimated ? false : { opacity: 0, scale: 0.9, y: 30 }}
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
             className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-32 lg:mt-0"
           >
             <div className="relative">
-              {/* Static glow effects for visual depth */}
-              <div 
-                className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40"
-              />
-              <div 
-                className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30"
-              />
+              <div className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40" />
+              <div className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30" />
               
-              {/* The Mobile Image - One-time entrance only - INCREASED SIZE */}
               <div className="relative z-10">
                 <img 
                   src="/mobile.png" 
@@ -127,9 +142,9 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 />
               </div>
 
-              {/* Floating UI Elements (Montserrat) */}
+              {/* Floating UI Elements */}
               <motion.div 
-                initial={{ opacity: 0, x: 20 }}
+                initial={hasInitialAnimated ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: 20 }}
                 whileInView={{ 
                   opacity: 1, 
                   x: 0,
@@ -152,7 +167,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               </motion.div>
               
               <motion.div 
-                initial={{ opacity: 0, x: -20 }}
+                initial={hasInitialAnimated ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: -20 }}
                 whileInView={{ 
                   opacity: 1, 
                   x: 0,
@@ -178,7 +193,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* Trust Section */}
-        <TrustSection />
+        <TrustSection hasInitialAnimated={hasInitialAnimated} />
 
         {/* About Us Section */}
         <section className="py-20 md:py-28 container mx-auto px-6 flex flex-col justify-center">
@@ -253,8 +268,6 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
           <div className="container mx-auto px-6 max-w-7xl relative z-10">
             
             <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-0">
-              
-              {/* Left Side: Title & Image Container */}
               <motion.div 
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -276,18 +289,12 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
                   className="relative w-full max-w-sm md:max-w-md lg:max-w-lg mt-auto"
                 >
-                  <img 
-                    src="/get-started.png" 
-                    alt="Get Started with Crezine" 
-                    className="relative z-10 w-full h-auto object-contain"
-                  />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[60px] -z-10"></div>
+                  <img src="/get-started.png" alt="Get Started with Crezine" className="relative z-10 w-full h-auto object-contain" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[60px] -z-10" />
                 </motion.div>
               </motion.div>
 
-              {/* Right Side: Steps - Following the bulge */}
               <div className="w-full lg:w-1/2 lg:pl-4 flex flex-col justify-between relative z-10 py-4">
-                {/* Connecting Line - Optimized deep curve to touch all circles */}
                 <div className="absolute left-[33px] md:left-[39px] lg:-left-24 top-0 bottom-0 w-px lg:w-80 hidden lg:block z-0 pointer-events-none">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <motion.path
@@ -304,31 +311,14 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   </svg>
                 </div>
 
-                {/* Mobile/Tablet Straight Line - Extended */}
-                <div className="absolute left-[30px] md:left-[39px] top-0 bottom-0 w-px border-l border-dashed border-secondary/30 lg:hidden"></div>
+                <div className="absolute left-[30px] md:left-[39px] top-0 bottom-0 w-px border-l border-dashed border-secondary/30 lg:hidden" />
 
                 <div className="flex flex-col h-full justify-between space-y-12 lg:space-y-0">
                   {[
-                    {
-                      num: "01",
-                      text: "Sign up with email, Google or Phone number",
-                      offset: "lg:ml-4"
-                    },
-                    {
-                      num: "02",
-                      text: "Open your Cashdoor to set up your ESCROW and manage and transact Globally fast, easy and simple",
-                      offset: "lg:ml-36"
-                    },
-                    {
-                      num: "03",
-                      text: "Share ESCROW integrated payment links with Global Clients and get paid safely across borders",
-                      offset: "lg:ml-36"
-                    },
-                    {
-                      num: "04",
-                      text: "Ticket your events and access residencies and creative funding and grants through one super wallet",
-                      offset: "lg:ml-4"
-                    }
+                    { num: "01", text: "Sign up with email, Google or Phone number", offset: "lg:ml-4" },
+                    { num: "02", text: "Open your Cashdoor to set up your ESCROW and manage and transact Globally fast, easy and simple", offset: "lg:ml-36" },
+                    { num: "03", text: "Share ESCROW integrated payment links with Global Clients and get paid safely across borders", offset: "lg:ml-36" },
+                    { num: "04", text: "Ticket your events and access residencies and creative funding and grants through one super wallet", offset: "lg:ml-4" }
                   ].map((step, idx) => (
                     <motion.div 
                       key={idx}
@@ -338,11 +328,9 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                       transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
                       className={`flex flex-row items-center gap-4 md:gap-6 group ${step.offset}`}
                     >
-                      {/* Number Circle */}
                       <div className="flex-shrink-0 w-14 h-14 md:w-18 md:h-18 bg-white border-2 border-secondary rounded-full flex items-center justify-center text-secondary font-montserrat font-normal text-xl md:text-3xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-md relative z-20">
                         {step.num}
                       </div>
-                      
                       <div className="flex-grow max-w-sm lg:max-w-xs">
                         <p className="text-xs md:text-sm text-black font-montserrat font-normal leading-snug lg:leading-tight">
                           {step.text}
@@ -352,17 +340,14 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   ))}
                 </div>
               </div>
-
             </div>
           </div>
         </section>
 
-        {/* Community / Story Sharing Section */}
+        {/* Community Section */}
         <section className="py-20 md:py-32 bg-accent overflow-hidden relative">
           <div className="container mx-auto px-6 max-w-7xl relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-x-20 gap-y-12 items-center">
-              
-              {/* Header Content - Order 1 */}
               <div className="w-full text-center lg:text-left flex flex-col items-center lg:items-start order-1">
                 <motion.h2 
                   initial={{ opacity: 0, y: 20 }}
@@ -378,7 +363,6 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 </motion.h2>
               </div>
 
-              {/* Clean Image - Order 2 on Mobile, Right side on Desktop */}
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -386,14 +370,9 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="w-full flex justify-center lg:justify-end order-2 lg:row-span-2"
               >
-                <img 
-                  src="/art.png" 
-                  alt="Creative Art" 
-                  className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[450px] h-auto object-contain"
-                />
+                <img src="/art.png" alt="Creative Art" className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[450px] h-auto object-contain" />
               </motion.div>
 
-              {/* Contact Info - Order 3 on Mobile, Under Header on Desktop */}
               <div className="w-full flex flex-col items-center lg:items-start space-y-10 order-3">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -429,7 +408,6 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                   </div>
                 </motion.a>
               </div>
-
             </div>
           </div>
         </section>

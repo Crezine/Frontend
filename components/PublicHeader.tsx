@@ -12,7 +12,12 @@ interface NavItem {
   subItems?: { label: string; path: string }[];
 }
 
-const PublicHeader: React.FC = () => {
+interface PublicHeaderProps {
+  onLogoClick?: () => void;
+  navigate?: (view: AppView) => void;
+}
+
+const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -93,6 +98,7 @@ const PublicHeader: React.FC = () => {
   };
 
   const handleLogoClick = (path: string) => {
+    if (onLogoClick) onLogoClick();
     navigate(path);
   };
 
@@ -110,7 +116,10 @@ const PublicHeader: React.FC = () => {
         <div className="max-w-7xl mx-auto pointer-events-auto" ref={dropdownRef}>
           <div className="bg-white rounded-full shadow-lg border border-secondary/10 flex items-center justify-between h-12 lg:h-16 px-6 lg:px-12 relative">
             <div className="flex-shrink-0 cursor-pointer scale-90 lg:scale-110 origin-left">
-              <BrandLogo onClick={() => handleLinkClick('/')} />
+              <BrandLogo onClick={() => {
+                if (onLogoClick) onLogoClick();
+                handleLinkClick('/');
+              }} />
             </div>
             
             <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
@@ -192,7 +201,7 @@ const PublicHeader: React.FC = () => {
             className="md:hidden fixed inset-0 bg-accent z-50 overflow-y-auto"
           >
             <div className="flex flex-col p-6 pt-8">
-              <div className="flex items-center justify-between mb-8 w-full">
+              <div className="items-center justify-between mb-8 w-full flex">
                 <div className="cursor-pointer scale-90 origin-left">
                   <BrandLogo onClick={() => handleLogoClick('/')} />
                 </div>

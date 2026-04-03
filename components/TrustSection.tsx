@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { SiX, SiInstagram } from 'react-icons/si';
 
 interface StatProps {
@@ -7,15 +7,23 @@ interface StatProps {
   suffix: string;
   label: string;
   duration?: number;
+  hasInitialAnimated?: boolean;
 }
 
-const AnimatedStat: React.FC<StatProps> = ({ value, suffix, label, duration = 2 }) => {
-  const [count, setCount] = useState(0);
+const AnimatedStat: React.FC<StatProps> = ({ value, suffix, label, duration = 2, hasInitialAnimated = false }) => {
+  const [count, setCount] = useState(hasInitialAnimated ? value : 0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
+  // Sync count if hasInitialAnimated becomes true after mount
   useEffect(() => {
-    if (isInView) {
+    if (hasInitialAnimated) {
+      setCount(value);
+    }
+  }, [hasInitialAnimated, value]);
+
+  useEffect(() => {
+    if (isInView && !hasInitialAnimated) {
       let start = 0;
       const end = value;
       const totalFrames = duration * 60;
@@ -36,7 +44,7 @@ const AnimatedStat: React.FC<StatProps> = ({ value, suffix, label, duration = 2 
 
       return () => clearInterval(timer);
     }
-  }, [isInView, value, duration]);
+  }, [isInView, value, duration, hasInitialAnimated]);
 
   return (
     <div ref={ref} className="flex flex-col items-center text-center p-4 font-rubik">
@@ -103,7 +111,7 @@ const testimonials: Testimonial[] = [
   }
 ];
 
-const TrustSection: React.FC = () => {
+const TrustSection: React.FC<{ hasInitialAnimated?: boolean }> = ({ hasInitialAnimated = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const next = () => {
@@ -121,9 +129,9 @@ const TrustSection: React.FC = () => {
       <div className="container mx-auto px-6 mb-12 md:mb-16">
         <h2 className="text-xl md:text-2xl font-rubik font-normal text-black text-center mb-10 tracking-tight">Trusted by</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-5xl mx-auto">
-          <AnimatedStat value={20} suffix="K" label="Creatives onboard" />
-          <AnimatedStat value={98} suffix="%" label="Creatives satisfied" />
-          <AnimatedStat value={100} suffix="K" label="Protected transactions" />
+          <AnimatedStat value={20} suffix="K" label="Creatives onboard" hasInitialAnimated={hasInitialAnimated} />
+          <AnimatedStat value={98} suffix="%" label="Creatives satisfied" hasInitialAnimated={hasInitialAnimated} />
+          <AnimatedStat value={100} suffix="K" label="Protected transactions" hasInitialAnimated={hasInitialAnimated} />
         </div>
       </div>
 

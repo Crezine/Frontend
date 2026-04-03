@@ -14,6 +14,7 @@ import ContactView from './views/ContactView';
 import WhatsAppView from './views/WhatsAppView';
 import About from './views/About';
 import ShopView from './views/ShopView';
+import CookieSettingsView from './views/CookieSettingsView';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
 import TicketingView from './views/TicketingView';
@@ -24,9 +25,11 @@ import UnauthorizedView from './views/UnauthorizedView';
 
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
+import CookieConsent from './components/CookieConsent';
 import './styles/overrides.css';
 
 const App: React.FC = () => {
+  const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(() => {
     try {
       const saved = localStorage.getItem('userData');
@@ -80,6 +83,10 @@ const App: React.FC = () => {
     navigate('/dashboard');
   };
 
+  const resetAnimation = () => {
+    setHasInitialAnimated(false);
+  };
+
   // Do not show the global footer on dashboard routes as it has its own refurbished footer
   const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard');
 
@@ -88,7 +95,17 @@ const App: React.FC = () => {
       <Analytics />
       <Routes>
         {/* Landing and Auth */}
-        <Route path="/" element={<LandingView navigate={handleNavigate} />} />
+        <Route 
+          path="/" 
+          element={
+            <LandingView 
+              navigate={handleNavigate} 
+              hasInitialAnimated={hasInitialAnimated}
+              onAnimationComplete={() => setHasInitialAnimated(true)}
+              resetAnimation={resetAnimation}
+            />
+          } 
+        />
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
         
@@ -127,11 +144,13 @@ const App: React.FC = () => {
         <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
         <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
+        <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
         
         {/* Catch-all route for 404 Page Not Found */}
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
       {showGlobalFooter && <BackToTop />}
+      <CookieConsent />
       {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}
     </div>
   );
