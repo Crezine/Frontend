@@ -17,30 +17,26 @@ const Footer: React.FC<FooterProps> = ({ hideMovementCard = false }) => {
     <footer className="bg-accent pt-10 pb-8 text-black overflow-hidden border-t border-secondary/5 font-rubik font-light transition-colors duration-300">
       <div className="container mx-auto px-6 sm:px-8 lg:px-12 max-w-7xl font-rubik font-light">
         
-        {/* Join The Movement Card - Maroon, Curved, Compact */}
+        {/* Join The Movement Card - Responsive Refactor */}
         {!hideMovementCard && (
-          <div className="bg-secondary text-white rounded-[40px] p-8 md:p-12 mb-16 text-center max-w-5xl mx-auto shadow-2xl relative overflow-hidden font-rubik font-light">
+          <div className="bg-transparent md:bg-secondary text-secondary md:text-white rounded-[40px] p-8 md:p-12 mb-16 text-center max-w-5xl mx-auto md:shadow-2xl relative overflow-hidden border border-secondary/10 md:border-none">
             <div className="relative z-10 flex flex-col items-center">
-              <h2 className="text-2xl md:text-4xl mb-4 tracking-tighter font-rubik font-normal">Join The Movement!</h2>
-              <p className="text-sm md:text-base max-w-2xl mx-auto mb-8 leading-relaxed opacity-90 font-rubik font-light text-white/90">
-                Crezine is the infrastructure for modern creativity.
-                We provide tools to get paid, Manage creative gigs Safely and grow your
-                Creative Business Globally without any financial friction!
-              </p>
-              <div className="flex flex-col items-center gap-4">
-                <p className="text-base md:text-lg opacity-80 font-rubik font-light">
-                  One Link to Rule Your Creative Ecosystem
-                </p>
-                <button 
-                  onClick={() => navigate('/onboarding' as any)}
-                  className="bg-white text-black px-8 py-3.5 rounded-full text-base hover:scale-105 transition-all shadow-xl shadow-black/10 active:scale-95 font-montserrat font-normal"
-                >
-                  Create my cashdoor
-                </button>
+              <h2 className="text-3xl md:text-5xl mb-6 tracking-tighter font-rubik font-normal lg:tracking-[-0.05em]">Join The Movement!</h2>
+              <div className="text-sm md:text-lg max-w-3xl mx-auto mb-8 leading-tight text-black md:text-white/90 font-rubik font-light flex flex-col items-center space-y-0.5">
+                <p>CreZine is the infrastructure for modern creativity.</p>
+                <p>We provide tools to get paid, Manage creative gigs Safely and grow your</p>
+                <p>Creative Business Globally without any financial friction!</p>
+                <p className="font-normal opacity-100 md:opacity-80 pt-1">One Link to Rule Your Creative Ecosystem</p>
               </div>
+              <button 
+                onClick={() => navigate('/onboarding' as any)}
+                className="bg-primary md:bg-white text-white md:text-black px-8 py-3 rounded-full text-base transition-all shadow-lg hover:scale-[1.03] active:scale-95 font-montserrat font-normal w-full sm:w-auto"
+              >
+                Create my cashdoor
+              </button>
             </div>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full -ml-12 -mb-12 blur-2xl"></div>
+            <div className="hidden md:block absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+            <div className="hidden md:block absolute bottom-0 left-0 w-24 h-24 bg-primary/10 rounded-full -ml-12 -mb-12 blur-2xl"></div>
           </div>
         )}
 

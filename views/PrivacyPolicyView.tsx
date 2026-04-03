@@ -158,7 +158,7 @@ const PrivacyPolicyView: React.FC<PrivacyPolicyProps> = ({ navigate }) => {
                 {sections.map((section) => (
                   <div key={section.id} id={section.id} className="scroll-mt-40">
                     <div className="flex items-start gap-6">
-                      <span className={`font-rubik font-medium text-xl pt-1 transition-all duration-700 ${activeSection === section.id ? 'text-primary scale-110' : 'text-primary/20 scale-95'}`}>
+                      <span className={`font-montserrat font-normal text-xl pt-1 transition-all duration-700 ${activeSection === section.id ? 'text-primary scale-110' : 'text-primary/20 scale-95'}`}>
                         {section.id}
                       </span>
                       <div className="space-y-6">
@@ -197,7 +197,7 @@ const PrivacyPolicyView: React.FC<PrivacyPolicyProps> = ({ navigate }) => {
                             : 'text-black/40 hover:text-secondary'
                         }`}
                       >
-                        <span className={`font-rubik text-[10px] pt-0.5 transition-all duration-500 ${activeSection === section.id ? 'opacity-100 font-bold' : 'opacity-30'}`}>
+                        <span className={`font-montserrat text-[10px] pt-0.5 transition-all duration-500 ${activeSection === section.id ? 'opacity-100 font-normal' : 'opacity-30'}`}>
                           {section.id}
                         </span>
                         <span className="relative font-rubik font-normal">

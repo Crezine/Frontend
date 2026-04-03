@@ -2,6 +2,7 @@ import React from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import TrustSection from '../components/TrustSection';
+import AnimatedButton from '../components/AnimatedButton';
 import { motion } from 'framer-motion';
 import { PiWhatsappLogoThin } from "react-icons/pi";
 
@@ -92,18 +93,11 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('onboarding' as AppView)}
-                className="bg-secondary text-white font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap"
+                className="bg-secondary text-white font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap h-[48px] min-w-[160px]"
               >
                 Create your cashdoor
               </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate('features' as AppView)}
-                className="bg-white text-black border-2 border-secondary font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform whitespace-nowrap"
-              >
-                Explore features
-              </motion.button>
+              <AnimatedButton onClick={() => navigate('features' as AppView)} />
             </motion.div>
           </div>
 
@@ -113,7 +107,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-16 lg:mt-0"
+            className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-32 lg:mt-0"
           >
             <div className="relative">
               {/* Static glow effects for visual depth */}
@@ -133,7 +127,7 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 />
               </div>
 
-              {/* Floating UI Elements (Rubik Bold) */}
+              {/* Floating UI Elements (Montserrat) */}
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 whileInView={{ 
@@ -149,11 +143,11 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100"
               >
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
-                  <span className="text-xs md:text-sm font-bold font-rubik">$</span>
+                  <span className="text-xs md:text-sm font-normal font-montserrat">$</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-xs text-black/70 font-rubik font-bold uppercase tracking-tighter leading-none mb-1">Received</span>
-                  <span className="text-xs md:text-sm text-black font-bold font-rubik leading-none">Global Payment</span>
+                  <span className="text-[10px] md:text-xs text-black/70 font-montserrat font-normal uppercase tracking-tighter leading-none mb-1">Received</span>
+                  <span className="text-xs md:text-sm text-black font-normal font-montserrat leading-none">Global Payment</span>
                 </div>
               </motion.div>
               
@@ -172,11 +166,11 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100"
               >
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center text-secondary">
-                   <span className="text-xs md:text-sm font-bold font-rubik">✓</span>
+                   <span className="text-xs md:text-sm font-normal font-montserrat">✓</span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-xs text-black/70 font-rubik font-bold uppercase tracking-tighter leading-none mb-1">Verified</span>
-                  <span className="text-xs md:text-sm text-black font-bold font-rubik leading-none">Escrow Protected</span>
+                  <span className="text-[10px] md:text-xs text-black/70 font-montserrat font-normal uppercase tracking-tighter leading-none mb-1">Verified</span>
+                  <span className="text-xs md:text-sm text-black font-normal font-montserrat leading-none">Escrow Protected</span>
                 </div>
               </motion.div>
             </div>
@@ -269,9 +263,9 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                 className="w-full lg:w-1/2 flex flex-col items-center lg:items-start relative z-10"
               >
                 <div className="mb-10 text-center lg:text-left">
-                  <h2 className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal tracking-tighter leading-[1.1] mb-4">
-                    <span className="text-secondary">Get Started In</span><br />
-                    <span className="text-primary">Seconds!</span>
+                  <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal tracking-tighter leading-[1.1] mb-4">
+                    <span className="text-secondary">Get Started</span><br />
+                    <span className="text-secondary">In</span> <span className="text-primary">Seconds!</span>
                   </h2>
                 </div>
 
@@ -293,47 +287,47 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
 
               {/* Right Side: Steps - Following the bulge */}
               <div className="w-full lg:w-1/2 lg:pl-4 flex flex-col justify-between relative z-10 py-4">
-                {/* Connecting Line - Curved SVG to follow the bulge */}
-                <div className="absolute left-[33px] md:left-[39px] lg:-left-20 top-10 bottom-10 w-48 hidden lg:block z-0 pointer-events-none">
+                {/* Connecting Line - Optimized deep curve to touch all circles */}
+                <div className="absolute left-[33px] md:left-[39px] lg:-left-24 top-0 bottom-0 w-px lg:w-80 hidden lg:block z-0 pointer-events-none">
                   <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <motion.path
                       initial={{ pathLength: 0, opacity: 0 }}
                       whileInView={{ pathLength: 1, opacity: 0.4 }}
                       viewport={{ once: true }}
                       transition={{ duration: 1.5, ease: "easeInOut" }}
-                      d="M 20 5 C 80 15 80 85 20 95"
+                      d="M 10 0 C 110 0 110 100 10 100"
                       stroke="#AB3625"
-                      strokeWidth="1.5"
+                      strokeWidth="0.5"
                       strokeDasharray="4 4"
                       fill="none"
                     />
                   </svg>
                 </div>
 
-                {/* Mobile/Tablet Straight Line */}
-                <div className="absolute left-[30px] md:left-[39px] top-10 bottom-10 w-px border-l border-dashed border-secondary/30 lg:hidden"></div>
+                {/* Mobile/Tablet Straight Line - Extended */}
+                <div className="absolute left-[30px] md:left-[39px] top-0 bottom-0 w-px border-l border-dashed border-secondary/30 lg:hidden"></div>
 
                 <div className="flex flex-col h-full justify-between space-y-12 lg:space-y-0">
                   {[
                     {
                       num: "01",
                       text: "Sign up with email, Google or Phone number",
-                      offset: "lg:-ml-12"
+                      offset: "lg:ml-4"
                     },
                     {
                       num: "02",
                       text: "Open your Cashdoor to set up your ESCROW and manage and transact Globally fast, easy and simple",
-                      offset: "lg:ml-8"
+                      offset: "lg:ml-36"
                     },
                     {
                       num: "03",
                       text: "Share ESCROW integrated payment links with Global Clients and get paid safely across borders",
-                      offset: "lg:ml-8"
+                      offset: "lg:ml-36"
                     },
                     {
                       num: "04",
                       text: "Ticket your events and access residencies and creative funding and grants through one super wallet",
-                      offset: "lg:-ml-12"
+                      offset: "lg:ml-4"
                     }
                   ].map((step, idx) => (
                     <motion.div 
@@ -342,14 +336,15 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
-                      className={`flex items-center gap-4 md:gap-6 group ${step.offset}`}
+                      className={`flex flex-row items-center gap-4 md:gap-6 group ${step.offset}`}
                     >
-                      {/* White fill with maroon border circle - INCREASED SIZE */}
+                      {/* Number Circle */}
                       <div className="flex-shrink-0 w-14 h-14 md:w-18 md:h-18 bg-white border-2 border-secondary rounded-full flex items-center justify-center text-secondary font-montserrat font-normal text-xl md:text-3xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-md relative z-20">
                         {step.num}
                       </div>
-                      <div className="flex-grow max-w-sm">
-                        <p className="text-xs md:text-sm lg:text-base text-black font-montserrat font-normal leading-snug">
+                      
+                      <div className="flex-grow max-w-sm lg:max-w-xs">
+                        <p className="text-xs md:text-sm text-black font-montserrat font-normal leading-snug lg:leading-tight">
                           {step.text}
                         </p>
                       </div>
@@ -363,95 +358,78 @@ const LandingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
         </section>
 
         {/* Community / Story Sharing Section */}
-        <section className="py-12 lg:py-0 bg-accent overflow-hidden relative lg:h-[600px] flex items-stretch">
-          {/* Desktop Only: Image on Right */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="hidden lg:block absolute top-0 right-0 w-[40%] h-full z-0"
-          >
-            <img 
-              src="/art.png" 
-              alt="Creative Art" 
-              className="w-full h-full object-cover opacity-90"
-            />
-          </motion.div>
+        <section className="py-20 md:py-32 bg-accent overflow-hidden relative">
+          <div className="container mx-auto px-6 max-w-7xl relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-x-20 gap-y-12 items-center">
+              
+              {/* Header Content - Order 1 */}
+              <div className="w-full text-center lg:text-left flex flex-col items-center lg:items-start order-1">
+                <motion.h2 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6 }}
+                  className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal tracking-tighter leading-[1.1]"
+                >
+                  <span className="text-secondary">Would you like to </span>
+                  <span className="text-primary">share your <br className="hidden sm:block" /> story</span>
+                  <span className="text-secondary"> as a Creative and be <br className="hidden sm:block" /> </span>
+                  <span className="text-primary">part of our Community?</span>
+                </motion.h2>
+              </div>
 
-          <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col justify-between py-10 lg:py-16 w-full">
-            {/* Top: Header - Strictly 3 Lines, Bold */}
-            <div className="w-full lg:w-2/3 text-center lg:text-left mb-8 lg:mb-0">
-              <motion.h2 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+              {/* Clean Image - Order 2 on Mobile, Right side on Desktop */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal leading-[1.1] tracking-tighter"
+                className="w-full flex justify-center lg:justify-end order-2 lg:row-span-2"
               >
-                <span className="text-secondary block">Would you like to share your</span>
-                <span className="block mt-1">
-                  <span className="text-yellow-500 italic">story</span> 
-                  <span className="text-secondary"> as a Creative and be</span>
-                </span>
-                <span className="text-secondary block mt-1">
-                  part of our <span className="text-primary">Community?</span>
-                </span>
-              </motion.h2>
-            </div>
-
-            {/* Middle: Mobile/Tablet Image - Shorter */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="lg:hidden flex justify-center my-8"
-            >
-              <div className="relative w-full max-w-[280px]">
-                 <img 
+                <img 
                   src="/art.png" 
                   alt="Creative Art" 
-                  className="w-full h-auto object-cover rounded-[30px]"
+                  className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[450px] h-auto object-contain"
                 />
-              </div>
-            </motion.div>
-
-            {/* Bottom: Contact Details - One line email */}
-            <div className="w-full lg:w-1/2 flex flex-col items-center lg:items-start mt-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-white px-6 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 mb-6 shadow-sm hover:shadow-md transition-all whitespace-nowrap overflow-hidden"
-              >
-                <span className="text-black font-montserrat font-normal text-xs sm:text-sm md:text-base">Email Us: </span>
-                <a href="mailto:crezinecashdoor@gmail.com" className="text-secondary font-montserrat font-normal text-xs sm:text-sm md:text-base hover:underline transition-all">
-                  crezinecashdoor@gmail.com
-                </a>
               </motion.div>
 
-              <motion.a
-                href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18"
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-                className="flex flex-col sm:flex-row items-center gap-4 group cursor-pointer"
-              >
-                <div className="flex-shrink-0 text-[#25D366] transition-all duration-500 group-hover:scale-110">
-                  <PiWhatsappLogoThin size={56} />
-                </div>
-                <div className="flex flex-col text-center lg:text-left">
-                  <h4 className="text-lg md:text-xl font-bold text-black font-montserrat font-normal">Join our Whatsapp channel</h4>
-                  <p className="text-xs md:text-sm text-black/80 font-montserrat font-normal max-w-md">
-                    Connect and share your work with other Creatives globally.
-                  </p>
-                </div>
-              </motion.a>
+              {/* Contact Info - Order 3 on Mobile, Under Header on Desktop */}
+              <div className="w-full flex flex-col items-center lg:items-start space-y-10 order-3">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="bg-white px-6 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-all whitespace-nowrap overflow-hidden"
+                >
+                  <span className="text-black font-montserrat font-normal text-xs sm:text-sm md:text-base">Email Us: </span>
+                  <a href="mailto:crezinecashdoor@gmail.com" className="text-secondary font-montserrat font-normal text-xs sm:text-sm md:text-base hover:underline transition-all">
+                    crezinecashdoor@gmail.com
+                  </a>
+                </motion.div>
+
+                <motion.a
+                  href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
+                  className="flex flex-col sm:flex-row items-center gap-4 group cursor-pointer"
+                >
+                  <div className="flex-shrink-0 text-[#25D366] transition-all duration-500 group-hover:scale-110">
+                    <PiWhatsappLogoThin size={56} />
+                  </div>
+                  <div className="flex flex-col text-center lg:text-left">
+                    <h4 className="text-lg md:text-xl font-bold text-black font-montserrat font-normal">Join our Whatsapp channel</h4>
+                    <p className="text-xs md:text-sm text-black/80 font-montserrat font-normal max-w-md">
+                      Connect and share your work with other Creatives globally.
+                    </p>
+                  </div>
+                </motion.a>
+              </div>
+
             </div>
           </div>
         </section>

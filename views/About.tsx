@@ -2,6 +2,9 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import PublicHeader from '../components/PublicHeader';
 import { AppView } from '../types';
+import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { GiArtificialIntelligence } from "react-icons/gi";
+import { RiUserCommunityLine } from "react-icons/ri";
 
 interface AboutProps {
   navigate: (view: AppView) => void;
@@ -34,14 +37,17 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
   const values = [
     {
       title: "Trust",
+      icon: <VscWorkspaceTrusted size={32} />,
       description: "We build systems that protect both creators and clients, ensuring every transaction is transparent and secure."
     },
     {
       title: "Innovation",
+      icon: <GiArtificialIntelligence size={32} />,
       description: "Constantly evolving our tools to match the dynamic needs of the global creative economy."
     },
     {
       title: "Community",
+      icon: <RiUserCommunityLine size={32} />,
       description: "Fostering a space where creators can thrive, connect, and grow their professional careers."
     }
   ];
@@ -70,28 +76,28 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
       {
         num: "01",
         text: "Sign up with email, Google or Phone number",
-        offset: "lg:-ml-12"
+        offset: "lg:ml-4"
       },
       {
         num: "02",
         text: "Open your Cashdoor to set up your ESCROW and manage and transact Globally fast, easy and simple",
-        offset: "lg:ml-8"
+        offset: "lg:ml-36"
       },
       {
         num: "03",
         text: "Share ESCROW integrated payment links with Global Clients and get paid safely across borders",
-        offset: "lg:ml-8"
+        offset: "lg:ml-36"
       },
       {
         num: "04",
         text: "Ticket your events and access residencies and creative funding and grants through one super wallet",
-        offset: "lg:-ml-12"
+        offset: "lg:ml-4"
       }
     ];
   
     return (
-      <section className="py-20 md:py-32 bg-accent overflow-hidden relative">
-        <div className="container mx-auto px-6 max-w-7xl relative z-10">
+      <section className="py-12 md:py-32 bg-accent overflow-hidden relative">
+        <div className="container mx-auto px-4 sm:px-6 max-w-7xl relative z-10">
           
           <div className="flex flex-col lg:flex-row items-stretch gap-12 lg:gap-0">
             
@@ -103,10 +109,10 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
               transition={{ duration: 0.8 }}
               className="w-full lg:w-1/2 flex flex-col items-center lg:items-start relative z-10"
             >
-              <div className="mb-10 text-center lg:text-left">
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal tracking-tighter leading-[1.1] mb-4">
-                  <span className="text-secondary">Get Started In</span><br />
-                  <span className="text-primary">Seconds!</span>
+              <div className="mb-8 md:mb-10 text-center lg:text-left">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-rubik font-normal tracking-tighter leading-[1.1] mb-4">
+                  <span className="text-secondary">Get Started</span><br />
+                  <span className="text-secondary">In</span> <span className="text-primary">Seconds!</span>
                 </h2>
               </div>
 
@@ -115,7 +121,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
                 whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                className="relative w-full max-w-sm md:max-w-md lg:max-w-lg mt-auto"
+                className="relative w-full max-w-xs sm:max-w-md lg:max-w-lg mt-auto"
               >
                 <img 
                   src="/get-started.png" 
@@ -128,27 +134,27 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
 
             {/* Right Side: Steps - Following the bulge */}
             <div className="w-full lg:w-1/2 lg:pl-4 flex flex-col justify-between relative z-10 py-4">
-              {/* Connecting Line - Curved SVG to follow the bulge */}
-              <div className="absolute left-[33px] md:left-[39px] lg:-left-20 top-10 bottom-10 w-48 hidden lg:block z-0 pointer-events-none">
+              {/* Connecting Line - Optimized deep curve to touch all circles */}
+              <div className="absolute left-[33px] md:left-[39px] lg:-left-24 top-0 bottom-0 w-px lg:w-80 hidden lg:block z-0 pointer-events-none">
                 <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
                   <motion.path
                     initial={{ pathLength: 0, opacity: 0 }}
                     whileInView={{ pathLength: 1, opacity: 0.4 }}
                     viewport={{ once: true }}
                     transition={{ duration: 1.5, ease: "easeInOut" }}
-                    d="M 20 5 C 80 15 80 85 20 95"
+                    d="M 10 0 C 110 0 110 100 10 100"
                     stroke="#AB3625"
-                    strokeWidth="1.5"
+                    strokeWidth="0.5"
                     strokeDasharray="4 4"
                     fill="none"
                   />
                 </svg>
               </div>
 
-              {/* Mobile/Tablet Straight Line */}
-              <div className="absolute left-[30px] md:left-[39px] top-10 bottom-10 w-px border-l border-dashed border-secondary/30 lg:hidden"></div>
+              {/* Mobile/Tablet Straight Line - Extended */}
+              <div className="absolute left-[28px] sm:left-[30px] md:left-[39px] top-10 bottom-10 w-px border-l border-dashed border-secondary/30 lg:hidden"></div>
 
-              <div className="flex flex-col h-full justify-between space-y-12 lg:space-y-0">
+              <div className="flex flex-col h-full justify-between space-y-8 md:space-y-12 lg:space-y-0">
                 {steps.map((step, idx) => (
                   <motion.div 
                     key={idx}
@@ -156,14 +162,16 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 + (idx * 0.1) }}
-                    className={`flex items-center gap-4 md:gap-6 group ${step.offset}`}
+                    className={`flex flex-row items-center gap-4 md:gap-6 group ${step.offset}`}
                   >
-                    {/* White fill with maroon border circle - INCREASED SIZE */}
-                    <div className="flex-shrink-0 w-14 h-14 md:w-18 md:h-18 bg-white border-2 border-secondary rounded-full flex items-center justify-center text-secondary font-montserrat font-normal text-xl md:text-3xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-md relative z-20">
+                    {/* Number Circle - Line touches here */}
+                    <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-18 md:h-18 bg-white border-2 border-secondary rounded-full flex items-center justify-center text-secondary font-montserrat font-normal text-lg sm:text-xl md:text-3xl group-hover:bg-secondary group-hover:text-white transition-all duration-300 shadow-md relative z-20">
                       {step.num}
                     </div>
-                    <div className="flex-grow max-w-sm">
-                      <p className="text-xs md:text-sm lg:text-base text-black font-montserrat font-normal leading-snug">
+                    
+                    {/* Surrounding Text - Better fit on Large Screens */}
+                    <div className="flex-grow max-w-sm lg:max-w-xs">
+                      <p className="text-xs md:text-sm text-black font-montserrat font-normal leading-snug lg:leading-tight">
                         {step.text}
                       </p>
                     </div>
@@ -182,15 +190,15 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen overflow-x-hidden flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-1 flex flex-col px-6 pt-32 pb-20">
+      <main className="flex-1 flex flex-col px-4 sm:px-6 pt-28 md:pt-32 pb-20">
         {/* Hero Section */}
-        <section className="max-w-4xl mx-auto text-center mb-24">
+        <section className="max-w-4xl mx-auto text-center mb-16 md:mb-24 px-4">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-none mb-6 tracking-tighter whitespace-nowrap">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary leading-tight mb-6 tracking-tighter">
               Everything You need to know about us
             </h1>
           </motion.div>
@@ -199,7 +207,7 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-base md:text-xl text-black font-montserrat font-normal leading-none max-w-full mx-auto mt-4"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-black font-montserrat font-normal leading-relaxed max-w-2xl mx-auto mt-4"
           >
             Powerful tools built exclusively for the Creative hustle, redefined and simplified to suite you.
           </motion.p>
@@ -208,28 +216,28 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
         <GetStartedSection />
 
         {/* Core Pillars Cards Grid */}
-        <section className="w-full max-w-6xl mx-auto mb-24">
+        <section className="w-full max-w-6xl mx-auto mb-20 md:mb-24">
           <motion.div 
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto items-stretch"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch"
           >
             {cards.map((card, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, translateY: -3 }}
-                className="bg-accent p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border border-secondary/30 overflow-hidden"
+                className="bg-accent p-6 md:p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border border-secondary/30 overflow-hidden"
               >
-                <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">
                   {card.number}
                 </div>
                 <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight min-h-[3.5rem] flex items-center justify-center capitalize">
                   {card.title}
                 </h3>
-                <p className="text-sm md:text-base text-black font-montserrat font-light leading-relaxed">
+                <p className="text-xs sm:text-sm md:text-base text-black font-montserrat font-light leading-relaxed">
                   {card.description}
                 </p>
               </motion.div>
@@ -238,16 +246,16 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
         </section>
 
         {/* Mission & Vision Section */}
-        <section className="max-w-5xl mx-auto mb-24 grid md:grid-cols-2 gap-12 items-center">
+        <section className="max-w-5xl mx-auto mb-20 md:mb-24 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center px-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="bg-secondary text-accent p-10 rounded-[40px] shadow-xl"
+            className="bg-secondary text-accent p-8 md:p-10 rounded-[30px] md:rounded-[40px] shadow-xl"
           >
-            <h2 className="text-3xl font-rubik font-normal text-white mb-6">Our Mission</h2>
-            <p className="text-lg font-montserrat font-normal leading-relaxed opacity-90">
+            <h2 className="text-2xl md:text-3xl font-rubik font-normal text-white mb-4 md:mb-6">Our Mission</h2>
+            <p className="text-sm sm:text-base md:text-lg font-montserrat font-normal leading-relaxed opacity-90">
               To bridge the gap between creative talent and global opportunities by providing a seamless, secure, and empowering financial infrastructure tailored specifically for creators.
             </p>
           </motion.div>
@@ -257,18 +265,19 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="p-4"
           >
-            <h2 className="text-3xl font-rubik font-normal text-secondary mb-6">Our Vision</h2>
-            <p className="text-lg font-montserrat font-normal text-black/80 leading-relaxed">
+            <h2 className="text-2xl md:text-3xl font-rubik font-normal text-secondary mb-4 md:mb-6">Our Vision</h2>
+            <p className="text-sm sm:text-base md:text-lg font-montserrat font-normal text-black/80 leading-relaxed">
               We envision a world where every creative professional, regardless of their location, has access to the tools they need to manage their finances, protect their work, and scale their impact globally.
             </p>
           </motion.div>
         </section>
 
         {/* Values Section */}
-        <section className="w-full max-w-6xl mx-auto mb-24">
-          <h2 className="text-3xl font-rubik font-normal text-secondary text-center mb-12">Our Values</h2>
-          <div className="grid md:grid-cols-3 gap-8">
+        <section className="w-full max-w-6xl mx-auto mb-20 md:mb-24 px-4">
+          <h2 className="text-2xl md:text-3xl font-rubik font-normal text-secondary text-center mb-10 md:mb-12">Our Values</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {values.map((value, index) => (
               <motion.div
                 key={index}
@@ -276,13 +285,19 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="text-center p-6"
+                className="text-center p-4 sm:p-6"
               >
-                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <div className="w-8 h-8 bg-primary rounded-full" />
-                </div>
-                <h4 className="text-xl font-rubik font-normal text-secondary mb-3">{value.title}</h4>
-                <p className="text-black/70 font-montserrat font-normal">{value.description}</p>
+                <motion.div 
+                  whileHover={{ rotate: [0, -10, 10, -10, 0], scale: 1.1 }}
+                  transition={{ duration: 0.5 }}
+                  className="w-14 h-14 sm:w-16 sm:h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6 text-primary shadow-sm"
+                >
+                  {value.icon}
+                </motion.div>
+                <h4 className="text-lg md:text-xl font-rubik font-normal text-secondary mb-2 md:mb-3">{value.title}</h4>
+                <p className="text-xs sm:text-sm md:text-base text-black/70 font-montserrat font-normal leading-relaxed">
+                  {value.description}
+                </p>
               </motion.div>
             ))}
           </div>

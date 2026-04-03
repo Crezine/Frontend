@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
+import AnimatedButton from '../components/AnimatedButton';
 
 const NotFoundView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
   return (
-    <div className="min-h-screen bg-accent flex flex-col">
+    <div className="min-h-screen bg-accent flex flex-col overflow-x-hidden">
       <PublicHeader navigate={navigate} />
       
       <main className="flex-grow flex items-center justify-center px-4 sm:px-6 py-12 md:py-20">
@@ -32,29 +33,24 @@ const NotFoundView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
             </div>
           </motion.div>
 
-          {/* Action Buttons - One line from left to right on all screens */}
+          {/* Action Buttons - Uniform height and one-line layout */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="flex flex-row items-center justify-center gap-2 sm:gap-4 w-full max-w-lg mx-auto px-2"
+            className="flex flex-row items-center justify-center gap-3 sm:gap-4 w-full max-w-lg mx-auto px-2"
           >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={() => navigate('landing')}
-              className="bg-secondary text-white font-montserrat font-normal tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
+              className="bg-secondary text-white font-montserrat font-normal px-4 sm:px-8 rounded-full text-[11px] sm:text-sm md:text-base h-[48px] min-w-[130px] sm:min-w-[160px] whitespace-nowrap transition-transform active:scale-95"
             >
               Back to home
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('support')}
-              className="bg-white text-secondary border-2 border-secondary font-montserrat font-normal tracking-tight px-3 sm:px-8 py-3 sm:py-4 rounded-full text-[10px] xs:text-xs sm:text-base transition-all duration-300 hover:bg-secondary/5 active:scale-95 transform flex-1 sm:flex-none whitespace-nowrap"
-            >
-              Contact support
-            </motion.button>
+            </button>
+            <AnimatedButton 
+              label="Contact support" 
+              onClick={() => navigate('support')} 
+              className="flex-shrink-0 scale-[0.85] sm:scale-100"
+            />
           </motion.div>
         </div>
       </main>

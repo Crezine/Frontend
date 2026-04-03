@@ -13,16 +13,17 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
   ];
 
   return (
-    <div className="bg-accent min-h-screen flex flex-col">
+    <div className="bg-accent min-h-screen flex flex-col overflow-x-hidden">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow pt-32 pb-20 px-4">
+      <main className="flex-grow pt-28 md:pt-32 pb-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-20 flex flex-col items-center">
+          {/* Hero Section */}
+          <div className="text-center mb-12 md:mb-20 flex flex-col items-center px-4">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal text-secondary mb-6 tracking-tighter leading-tight"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal text-secondary mb-4 md:mb-6 tracking-tighter leading-tight"
             >
               How can we <span className="text-primary">help?</span>
             </motion.h1>
@@ -30,57 +31,60 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-xl font-montserrat font-normal text-black"
+              className="text-sm sm:text-base md:text-xl font-montserrat font-normal text-black max-w-2xl mx-auto"
             >
               Our support team is always ready to help you unlock your creative potential.
             </motion.p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-32">
+          {/* Support Channels Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8 mb-20 md:mb-32">
              {[
-               { title: "Help Center", desc: "Browse our comprehensive guides and tutorials.", icon: <RiBookOpenLine size={32} />, color: "bg-blue-500" },
-               { title: "Direct Chat", desc: "Talk to our creative success team in real-time.", icon: <RiChat3Line size={32} />, color: "bg-emerald-500" },
-               { title: "Email Support", desc: "Drop us a line and we'll get back within 24 hours.", icon: <RiMailLine size={32} />, color: "bg-primary" }
+               { title: "Help Center", desc: "Browse our comprehensive guides and tutorials.", icon: <RiBookOpenLine size={24} />, color: "bg-blue-500" },
+               { title: "Direct Chat", desc: "Talk to our creative success team in real-time.", icon: <RiChat3Line size={24} />, color: "bg-emerald-500" },
+               { title: "Email Support", desc: "Drop us a line and we'll get back within 24 hours.", icon: <RiMailLine size={24} />, color: "bg-primary" }
              ].map((box, i) => (
                <motion.div 
                  key={i}
-                 initial={{ opacity: 0, scale: 0.95 }}
+                 initial={{ opacity: 0, scale: 0.98 }}
                  animate={{ opacity: 1, scale: 1 }}
-                 transition={{ delay: i * 0.1 }}
-                 className="bg-white p-10 rounded-[40px] border border-secondary/5 text-center group hover:shadow-xl transition-all cursor-pointer"
+                 transition={{ delay: i * 0.05 }}
+                 className="bg-white p-6 md:p-10 rounded-[30px] md:rounded-[40px] border border-secondary/10 text-center group hover:shadow-lg transition-all cursor-pointer"
                >
-                 <div className={`${box.color} w-16 h-16 rounded-2xl flex items-center justify-center text-white mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform`}>
+                 <div className={`${box.color} w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center text-white mx-auto mb-4 md:mb-6 shadow-md group-hover:scale-105 transition-transform`}>
                    {box.icon}
                  </div>
-                 <h3 className="text-2xl font-rubik font-normal text-secondary mb-2">{box.title}</h3>
-                 <p className="text-black font-montserrat font-normal text-sm leading-relaxed">{box.desc}</p>
+                 <h3 className="text-xl md:text-2xl font-rubik font-normal text-secondary mb-2">{box.title}</h3>
+                 <p className="text-black font-montserrat font-normal text-xs md:text-sm leading-relaxed opacity-80">{box.desc}</p>
                </motion.div>
              ))}
           </div>
 
-          <div className="bg-white rounded-[60px] p-12 md:p-20 border border-secondary/5">
-            <h2 className="text-3xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary mb-12 flex items-center gap-4 tracking-tighter leading-tight">
+          {/* FAQ Section */}
+          <div className="bg-white rounded-[40px] md:rounded-[60px] p-8 md:p-20 border border-secondary/5">
+            <h2 className="text-2xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary mb-8 md:mb-12 flex items-center gap-3 md:gap-4 tracking-tighter leading-tight">
               <RiQuestionLine className="text-primary" />
               Frequently Asked Questions
             </h2>
-            <div className="grid md:grid-cols-2 gap-x-16 gap-y-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 md:gap-x-16 gap-y-8 md:gap-y-12">
               {faqs.map((faq, i) => (
-                <div key={i}>
-                  <h4 className="text-xl font-rubik font-normal text-secondary mb-4">{faq.q}</h4>
-                  <p className="text-black font-montserrat font-normal leading-relaxed">{faq.a}</p>
+                <div key={i} className="flex flex-col">
+                  <h4 className="text-lg md:text-xl font-rubik font-normal text-secondary mb-2 md:mb-4">{faq.q}</h4>
+                  <p className="text-sm md:text-base text-black font-montserrat font-normal leading-relaxed opacity-80">{faq.a}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mt-24 max-w-2xl mx-auto">
-             <div className="bg-secondary rounded-[40px] p-10 md:p-14 text-center text-white relative overflow-hidden shadow-2xl">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
-                <p className="text-white/60 mb-4 font-montserrat font-normal uppercase tracking-widest text-xs">Still have questions?</p>
-                <h3 className="text-2xl md:text-3xl font-rubik font-normal mb-8 leading-tight">We're here to help you unlock <br/> your creative potential.</h3>
+          {/* Still Have Questions CTA */}
+          <div className="mt-16 md:mt-24 max-w-4xl mx-auto px-4">
+             <div className="bg-transparent md:bg-secondary rounded-[40px] p-8 md:p-14 text-center text-secondary md:text-white relative overflow-hidden md:shadow-2xl border border-secondary/10 md:border-none">
+                <div className="hidden md:block absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl"></div>
+                <p className="text-secondary/60 md:text-white/60 mb-3 md:mb-4 font-montserrat font-normal uppercase tracking-widest text-[10px] md:text-xs">Still have questions?</p>
+                <h3 className="text-2xl md:text-4xl font-rubik font-normal mb-6 md:mb-8 leading-tight tracking-tight">We're here to help you unlock <br className="hidden sm:block"/> your creative potential.</h3>
                 <button 
                    onClick={() => navigate('whatsapp' as AppView)}
-                   className="bg-primary text-white font-montserrat font-normal py-4 px-10 rounded-full text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/30 inline-flex items-center gap-2">
+                   className="bg-primary text-white font-montserrat font-normal py-3.5 md:py-4 px-8 md:px-10 rounded-full text-base md:text-lg hover:scale-105 transition-transform shadow-xl shadow-primary/30 inline-flex items-center justify-center gap-2 w-full sm:w-auto">
                   <RiChat3Line size={20} />
                   Contact Support Team
                 </button>
