@@ -87,8 +87,8 @@ const App: React.FC = () => {
     setHasInitialAnimated(false);
   };
 
-  // Do not show the global footer on dashboard routes as it has its own refurbished footer
-  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard');
+  // Do not show the global footer on dashboard routes and shop as it has its own refurbished footer
+  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop');
 
   return (
     <div className="App">
@@ -140,7 +140,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<Navigate to="/help-center" replace />} />
         <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
         <Route path="/about" element={<About navigate={handleNavigate} />} />
-        <Route path="/shop" element={<ShopView navigate={handleNavigate} />} />
+        <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
         <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
