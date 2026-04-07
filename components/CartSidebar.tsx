@@ -139,7 +139,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               {items.length === 0 ? (
                 <div className="flex gap-4">
                   <button 
-                    onClick={() => handleEmptyCartAction('all')}
+                    onClick={() => handleEmptyCartAction('all-products')}
                     className="flex-1 bg-secondary text-white py-3 rounded-full text-sm font-normal hover:opacity-90 transition-all uppercase tracking-widest"
                   >
                     Home
@@ -160,7 +160,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                   
                   <div className="flex justify-center">
                     <button 
-                      className="w-full bg-secondary text-white py-4 rounded-full text-sm font-normal hover:opacity-90 transition-all uppercase tracking-widest"
+                      className="w-full bg-secondary text-white py-2.5 rounded-full text-sm font-normal hover:opacity-90 transition-all uppercase tracking-widest"
                     >
                       Checkout
                     </button>

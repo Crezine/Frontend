@@ -45,7 +45,7 @@ const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: 
         <img 
           src={art.image} 
           alt={art.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500"
           loading="lazy"
         />
       </div>
@@ -59,15 +59,16 @@ const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: 
 
 const ComingSoonSection: React.FC<{ title: string }> = ({ title }) => (
   <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    className="flex-grow flex flex-col items-center justify-center text-center w-full min-h-[75vh] px-4"
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="flex-grow flex flex-col items-center justify-center text-center w-full min-h-[85vh] px-6"
   >
-    <h2 className="text-4xl md:text-6xl lg:text-7xl font-normal text-secondary tracking-tighter mb-6 font-montserrat">
-      coming <span className="text-primary italic">soon</span>
+    <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal text-black tracking-[0.2em] uppercase mb-4 font-montserrat">
+      COMING <span className="text-primary italic">SOON</span>
     </h2>
-    <p className="text-black/40 text-xs md:text-sm font-normal max-w-xs md:max-w-md tracking-[0.2em] lowercase leading-relaxed font-montserrat mx-auto">
-      we're curating something special for {title}. stay tuned!
+    <div className="h-[1px] w-12 bg-primary mb-8" />
+    <p className="text-black text-sm md:text-base font-thin max-w-md tracking-[0.15em] leading-relaxed font-montserrat mx-auto">
+      We are curating something special for {title}. Stay tuned.
     </p>
   </motion.div>
 );
@@ -183,7 +184,7 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
               <img 
                 src="/shop.png" 
                 alt="Crezine Shop" 
-                className="h-8 md:h-10 cursor-pointer hover:opacity-70 transition-all" 
+                className="h-8 md:h-10 cursor-pointer transition-all" 
                 onClick={() => handleSubViewChange('all-products')}
               />
             </div>
