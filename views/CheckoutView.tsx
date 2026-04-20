@@ -81,32 +81,32 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full max-w-lg overflow-hidden shadow-2xl flex flex-col items-center p-8 md:p-12 text-center"
+          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full max-w-xl min-h-[85vh] overflow-hidden shadow-2xl flex flex-col items-center p-8 md:p-12 text-center"
         >
           <div className="w-20 h-20 bg-white border-2 border-primary rounded-full flex items-center justify-center mb-6 shadow-sm shadow-primary/20">
             <RiCheckLine className="text-primary text-5xl" />
           </div>
           
-          <h2 className="text-2xl font-medium text-black mb-2">Successful Transaction</h2>
-          <p className="text-xs text-black/40 font-medium mb-6">17th Apr 2026/ 12:59 pm</p>
+          <h2 className="text-2xl font-normal text-black mb-2">Successful transaction</h2>
+          <p className="text-xs text-black/40 font-normal mb-6">17th Apr 2026/ 12:59 pm</p>
           
-          <div className="text-4xl font-light text-black font-rubik tracking-tighter mb-2">
+          <div className="text-4xl font-normal text-black tracking-tighter mb-2">
             $ {total.toFixed(2)}
           </div>
-          <p className="text-[10px] text-black/60 font-medium mb-8">Zero transaction fees on wallet to wallet transfer</p>
+          <p className="text-[10px] text-black/60 font-normal mb-8">Zero transaction fees on wallet to wallet transfer</p>
           
           <div className="w-full bg-[#FFF9C4] rounded-2xl p-6 mb-8 border border-[#FBC02D]/10">
-            <p className="text-[10px] uppercase tracking-widest text-black/40 font-bold mb-2">Send to:</p>
-            <p className="text-sm font-bold text-black tracking-wide">Wallet ID : ADHGKAHUK</p>
+            <p className="text-[10px] uppercase tracking-widest text-black/40 font-normal mb-2">Send to:</p>
+            <p className="text-sm font-normal text-black tracking-wide">Wallet ID : ADHGKAHUK</p>
           </div>
           
-          <button className="text-xs font-bold text-[#AB3625] hover:underline mb-10 tracking-wide">
-            Click here to Download Receipt
+          <button className="text-xs font-normal text-[#AB3625] hover:underline mb-10 tracking-wide">
+            Click here to download receipt
           </button>
           
           <button 
             onClick={handleDone}
-            className="w-full bg-secondary text-white py-4 rounded-full text-sm font-bold uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-lg shadow-secondary/20"
+            className="w-full h-[52px] bg-secondary text-white rounded-full text-sm font-normal uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-lg shadow-secondary/20"
           >
             Done
           </button>
@@ -124,12 +124,12 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         className="absolute inset-0 bg-black/40 backdrop-blur-md"
       />
 
-      <div className="relative w-full max-w-lg flex flex-col items-center">
+      <div className="relative w-full max-w-xl flex flex-col items-center">
         {/* Smart Card (The Modal) */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full overflow-hidden shadow-2xl flex flex-col max-h-[80vh]"
+          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh]"
         >
           {/* Close Button */}
           <button 
@@ -140,12 +140,12 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
           </button>
 
           {/* Scrollable Content */}
-          <div className="flex-grow overflow-y-auto p-5 md:p-10 no-scrollbar">
+          <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
             {/* Header Tabs Inside Card */}
             <div className="flex gap-2 mb-8 bg-gray-50 p-1.5 rounded-xl border border-black/5">
               <button 
                 onClick={() => setActiveTab('card')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'card' 
                     ? 'bg-secondary text-white shadow-md' 
                     : 'text-black/40 hover:bg-black/5'
@@ -155,7 +155,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
               </button>
               <button 
                 onClick={() => setActiveTab('mpesa')}
-                className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 ${
+                className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'mpesa' 
                     ? 'bg-secondary text-white shadow-md' 
                     : 'text-black/40 hover:bg-black/5'
@@ -174,13 +174,13 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-8"
                 >
-                  {/* Payment Options */}
-                  <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4">
+                  {/* Payment Options - Single Row */}
+                  <div className="flex flex-row gap-3 md:gap-4 justify-between">
                     {paymentOptions.map((option) => (
                       <button
                         key={option.id}
                         onClick={() => setActiveOption(option.id)}
-                        className={`py-3 px-2 md:px-4 border text-[10px] md:text-xs font-medium transition-all rounded-xl ${
+                        className={`flex-1 h-[52px] border text-[10px] md:text-xs font-normal transition-all rounded-xl whitespace-nowrap px-1 ${
                           activeOption === option.id 
                             ? 'bg-secondary border-secondary text-white shadow-sm' 
                             : 'bg-transparent border-black text-black hover:bg-black/5'
@@ -191,110 +191,136 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                     ))}
                   </div>
 
-                  {/* Form Fields */}
-                  <div className="space-y-4">
-                    {[
-                      { label: 'Email address', name: 'email', type: 'email' },
-                      { label: 'Card number', name: 'cardNumber', type: 'text', placeholder: '0000 0000 0000 0000' }
-                    ].map((field) => (
-                      <div key={field.name} className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">{field.label}</label>
-                        <input 
-                          type={field.type}
-                          name={field.name}
-                          placeholder={field.placeholder}
-                          value={(formData as any)[field.name]}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
+                  {activeOption === 'crezine' ? (
+                    <motion.div 
+                      key="crezine-wallet"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex flex-col items-center pt-8"
+                    >
+                      <img src="/crezine.png" alt="Crezine" className="h-16 mb-10 object-contain" />
+                      <h3 className="text-lg font-normal text-black mb-1">Pay with your wallet</h3>
+                      
+                      <div className="mt-8 mb-4">
+                        <span className="text-sm font-normal text-[#AB3625]">Wallet balance: </span>
+                        <span className="text-sm font-normal text-black/60">$ {walletBalance.toFixed(2)}</span>
                       </div>
-                    ))}
+                      
+                      <button 
+                        onClick={handleConfirmWalletPayment}
+                        className="w-full h-[52px] bg-secondary text-white rounded-xl text-sm font-normal uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-lg shadow-secondary/20"
+                      >
+                        Confirm
+                      </button>
+                    </motion.div>
+                  ) : (
+                    <>
+                      {/* Form Fields */}
+                      <div className="space-y-4">
+                        {[
+                          { label: 'Email address', name: 'email', type: 'email' },
+                          { label: 'Card number', name: 'cardNumber', type: 'text', placeholder: '0000 0000 0000 0000' }
+                        ].map((field) => (
+                          <div key={field.name} className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">{field.label}</label>
+                            <input 
+                              type={field.type}
+                              name={field.name}
+                              placeholder={field.placeholder}
+                              value={(formData as any)[field.name]}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                        ))}
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">Expiration date</label>
-                        <input 
-                          type="text" 
-                          name="expiry"
-                          placeholder="MM / YY"
-                          value={formData.expiry}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">Security code</label>
-                        <input 
-                          type="text" 
-                          name="cvc"
-                          placeholder="CVC"
-                          value={formData.cvc}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
-                      </div>
-                    </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Expiration date</label>
+                            <input 
+                              type="text" 
+                              name="expiry"
+                              placeholder="MM / YY"
+                              value={formData.expiry}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Security code</label>
+                            <input 
+                              type="text" 
+                              name="cvc"
+                              placeholder="CVC"
+                              value={formData.cvc}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                        </div>
 
-                    {[
-                      { label: 'Cardholder name', name: 'cardholderName' },
-                      { label: 'Country', name: 'country' },
-                      { label: 'Address', name: 'address' },
-                      { label: 'State', name: 'state' }
-                    ].map((field) => (
-                      <div key={field.name} className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">{field.label}</label>
-                        <input 
-                          type="text" 
-                          name={field.name}
-                          value={(formData as any)[field.name]}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
-                      </div>
-                    ))}
+                        {[
+                          { label: 'Cardholder name', name: 'cardholderName' },
+                          { label: 'Country', name: 'country' },
+                          { label: 'Address', name: 'address' },
+                          { label: 'State', name: 'state' }
+                        ].map((field) => (
+                          <div key={field.name} className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">{field.label}</label>
+                            <input 
+                              type="text" 
+                              name={field.name}
+                              value={(formData as any)[field.name]}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                        ))}
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">Town</label>
-                        <input 
-                          type="text" 
-                          name="town"
-                          value={formData.town}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Town</label>
+                            <input 
+                              type="text" 
+                              name="town"
+                              value={formData.town}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Postal code</label>
+                            <input 
+                              type="text" 
+                              name="postalCode"
+                              value={formData.postalCode}
+                              onChange={handleInputChange}
+                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] tracking-wide text-black/70 font-medium ml-1">Postal code</label>
-                        <input 
-                          type="text" 
-                          name="postalCode"
-                          value={formData.postalCode}
-                          onChange={handleInputChange}
-                          className="w-full bg-transparent border border-black/40 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-secondary transition-colors"
-                        />
+
+                      {/* Summary */}
+                      <div className="pt-6 space-y-4">
+                        <div className="flex justify-between items-end">
+                          <span className="text-xl md:text-2xl font-normal text-black/60 tracking-tight leading-none">Subtotal</span>
+                          <span className="text-xl md:text-2xl font-normal text-black tracking-tighter leading-none">$ {subtotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex justify-between items-center border-t border-black/5 pt-4">
+                          <span className="text-xs font-normal text-black uppercase tracking-[0.2em]">TOTAL</span>
+                          <span className="text-xl md:text-2xl font-normal text-black tracking-tighter">$ {total.toFixed(2)}</span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Summary */}
-                  <div className="pt-6 space-y-4">
-                    <div className="flex justify-between items-end">
-                      <span className="text-xl md:text-2xl font-normal text-black/60 tracking-tight leading-none font-montserrat">Subtotal</span>
-                      <span className="text-xl md:text-2xl font-medium text-black tracking-tighter leading-none font-rubik">$ {subtotal.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center border-t border-black/5 pt-4">
-                      <span className="text-xs font-bold text-black uppercase tracking-[0.2em] font-montserrat">TOTAL</span>
-                      <span className="text-xl md:text-2xl font-light text-black font-rubik tracking-tighter">$ {total.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  {/* Pay Button */}
-                  <button 
-                    className="w-full bg-secondary text-white py-3 md:py-4 rounded-full text-xs font-medium uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-lg shadow-secondary/20"
-                  >
-                    Pay $ {total.toFixed(2)}
-                  </button>
+                      {/* Pay Button */}
+                      <button 
+                        className="w-full h-[52px] bg-secondary text-white rounded-full text-sm font-normal uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-lg shadow-secondary/20"
+                      >
+                        Pay $ {total.toFixed(2)}
+                      </button>
+                    </>
+                  )}
                 </motion.div>
               ) : (
                 <motion.div 
@@ -302,13 +328,13 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="py-20 flex flex-col items-center justify-center text-center space-y-4"
+                  className="py-24 flex flex-col items-center justify-center text-center space-y-4"
                 >
                   <div className="w-16 h-16 bg-secondary/5 rounded-full flex items-center justify-center mb-4">
                     <div className="w-8 h-8 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin" />
                   </div>
-                  <h3 className="text-sm font-medium uppercase tracking-widest text-black">Mpesa Checkout</h3>
-                  <p className="text-[10px] text-black/60 max-w-[240px] leading-relaxed">This payment method is being integrated. Please use Pay by Card for now.</p>
+                  <h3 className="text-sm font-normal uppercase tracking-widest text-black">Mpesa Checkout</h3>
+                  <p className="text-[10px] text-black/60 max-w-[240px] leading-relaxed font-normal">This payment method is being integrated. Please use pay by card for now.</p>
                 </motion.div>
               )}
             </AnimatePresence>
