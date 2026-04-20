@@ -7,72 +7,110 @@ interface EscrowViewProps {
 
 const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 font-montserrat">
-      <header className="flex items-center mb-6 md:mb-8">
-        <div>
-            <h1 className="text-3xl md:text-4xl font-medium text-secondary dark:text-primary">Invoice Link</h1>
-            <p className="text-lg md:text-xl text-secondary/70 dark:text-gray-400 leading-relaxed">
-            Money is safely held by Crezine until you deliver the work. <br className="hidden md:block" />
-            No more chasing clients, no more ghosting.
-            </p>
-        </div>
+    <div className="max-w-3xl mx-auto px-4 md:px-6 py-8 md:py-16 font-montserrat">
+      <header className="mb-10 md:mb-14 text-center">
+        <h1 className="text-3xl md:text-4xl font-normal text-secondary dark:text-primary leading-tight mb-3">Invoice link</h1>
+        <p className="text-black dark:text-white font-normal text-sm md:text-base">Professional payment links that work everywhere</p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        <div className="bg-primary rounded-[32px] p-8 text-white">
-          <h3 className="text-2xl font-bold mb-4">Protect Your Next Gig</h3>
-          <p className="text-white/80 mb-8 leading-relaxed">
-            Create a secure invoice link. Your client pays upfront, and we lock the funds. You start work knowing the money is there.
-          </p>
-          <button className="w-full py-4 bg-white text-primary rounded-2xl font-bold hover:bg-white/90 transition-colors">
-            Start a Safe Gig
-          </button>
-        </div>
-        
-        <div className="bg-white dark:bg-gray-800 rounded-[32px] p-8 border border-secondary/10 dark:border-white/10 shadow-sm transition-colors">
-          <h3 className="text-2xl font-bold text-secondary dark:text-primary mb-4">How it works</h3>
-          <ul className="space-y-4">
-            <li className="flex gap-4 items-center">
-              <div className="w-6 h-6 bg-secondary/10 dark:bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-secondary/70 dark:text-primary shrink-0">1</div>
-              <p className="text-sm text-secondary/80 dark:text-gray-300">You create the gig and set milestones.</p>
-            </li>
-            <li className="flex gap-4 items-center">
-              <div className="w-6 h-6 bg-secondary/10 dark:bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-secondary/70 dark:text-primary shrink-0">2</div>
-              <p className="text-sm text-secondary/80 dark:text-gray-300">Client funds the escrow upfront.</p>
-            </li>
-            <li className="flex gap-4 items-center">
-              <div className="w-6 h-6 bg-secondary/10 dark:bg-primary/10 rounded-full flex items-center justify-center text-xs font-bold text-secondary/70 dark:text-primary shrink-0">3</div>
-              <p className="text-sm text-secondary/80 dark:text-gray-300">You do the work, they release the money.</p>
-            </li>
-          </ul>
+      <div className="bg-white dark:bg-gray-800 rounded-3xl border border-secondary/20 dark:border-secondary/40 p-6 md:p-10 mb-12 shadow-sm transition-colors">
+        <div className="space-y-6 relative z-10">
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-normal text-black/70 dark:text-gray-300 ml-1">Client name:</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Acme Creative Agency"
+              className="w-full py-3 px-4 bg-white dark:bg-gray-900 border border-black/20 dark:border-white/10 rounded-xl focus:outline-none focus:border-secondary transition-all font-normal text-sm dark:text-white"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-normal text-black/70 dark:text-gray-400 ml-1">Amount</label>
+              <div className="flex relative group">
+                <select className="appearance-none bg-white dark:bg-gray-900 border border-black/20 dark:border-white/10 border-r-0 rounded-l-xl px-3 text-xs font-normal text-secondary focus:outline-none">
+                  <option>USD</option>
+                  <option>KES</option>
+                  <option>EUR</option>
+                  <option>GBP</option>
+                  <option>NGN</option>
+                </select>
+                <input 
+                  type="number" 
+                  placeholder="1500"
+                  className="w-full py-3 px-4 bg-white dark:bg-gray-900 border border-black/20 dark:border-white/10 rounded-r-xl focus:outline-none focus:border-secondary transition-all font-normal text-sm dark:text-white"
+                />
+                <div className="absolute bottom-3 right-3 pointer-events-none">
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 1L4 4L1 1" stroke="#F69C31" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-normal text-black/70 dark:text-gray-400 ml-1">Payment type</label>
+              <div className="relative">
+                <select className="w-full py-3 px-4 bg-white dark:bg-gray-900 border border-black/20 dark:border-white/10 rounded-xl focus:outline-none focus:border-secondary transition-all font-normal appearance-none text-xs dark:text-white pr-8">
+                  <option>Standard payout (Normal payout)</option>
+                  <option>Escrow payout (Handled by an escrow gateway)</option>
+                </select>
+                <div className="absolute bottom-3 right-3 pointer-events-none">
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 1L4 4L1 1" stroke="#F69C31" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex flex-col gap-2">
+            <label className="text-xs font-normal text-black/70 dark:text-gray-400 ml-1">What's this for?</label>
+            <input 
+              type="text" 
+              placeholder="e.g. Illustration package - phase 1"
+              className="w-full py-3 px-4 bg-white dark:bg-gray-900 border border-black/20 dark:border-white/10 rounded-xl focus:outline-none focus:border-secondary transition-all font-normal text-sm dark:text-white"
+            />
+          </div>
+          
+          <div className="pt-4 flex flex-col items-center gap-4">
+            <button className="w-full max-w-xs py-3 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-md">
+              Generate link
+            </button>
+            <button className="text-[10px] md:text-xs font-normal text-secondary hover:underline transition-all text-center">
+              Click here to reuse this link for multiple payments
+            </button>
+          </div>
         </div>
       </div>
 
-      <h2 className="text-2xl font-bold text-secondary dark:text-primary mb-6">Active Gigs</h2>
-      <div className="bg-white dark:bg-gray-800 rounded-[32px] border border-secondary/10 dark:border-white/10 overflow-hidden shadow-sm transition-colors">
-        <div className="p-8 border-b border-secondary/5 dark:border-white/5">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-2 gap-2">
-            <h4 className="text-xl font-bold text-secondary dark:text-gray-200">Logo & Brand Design</h4>
-            <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 px-3 py-1 rounded-full text-xs font-bold border border-yellow-200 dark:border-yellow-900/50 uppercase tracking-wider">Locked</span>
-          </div>
-          <p className="text-secondary/60 dark:text-gray-400 text-sm mb-6">Client: Nexus Media Inc.</p>
-          <div className="w-full bg-secondary/10 dark:bg-white/5 h-2 rounded-full mb-8">
-            <div className="bg-green-500 h-full w-1/2 rounded-full"></div>
-          </div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex gap-8">
-              <div>
-                <p className="text-xs text-secondary/60 dark:text-gray-400 uppercase font-bold tracking-widest mb-1">Total</p>
-                <p className="font-bold text-secondary dark:text-primary">$2,400.00</p>
-              </div>
-              <div>
-                <p className="text-xs text-secondary/60 dark:text-gray-400 uppercase font-bold tracking-widest mb-1">Milestone 1</p>
-                <p className="font-bold text-green-600 dark:text-green-400">Released</p>
-              </div>
+      <div className="space-y-4">
+        <h3 className="text-lg font-normal text-black/80 dark:text-primary mb-4 px-1">Active gigs</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden shadow-sm transition-colors">
+          <div className="p-6 border-b border-black/5">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
+              <h4 className="text-lg font-normal text-black/80 dark:text-gray-200">Logo & brand design</h4>
+              <span className="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400 px-3 py-1 rounded-full text-[10px] font-normal border border-yellow-200 dark:border-yellow-900/50 uppercase tracking-wider">Locked</span>
             </div>
-            <button className="bg-secondary text-white px-6 py-2 rounded-xl font-bold text-sm hover:bg-secondary/90 transition-colors whitespace-nowrap">
-              Request Release
-            </button>
+            <p className="text-black/40 dark:text-gray-400 text-xs mb-6">Client: Nexus Media Inc.</p>
+            <div className="w-full bg-black/5 dark:bg-white/5 h-1.5 rounded-full mb-8">
+              <div className="bg-green-500 h-full w-1/2 rounded-full"></div>
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex gap-8">
+                <div>
+                  <p className="text-[10px] text-black/40 dark:text-gray-400 uppercase font-normal tracking-widest mb-1">Total</p>
+                  <p className="font-normal text-black/80 dark:text-primary">$2,400.00</p>
+                </div>
+                <div>
+                  <p className="text-[10px] text-black/40 dark:text-gray-400 uppercase font-normal tracking-widest mb-1">Milestone 1</p>
+                  <p className="font-normal text-green-600 dark:text-green-400">Released</p>
+                </div>
+              </div>
+              <button className="bg-secondary text-white px-6 py-2 rounded-xl font-normal text-xs hover:bg-secondary/90 transition-colors whitespace-nowrap">
+                Request release
+              </button>
+            </div>
           </div>
         </div>
       </div>
