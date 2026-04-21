@@ -95,9 +95,11 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
           </div>
           <p className="text-xs text-black/80 font-normal mb-8">Zero transaction fees on wallet to wallet transfer</p>
           
-          <div className="w-full bg-[#F69C31] rounded-2xl p-6 mb-8 border border-[#AB3625]/10">
-            <p className="text-[10px] uppercase tracking-widest text-black/80 font-normal mb-2 text-left">Send to:</p>
-            <p className="text-sm font-bold text-black tracking-wide">Wallet ID : ADHGKAHUK</p>
+          <div className="w-full bg-[#F69C31] rounded-2xl p-6 mb-8 border border-[#AB3625]/10 flex flex-col items-center justify-center">
+            <p className="text-base text-black/80 font-normal mb-2 font-montserrat">Send to:</p>
+            <p className="text-xl font-medium text-black font-montserrat">
+              Wallet id : <span className="text-[#AB3625]">ADHGKAHUK</span>
+            </p>
           </div>
           
           <button className="text-xs font-normal text-[#AB3625] hover:underline mb-10 tracking-wide">
