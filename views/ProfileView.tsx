@@ -67,20 +67,25 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
           <AnimatePresence>
             {isCraftMenuOpen && (
               <motion.div 
-                initial={{ opacity: 0, x: 10 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                className="absolute top-0 left-full ml-8 w-48 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden hidden md:block"
+                exit={{ opacity: 0, x: 20 }}
+                className="md:fixed md:top-32 md:right-12 lg:right-24 md:w-56 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-[100] overflow-hidden hidden md:block"
               >
-                {availableCrafts.map((craft) => (
-                  <button
-                    key={craft}
-                    onClick={() => handleCraftChange(craft)}
-                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors text-black dark:text-white font-normal"
-                  >
-                    {craft}
-                  </button>
-                ))}
+                <div className="p-2 border-b border-black/5 dark:border-white/5 bg-gray-50 dark:bg-gray-900/50">
+                  <p className="text-[10px] uppercase tracking-widest font-bold text-black/40 dark:text-white/40 px-3 py-1">Select your craft</p>
+                </div>
+                <div className="max-h-[60vh] overflow-y-auto no-scrollbar py-2">
+                  {availableCrafts.map((craft) => (
+                    <button
+                      key={craft}
+                      onClick={() => handleCraftChange(craft)}
+                      className={`w-full px-5 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary font-medium' : 'text-black dark:text-white'}`}
+                    >
+                      {craft}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
             {/* Mobile Dropdown (Centered below) */}
@@ -89,17 +94,19 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-48 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden md:hidden"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-6 w-56 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden md:hidden"
               >
-                {availableCrafts.map((craft) => (
-                  <button
-                    key={craft}
-                    onClick={() => handleCraftChange(craft)}
-                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors text-black dark:text-white font-normal"
-                  >
-                    {craft}
-                  </button>
-                ))}
+                <div className="max-h-[40vh] overflow-y-auto no-scrollbar py-2">
+                  {availableCrafts.map((craft) => (
+                    <button
+                      key={craft}
+                      onClick={() => handleCraftChange(craft)}
+                      className={`w-full px-5 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary font-medium' : 'text-black dark:text-white'}`}
+                    >
+                      {craft}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -196,7 +203,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
         </div>
 
         <div className="pt-10 flex justify-center">
-          <button className="w-full max-w-md py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest">
+          <button className="w-full max-w-lg py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest">
             Save status
           </button>
         </div>
