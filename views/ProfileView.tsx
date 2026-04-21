@@ -67,10 +67,29 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
           <AnimatePresence>
             {isCraftMenuOpen && (
               <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="absolute top-0 left-full ml-4 md:fixed md:top-24 md:right-12 md:left-auto md:ml-0 w-48 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-[100] overflow-hidden"
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                className="absolute top-0 left-full ml-8 w-48 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden hidden md:block"
+              >
+                {availableCrafts.map((craft) => (
+                  <button
+                    key={craft}
+                    onClick={() => handleCraftChange(craft)}
+                    className="w-full px-4 py-2.5 text-left text-sm hover:bg-secondary/5 dark:hover:bg-white/5 transition-colors text-black dark:text-white font-normal"
+                  >
+                    {craft}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+            {/* Mobile Dropdown (Centered below) */}
+            {isCraftMenuOpen && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-48 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-xl shadow-xl z-50 overflow-hidden md:hidden"
               >
                 {availableCrafts.map((craft) => (
                   <button
@@ -177,7 +196,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
         </div>
 
         <div className="pt-10 flex justify-center">
-          <button className="w-full py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest">
+          <button className="w-full max-w-md py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest">
             Save status
           </button>
         </div>

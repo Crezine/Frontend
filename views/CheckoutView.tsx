@@ -81,23 +81,23 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full max-w-xl min-h-[85vh] overflow-hidden shadow-2xl flex flex-col items-center p-8 md:p-12 text-center"
+          className="relative bg-white border border-[#AB3625]/20 rounded-[2rem] w-full max-w-xl min-h-[85vh] overflow-hidden shadow-2xl flex flex-col items-center p-8 md:p-12 text-center"
         >
-          <div className="w-20 h-20 bg-white border-2 border-primary rounded-full flex items-center justify-center mb-6 shadow-sm shadow-primary/20">
-            <RiCheckLine className="text-primary text-5xl" />
+          <div className="w-24 h-24 bg-white border-4 border-[#AB3625] rounded-full flex items-center justify-center mb-8 shadow-sm">
+            <RiCheckLine className="text-[#F69C31] text-6xl" />
           </div>
           
           <h2 className="text-2xl font-normal text-black mb-2">Successful transaction</h2>
-          <p className="text-xs text-black/40 font-normal mb-6">17th Apr 2026/ 12:59 pm</p>
+          <p className="text-sm text-black/80 font-normal mb-6">17th Apr 2026/ 12:59 pm</p>
           
           <div className="text-4xl font-normal text-black tracking-tighter mb-2">
             $ {total.toFixed(2)}
           </div>
-          <p className="text-[10px] text-black/60 font-normal mb-8">Zero transaction fees on wallet to wallet transfer</p>
+          <p className="text-xs text-black/80 font-normal mb-8">Zero transaction fees on wallet to wallet transfer</p>
           
-          <div className="w-full bg-[#FFF9C4] rounded-2xl p-6 mb-8 border border-[#FBC02D]/10">
-            <p className="text-[10px] uppercase tracking-widest text-black/40 font-normal mb-2">Send to:</p>
-            <p className="text-sm font-normal text-black tracking-wide">Wallet ID : ADHGKAHUK</p>
+          <div className="w-full bg-[#F69C31] rounded-2xl p-6 mb-8 border border-[#AB3625]/10">
+            <p className="text-[10px] uppercase tracking-widest text-black/80 font-normal mb-2 text-left">Send to:</p>
+            <p className="text-sm font-bold text-black tracking-wide">Wallet ID : ADHGKAHUK</p>
           </div>
           
           <button className="text-xs font-normal text-[#AB3625] hover:underline mb-10 tracking-wide">
@@ -142,13 +142,13 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
           {/* Scrollable Content */}
           <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
             {/* Header Tabs Inside Card */}
-            <div className="flex gap-2 mb-8 bg-gray-50 p-1.5 rounded-xl border border-black/5">
+            <div className="flex gap-2 mb-8 bg-pink-100 p-1.5 rounded-xl border border-black/5">
               <button 
                 onClick={() => setActiveTab('card')}
                 className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'card' 
                     ? 'bg-secondary text-white shadow-md' 
-                    : 'text-black/40 hover:bg-black/5'
+                    : 'bg-pink-100 text-black hover:bg-pink-200'
                 }`}
               >
                 Pay by card
@@ -158,7 +158,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                 className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'mpesa' 
                     ? 'bg-secondary text-white shadow-md' 
-                    : 'text-black/40 hover:bg-black/5'
+                    : 'bg-pink-100 text-black hover:bg-pink-200'
                 }`}
               >
                 Pay by Mpesa
@@ -196,14 +196,14 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                       key="crezine-wallet"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex flex-col items-center pt-8"
+                      className="flex flex-col items-center p-8 border border-[#AB3625]/20 rounded-[2rem]"
                     >
-                      <img src="/crezine.png" alt="Crezine" className="h-16 mb-10 object-contain" />
+                      <img src="/crezine.png" alt="Crezine" className="h-20 mb-10 object-contain" />
                       <h3 className="text-lg font-normal text-black mb-1">Pay with your wallet</h3>
                       
-                      <div className="mt-8 mb-4">
+                      <div className="mt-8 mb-4 text-center">
                         <span className="text-sm font-normal text-[#AB3625]">Wallet balance: </span>
-                        <span className="text-sm font-normal text-black/60">$ {walletBalance.toFixed(2)}</span>
+                        <span className="text-sm font-normal text-black">$ {walletBalance.toFixed(2)}</span>
                       </div>
                       
                       <button 
@@ -222,39 +222,39 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                           { label: 'Card number', name: 'cardNumber', type: 'text', placeholder: '0000 0000 0000 0000' }
                         ].map((field) => (
                           <div key={field.name} className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">{field.label}</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">{field.label}</label>
                             <input 
                               type={field.type}
                               name={field.name}
                               placeholder={field.placeholder}
                               value={(formData as any)[field.name]}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                         ))}
 
                         <div className="grid grid-cols-2 gap-4">
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Expiration date</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Expiration date</label>
                             <input 
                               type="text" 
                               name="expiry"
                               placeholder="MM / YY"
                               value={formData.expiry}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Security code</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Security code</label>
                             <input 
                               type="text" 
                               name="cvc"
                               placeholder="CVC"
                               value={formData.cvc}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                         </div>
@@ -266,36 +266,36 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                           { label: 'State', name: 'state' }
                         ].map((field) => (
                           <div key={field.name} className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">{field.label}</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">{field.label}</label>
                             <input 
                               type="text" 
                               name={field.name}
                               value={(formData as any)[field.name]}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                         ))}
 
                         <div className="grid grid-cols-2 gap-4">
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Town</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Town</label>
                             <input 
                               type="text" 
                               name="town"
                               value={formData.town}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black/70 font-normal ml-1">Postal code</label>
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Postal code</label>
                             <input 
                               type="text" 
                               name="postalCode"
                               value={formData.postalCode}
                               onChange={handleInputChange}
-                              className="w-full h-[52px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
                           </div>
                         </div>
@@ -304,11 +304,11 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                       {/* Summary */}
                       <div className="pt-6 space-y-4">
                         <div className="flex justify-between items-end">
-                          <span className="text-xl md:text-2xl font-normal text-black/60 tracking-tight leading-none">Subtotal</span>
-                          <span className="text-xl md:text-2xl font-normal text-black tracking-tighter leading-none">$ {subtotal.toFixed(2)}</span>
+                          <span className="text-sm font-normal text-black/80 tracking-tight leading-none font-montserrat">Subtotal</span>
+                          <span className="text-xl md:text-2xl font-normal text-black/80 tracking-tighter leading-none">$ {subtotal.toFixed(2)}</span>
                         </div>
                         <div className="flex justify-between items-center border-t border-black/5 pt-4">
-                          <span className="text-xs font-normal text-black uppercase tracking-[0.2em]">TOTAL</span>
+                          <span className="text-xs font-normal text-black uppercase tracking-[0.2em] font-montserrat">TOTAL</span>
                           <span className="text-xl md:text-2xl font-normal text-black tracking-tighter">$ {total.toFixed(2)}</span>
                         </div>
                       </div>
@@ -334,7 +334,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                     <div className="w-8 h-8 border-2 border-secondary/20 border-t-secondary rounded-full animate-spin" />
                   </div>
                   <h3 className="text-sm font-normal uppercase tracking-widest text-black">Mpesa Checkout</h3>
-                  <p className="text-[10px] text-black/60 max-w-[240px] leading-relaxed font-normal">This payment method is being integrated. Please use pay by card for now.</p>
+                  <p className="text-sm text-black/80 max-w-[280px] leading-relaxed font-normal">This payment method is being integrated. Please use pay by card for now.</p>
                 </motion.div>
               )}
             </AnimatePresence>
