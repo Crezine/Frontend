@@ -4,7 +4,6 @@ import {
 } from 'react-icons/ri';
 import { HiSwitchVertical } from "react-icons/hi";
 import { BiHide, BiShow } from "react-icons/bi";
-import { RxSwitch } from "react-icons/rx";
 import { ViewProps } from '../types';
 import { motion } from 'framer-motion';
 
@@ -43,6 +42,7 @@ const TransactionItem: React.FC<{ title: string; date: string; amount: string; t
 const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
   const [showBalance, setShowBalance] = useState(false);
   const [currency, setCurrency] = useState<'USD' | 'NGN'>('USD');
+  const [isVerified, setIsVerified] = useState(true);
 
   const toggleCurrency = () => {
     setCurrency(prev => prev === 'USD' ? 'NGN' : 'USD');
@@ -56,25 +56,44 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
   const currentBalance = balanceData[currency];
 
   return (
-    <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 font-montserrat font-normal">
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 font-montserrat font-normal text-black dark:text-white transition-colors">
       <header className="mb-6 md:mb-10 flex justify-between items-start">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl md:text-4xl font-montserrat font-medium text-secondary dark:text-primary">Hello, {userData?.name || 'Creative'}!</h1>
-          <p className="text-black dark:text-gray-300 mt-1 font-montserrat font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
+          <h1 className="text-3xl md:text-4xl font-normal font-rubik text-secondary dark:text-primary">Hello, {userData?.name || 'Creative'}!</h1>
+          <p className="text-black dark:text-gray-300 mt-1 font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
         </motion.div>
 
-        <div className="flex flex-col items-center gap-2">
-          <img 
-            src="/verified.png" 
-            alt="Verified" 
-            className="w-16 h-16 md:w-20 md:h-20 object-contain"
-          />
-          <span className="font-montserrat font-medium text-[11px] md:text-sm text-center text-black dark:text-gray-300 tracking-wide">Account verified!</span>
-        </div>
+        <button 
+          onClick={() => setIsVerified(!isVerified)}
+          className="flex flex-col items-center gap-2 hover:opacity-90 transition-all group pt-2"
+        >
+          <div 
+            className={`w-20 h-10 rounded-full border-[4px] flex items-center transition-all duration-300 ${
+              isVerified 
+                ? 'border-secondary bg-white dark:border-primary dark:bg-gray-800' 
+                : 'border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900'
+            }`}
+          >
+            <motion.div 
+              animate={{ x: isVerified ? 40 : 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              className="w-7 h-7 rounded-full flex items-center justify-center ml-1"
+            >
+              <div className={`rounded-full transition-all duration-300 ${
+                isVerified 
+                  ? 'w-5 h-5 border-[4px] border-primary bg-transparent' 
+                  : 'w-4 h-4 border-2 border-gray-400 bg-transparent'
+              }`} />
+            </motion.div>
+          </div>
+          <span className={`font-normal text-[11px] md:text-sm text-center tracking-wide ${isVerified ? 'text-black dark:text-gray-300' : 'text-secondary'}`}>
+            {isVerified ? 'Account verified!' : 'Verify account!'}
+          </span>
+        </button>
       </header>
 
       {/* Main Dashboard Section */}
@@ -106,8 +125,9 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           </button>
 
           <div className="relative z-10">
-            <p className="text-white/90 font-montserrat font-normal mb-1 uppercase tracking-widest text-[10px]">Total Balance ({currency})</p>
+            <p className="text-white/90 font-rubik font-normal mb-1 uppercase tracking-widest text-[10px]">Total Balance</p>
             <div className="flex items-baseline gap-1">
+
               <span 
                 className={`text-4xl md:text-6xl font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}
               >
@@ -165,8 +185,8 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
         className="bg-white dark:bg-gray-800 rounded-[32px] p-8 md:p-10 border-2 border-secondary/5 dark:border-white/5 shadow-2xl transition-colors"
       >
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-montserrat font-medium text-secondary dark:text-primary">Recent History</h2>
-          <button onClick={() => navigate('wallet')} className="text-primary font-montserrat font-normal text-sm hover:underline">View All History</button>
+          <h2 className="text-2xl font-normal text-secondary dark:text-primary">Recent History</h2>
+          <button onClick={() => navigate('wallet')} className="text-primary font-normal text-sm hover:underline">View All History</button>
         </div>
         <div className="space-y-1">
           <TransactionItem title="Escrow Release: Brand Identity" date="Oct 24, 2024" amount="+ $1,200.00" type="positive" />

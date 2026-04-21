@@ -14,6 +14,7 @@ import ContactView from './views/ContactView';
 import WhatsAppView from './views/WhatsAppView';
 import About from './views/About';
 import ShopView from './views/ShopView';
+import CheckoutView from './views/CheckoutView';
 import CookieSettingsView from './views/CookieSettingsView';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
@@ -141,6 +142,7 @@ const App: React.FC = () => {
         <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
         <Route path="/about" element={<About navigate={handleNavigate} />} />
         <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
+        <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
         <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />
