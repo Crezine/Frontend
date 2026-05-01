@@ -18,6 +18,7 @@ const FundingView = lazy(() => import('./FundingView'));
 const PaymentsView = lazy(() => import('./PaymentsView'));
 const TicketingView = lazy(() => import('./TicketingView'));
 const ProfileView = lazy(() => import('./ProfileView'));
+const TicketCheckoutView = lazy(() => import('./TicketCheckoutView'));
 
 interface DashboardViewProps {
   navigate: (view: AppView) => void;
@@ -35,13 +36,18 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme === 'dark';
+  });
 
   useEffect(() => {
     if (isDarkMode) {
       document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);
 
@@ -63,8 +69,9 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
       parentNavigate('landing');
     } else if (view === 'dashboard' || view === 'home') {
       navigate('/dashboard');
-    } else if (['wallet', 'pay', 'payments', 'escrow', 'events', 'ticketing', 'fund', 'funding', 'profile'].includes(view)) {
-      navigate(`/dashboard/${view}`);
+    } else if (['wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding', 'profile', 'ticket-checkout'].includes(view)) {
+      const path = view === 'ticketing' ? 'ticket' : view;
+      navigate(`/dashboard/${path}`);
     } else {
       parentNavigate(view);
     }
@@ -114,9 +121,11 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
                 <Route path="escrow" element={<EscrowView navigate={handleNavigation} userData={userData} />} />
                 <Route path="events" element={<EventsView navigate={handleNavigation} userData={userData} />} />
                 <Route path="ticketing" element={<TicketingView navigate={handleNavigation} userData={userData} />} />
-                <Route path="fund" element={<FundView navigate={handleNavigation} userData={userData} />} />
                 <Route path="funding" element={<FundingView navigate={handleNavigation} userData={userData} />} />
+                <Route path="ticket" element={<TicketingView navigate={handleNavigation} userData={userData} />} />
+                <Route path="ticket-checkout" element={<TicketCheckoutView navigate={handleNavigation} />} />
                 <Route path="profile" element={<ProfileView navigate={handleNavigation} userData={userData} isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />} />
+
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>

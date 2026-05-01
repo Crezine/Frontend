@@ -158,7 +158,7 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
             onClick={() => navigate('pay')}
           />
           <ActionButton 
-            label="Manage Escrow"
+            label="My Storefront"
             onClick={() => navigate('escrow')}
             variant="maroon"
           />
@@ -171,8 +171,8 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
             onClick={() => navigate('wallet')}
           />
           <ActionButton 
-            label="Ticketing"
-            onClick={() => navigate('events')}
+            label="My Tickets"
+            onClick={() => navigate('ticket')}
             variant="maroon"
           />
         </motion.div>

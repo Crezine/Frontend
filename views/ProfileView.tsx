@@ -54,12 +54,12 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
         <div className="relative">
           <button 
             onClick={() => setIsCraftMenuOpen(!isCraftMenuOpen)}
-            className="flex items-center gap-2 hover:opacity-80 transition-all"
+            className="flex items-center gap-2 hover:opacity-80 transition-all py-2 px-6 bg-gray-50 dark:bg-gray-800 rounded-full border border-black/5 dark:border-white/5 shadow-sm"
           >
             <span className="text-lg font-normal text-[#F69C31]">{formData.craft}</span>
             <div className={`transition-transform duration-300 ${isCraftMenuOpen ? 'rotate-180' : ''}`}>
-              <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 1L4 4L1 1" stroke="#AB3625" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 2.5L5 6.5L1 2.5" stroke="#AB3625" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
           </button>
@@ -70,17 +70,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                className="md:fixed md:top-32 md:right-12 lg:right-24 md:w-56 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-[100] overflow-hidden hidden md:block"
+                className="md:fixed md:top-32 md:right-12 lg:right-24 md:w-64 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-[100] overflow-hidden hidden md:block"
               >
-                <div className="p-2 border-b border-black/5 dark:border-white/5 bg-gray-50 dark:bg-gray-900/50">
-                  <p className="text-[10px] uppercase tracking-widest font-bold text-black/40 dark:text-white/40 px-3 py-1">Select your craft</p>
-                </div>
                 <div className="max-h-[60vh] overflow-y-auto no-scrollbar py-2">
                   {availableCrafts.map((craft) => (
                     <button
                       key={craft}
                       onClick={() => handleCraftChange(craft)}
-                      className={`w-full px-5 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary font-medium' : 'text-black dark:text-white'}`}
+                      className={`w-full px-6 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary' : 'text-black dark:text-white'}`}
                     >
                       {craft}
                     </button>
@@ -94,14 +91,14 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute top-full left-1/2 -translate-x-1/2 mt-6 w-56 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden md:hidden"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-6 w-64 bg-white dark:bg-gray-800 border border-black/10 dark:border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden md:hidden"
               >
                 <div className="max-h-[40vh] overflow-y-auto no-scrollbar py-2">
                   {availableCrafts.map((craft) => (
                     <button
                       key={craft}
                       onClick={() => handleCraftChange(craft)}
-                      className={`w-full px-5 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary font-medium' : 'text-black dark:text-white'}`}
+                      className={`w-full px-6 py-3 text-left text-sm transition-colors font-normal hover:bg-secondary/5 dark:hover:bg-white/5 ${formData.craft === craft ? 'text-secondary dark:text-primary' : 'text-black dark:text-white'}`}
                     >
                       {craft}
                     </button>
@@ -147,17 +144,20 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
           </div>
           <div className="flex flex-col gap-2">
             <label className="text-xs font-normal text-black/70 dark:text-white/70 ml-1">Phone Number</label>
-            <div className="relative h-[52px]">
-              <input 
-                type="text" 
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                className="w-full h-full px-4 bg-white dark:bg-gray-900 border border-black dark:border-white/30 rounded-xl focus:outline-none focus:border-secondary transition-all font-normal text-sm text-black dark:text-white pr-8"
-              />
-              <div className="absolute bottom-4 right-3 pointer-events-none">
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 1L4 4L1 1" stroke="#F69C31" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+            <div className="relative h-[52px] group">
+              <div className="flex h-full w-full bg-white dark:bg-gray-900 border border-black dark:border-white/30 rounded-xl overflow-hidden focus-within:border-secondary transition-all">
+                <button className="h-full px-4 border-r border-black/10 dark:border-white/10 bg-gray-50 dark:bg-gray-800 text-xs font-normal flex items-center gap-2">
+                  +254
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 1L4 4L1 1" stroke="#F69C31" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+                <input 
+                  type="text" 
+                  value={formData.phone.replace('+254 ', '')}
+                  onChange={(e) => setFormData({...formData, phone: '+254 ' + e.target.value})}
+                  className="flex-grow h-full px-4 bg-transparent focus:outline-none font-normal text-sm text-black dark:text-white"
+                />
               </div>
             </div>
           </div>
@@ -203,7 +203,7 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
         </div>
 
         <div className="pt-10 flex justify-center">
-          <button className="w-full max-w-lg py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest">
+          <button className="w-full max-w-lg py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest uppercase">
             Save status
           </button>
         </div>

@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { ViewProps } from '../types';
 import { FiX } from 'react-icons/fi';
 import { RiCheckLine } from 'react-icons/ri';
-import { X } from 'lucide-react';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
 
-const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
+const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<MainTab>('card');
   const [activeOption, setActiveOption] = useState<PaymentOption>('card');
@@ -21,11 +20,6 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
     expiry: '',
     cvc: '',
     cardholderName: '',
-    country: '',
-    address: '',
-    state: '',
-    town: '',
-    postalCode: ''
   });
 
   // Lock scroll when component is mounted
@@ -36,18 +30,13 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
     };
   }, []);
 
-  const cartItems = useMemo(() => {
-    const saved = localStorage.getItem('crezine_cart');
-    try {
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) { return []; }
+  const totalAmount = useMemo(() => {
+    const saved = localStorage.getItem('crezine_checkout_total');
+    return saved ? parseFloat(saved) : 250.00;
   }, []);
 
-  const subtotal = useMemo(() => 
-    cartItems.reduce((acc: any, item: any) => acc + item.price * item.quantity, 0), 
-  [cartItems]);
-
-  const total = subtotal;
+  const subtotal = totalAmount;
+  const total = totalAmount;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -65,9 +54,11 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
     navigate(-1);
   };
 
-  const handleConfirmWalletPayment = () => {
-    const newBalance = walletBalance - total;
-    setWalletBalance(newBalance);
+  const handleConfirmPayment = () => {
+    if (activeOption === 'crezine') {
+      const newBalance = walletBalance - total;
+      setWalletBalance(newBalance);
+    }
     setIsSuccess(true);
   };
 
@@ -82,37 +73,42 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative bg-white dark:bg-gray-900 rounded-[2rem] w-full max-w-sm overflow-hidden shadow-2xl flex flex-col items-center p-6 md:p-8 text-center"
+          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full max-w-xl min-h-[85vh] overflow-hidden shadow-2xl flex flex-col items-center p-8 md:p-12 text-center"
         >
-          <div className="w-16 h-16 bg-white dark:bg-gray-800 border-2 border-[#AB3625] rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <RiCheckLine className="text-[#F69C31] text-4xl" />
+          {/* The tick */}
+          <div className="w-24 h-24 bg-white border-4 border-secondary rounded-full flex items-center justify-center mb-8 shadow-sm">
+            <RiCheckLine className="text-primary text-6xl" />
           </div>
           
-          <h2 className="text-lg font-normal text-black dark:text-white mb-1">Successful transaction</h2>
-          <p className="text-[10px] text-black/80 dark:text-gray-300 font-normal mb-4">17th Apr 2026/ 12:59 pm</p>
+          {/* Payment Complete */}
+          <h2 className="text-2xl font-medium text-black mb-1 font-montserrat">Payment Complete</h2>
           
-          <div className="text-2xl font-normal text-black dark:text-white tracking-tighter mb-1">
-            $ {total.toFixed(2)}
+          {/* Thank you */}
+          <p className="text-xl font-medium text-black mb-8 font-montserrat">Thank you</p>
+          
+          {/* Please enter email to receive your ticket */}
+          <p className="text-sm font-normal text-secondary mb-10 font-montserrat px-4">
+            Please enter email to receive your ticket
+          </p>
+          
+          <div className="w-full max-w-sm space-y-6">
+            <div className="flex flex-col items-start gap-2 w-full text-left">
+              <label className="text-sm font-normal text-black font-montserrat ml-1">Email *</label>
+              {/* Textarea with thin black borders */}
+              <textarea 
+                className="w-full h-12 px-4 py-3 bg-transparent border border-black rounded-xl text-xs font-normal focus:outline-none transition-colors text-black resize-none no-scrollbar"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            {/* View ticket button */}
+            <button 
+              onClick={handleDone}
+              className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
+            >
+              View ticket
+            </button>
           </div>
-          <p className="text-[10px] text-black/80 dark:text-gray-300 font-normal mb-4">Zero transaction fees on wallet to wallet transfer</p>
-          
-          <div className="w-full bg-[#F69C31] rounded-xl p-4 mb-4 border border-[#AB3625]/10 flex flex-col items-center justify-center">
-            <p className="text-xs text-black/80 dark:text-black/80 font-normal mb-0.5 font-montserrat">Send to:</p>
-            <p className="text-sm font-medium text-black dark:text-black font-montserrat">
-              Wallet id : <span className="text-[#AB3625]">ADHGKAHUK</span>
-            </p>
-          </div>
-          
-          <button className="text-[10px] font-normal text-[#AB3625] hover:underline mb-6 tracking-wide">
-            Click here to download receipt
-          </button>
-          
-          <button 
-            onClick={handleDone}
-            className="w-full py-2 bg-secondary text-white rounded-full text-xs font-normal uppercase tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
-          >
-            Done
-          </button>
         </motion.div>
       </div>
     );
@@ -132,17 +128,15 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         <motion.div 
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          className="relative bg-white rounded-[2rem] w-full max-w-lg min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh]"
+          className="relative bg-white border border-secondary/30 rounded-[2rem] w-full min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh]"
         >
           {/* Close Button */}
-          <motion.button 
-            whileHover={{ scale: 1.1, rotate: 90 }}
-            whileTap={{ scale: 0.9 }}
+          <button 
             onClick={handleClose}
-            className="absolute top-4 right-4 z-[120] p-1.5 bg-white/20 backdrop-blur-md border border-black/10 rounded-full text-black hover:bg-white/40 transition-all shadow-sm"
+            className="absolute top-4 right-4 z-[120] p-2 bg-white border border-black rounded-full text-black hover:bg-black hover:text-white transition-all shadow-sm"
           >
-            <X size={28} strokeWidth={3} />
-          </motion.button>
+            <FiX size={16} />
+          </button>
 
           {/* Scrollable Content */}
           <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
@@ -212,7 +206,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                       </div>
                       
                       <button 
-                        onClick={handleConfirmWalletPayment}
+                        onClick={handleConfirmPayment}
                         className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
                       >
                         Confirm
@@ -246,7 +240,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               type="text" 
                               name="expiry"
                               placeholder="MM / YY"
-                              value={formData.expiry}
+                              value={(formData as any).expiry}
                               onChange={handleInputChange}
                               className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
@@ -257,7 +251,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               type="text" 
                               name="cvc"
                               placeholder="CVC"
-                              value={formData.cvc}
+                              value={(formData as any).cvc}
                               onChange={handleInputChange}
                               className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
                             />
@@ -266,9 +260,6 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
 
                         {[
                           { label: 'Cardholder name', name: 'cardholderName' },
-                          { label: 'Country', name: 'country' },
-                          { label: 'Address', name: 'address' },
-                          { label: 'State', name: 'state' }
                         ].map((field) => (
                           <div key={field.name} className="flex flex-col gap-1.5">
                             <label className="text-[10px] tracking-wide text-black font-normal ml-1">{field.label}</label>
@@ -281,29 +272,6 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                             />
                           </div>
                         ))}
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Town</label>
-                            <input 
-                              type="text" 
-                              name="town"
-                              value={formData.town}
-                              onChange={handleInputChange}
-                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
-                            />
-                          </div>
-                          <div className="flex flex-col gap-1.5">
-                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Postal code</label>
-                            <input 
-                              type="text" 
-                              name="postalCode"
-                              value={formData.postalCode}
-                              onChange={handleInputChange}
-                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
-                            />
-                          </div>
-                        </div>
                       </div>
 
                       {/* Summary */}
@@ -320,7 +288,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
 
                       {/* Pay Button */}
                       <button 
-                        onClick={() => setIsSuccess(true)}
+                        onClick={handleConfirmPayment}
                         className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
                       >
                         Pay $ {total.toFixed(2)}
@@ -356,4 +324,4 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   );
 };
 
-export default CheckoutView;
+export default TicketCheckoutView;

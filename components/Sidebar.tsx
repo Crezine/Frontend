@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, navigate, activeView
     { view: 'pay', label: 'Payment Link' },
     { view: 'payments', label: 'Invoice Link' },
     { view: 'funding', label: 'Residencies' },
-    { view: 'fund', label: 'Creative Grants' },
+    { view: 'events', label: 'Creative Grants' },
     { view: 'wallet', label: 'Transaction History' },
   ];
 

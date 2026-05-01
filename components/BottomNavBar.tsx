@@ -21,7 +21,7 @@ const BottomNavBar: React.FC<BottomNavBarProps> = ({ navigate, activeView }) => 
     { view: 'home' as AppView, label: 'Home', icon: RiHome4Line, activeIcon: RiHome4Fill },
     { view: 'wallet' as AppView, label: 'Wallet', icon: RiWallet3Line, activeIcon: RiWallet3Fill },
     { view: 'pay' as AppView, label: 'Pay', icon: RiExchangeDollarLine, activeIcon: RiExchangeDollarFill },
-    { view: 'events' as AppView, label: 'Events', icon: RiCalendarEventLine, activeIcon: RiCalendarEventFill },
+    { view: 'ticket' as AppView, label: 'My Tickets', icon: RiCalendarEventLine, activeIcon: RiCalendarEventFill },
   ];
 
   return (

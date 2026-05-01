@@ -15,6 +15,7 @@ import WhatsAppView from './views/WhatsAppView';
 import About from './views/About';
 import ShopView from './views/ShopView';
 import CheckoutView from './views/CheckoutView';
+import TicketCheckoutView from './views/TicketCheckoutView';
 import CookieSettingsView from './views/CookieSettingsView';
 import FundingView from './views/FundingView';
 import PaymentsView from './views/PaymentsView';
@@ -56,11 +57,12 @@ const App: React.FC = () => {
   const handleNavigate = (view: AppView) => {
     if (view === 'landing') {
       navigate('/');
-    } else if (['home', 'wallet', 'pay', 'payments', 'escrow', 'events', 'ticketing', 'fund', 'funding'].includes(view)) {
+    } else if (['home', 'wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding'].includes(view)) {
       if (view === 'home') {
         navigate('/dashboard');
       } else {
-        navigate(`/dashboard/${view}`);
+        const path = view === 'ticketing' ? 'ticket' : view;
+        navigate(`/dashboard/${path}`);
       }
     } else {
       navigate(`/${view}`);
@@ -143,6 +145,7 @@ const App: React.FC = () => {
         <Route path="/about" element={<About navigate={handleNavigate} />} />
         <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
         <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+        <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
         <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
         <Route path="/whatsapp" element={<WhatsAppView />} />

@@ -164,7 +164,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                         navigate('checkout' as any);
                         onClose();
                       }}
-                      className="w-full bg-secondary text-white py-2.5 rounded-full text-sm font-normal hover:opacity-90 transition-all uppercase tracking-widest"
+                      className="w-full bg-secondary text-white py-2.5 rounded-full text-sm font-normal hover:opacity-90 transition-all tracking-widest"
                     >
                       Checkout
                     </button>
