@@ -157,12 +157,11 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
             label="Pay"
             onClick={() => navigate('pay')}
           />
-          <ActionButton 
+          <ActionButton
             label="My Storefront"
-            onClick={() => navigate('escrow')}
+            onClick={() => navigate('shop')}
             variant="maroon"
-          />
-          <ActionButton 
+          />          <ActionButton 
             label="Send"
             onClick={() => navigate('payments')}
           />

@@ -58,19 +58,37 @@ const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: 
 );
 
 const ComingSoonSection: React.FC<{ title: string }> = ({ title }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="flex-grow flex flex-col items-center justify-center text-center w-full min-h-[85vh] px-6"
-  >
-    <h2 className="text-4xl md:text-5xl lg:text-6xl font-normal text-black tracking-[0.2em] uppercase mb-4 font-montserrat">
-      COMING <span className="text-primary italic">SOON</span>
-    </h2>
-    <div className="h-[1px] w-12 bg-primary mb-8" />
-    <p className="text-black text-sm md:text-base font-thin max-w-md tracking-[0.15em] leading-relaxed font-montserrat mx-auto">
-      We are curating something special for {title}. Stay tuned.
-    </p>
-  </motion.div>
+  <div className="flex-grow flex items-center justify-center w-full min-h-screen py-20 px-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
+      className="flex flex-col items-center max-w-2xl"
+    >
+      <motion.h2 
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.5 }}
+        className="text-3xl md:text-5xl lg:text-6xl font-normal text-secondary tracking-[0.15em] uppercase font-montserrat whitespace-nowrap"
+      >
+        COMING <span className="text-primary italic font-normal">SOON</span>
+      </motion.h2>
+      
+      <motion.p 
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+        className="text-black text-[13px] md:text-lg font-medium tracking-wide font-montserrat mt-2"
+      >
+        We are curating something special for {title}. Stay tuned.
+      </motion.p>
+      
+      {/* Centered background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-full h-full overflow-hidden opacity-10 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/15 rounded-full blur-[140px]" />
+      </div>
+    </motion.div>
+  </div>
 );
 
 const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
@@ -81,6 +99,10 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   
   const location = useLocation();
   const navigate = useNavigate();
+
+  const isComingSoonView = useMemo(() => 
+    ['collections', 'pencil-portrait', 'paintings'].some(path => location.pathname.includes(path)),
+  [location.pathname]);
 
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem('crezine_cart');
@@ -215,7 +237,7 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         </div>
       </header>
       
-      <main className="flex-grow pt-32 md:pt-40 px-4 sm:px-6 max-w-7xl mx-auto w-full flex flex-col">
+      <main className={`flex-grow px-4 sm:px-6 max-w-7xl mx-auto w-full flex flex-col ${isComingSoonView ? 'pt-0' : 'pt-32 md:pt-40'}`}>
         <Routes>
           <Route path="/" element={<Navigate to="all-products" replace />} />
           <Route path="all-products" element={
