@@ -14,11 +14,13 @@ The following features on the frontend are currently using mock data or have lim
 
 ## 2. Logical Inconsistencies & Improvements
 
-- **Verification Logic**: (Updated) The verification status should not be a simple UI toggle but a backend-driven state reflected in the user data.
+- **Verification Logic**: The verification status should not be a simple UI toggle but a backend-driven state reflected in the user data.
 - **Ticketing Stats**: `TicketingView.tsx` calculates stats by iterating over all events and fetching sales for each. This is inefficient (N+1 query problem). A summary endpoint like `/events/stats/summary` should be provided by the backend to handle global sales performance.
 - **Event Capacity**: `EventsView.tsx` doesn't strictly enforce ticket capacity on the frontend during selection; it relies on the backend `buyTickets` call to fail if sold out.
 - **Empty States**: (Fixed) Visibility for "No recent transactions" and "No data yet" has been improved for both light and dark modes across all views.
 - **Balance Precision**: Frontend calculations use floats for display, but the backend uses cents (integers). Care must be taken to maintain precision during execution.
+- **Auth Robustness**: (Fixed) Frontend views now handle `401 Unauthorized` errors gracefully by syncing with `localStorage` as a fallback, ensuring a seamless experience even without an active session.
+- **Unique Identifiers**: (Fixed) Resolved duplicate key warnings in `CartSidebar` and `ShopView` by using `productId || index` patterns.
 
 ## 3. Implementation Status
 
@@ -33,6 +35,7 @@ The following features on the frontend are currently using mock data or have lim
 | Payment Links | Integrated | `walletService` (History only) |
 | Ticketing Analytics | Partial | `eventService` (Basic stats only) |
 | Checkout Balance | Integrated | `walletService` (Read-only) |
+| Cart Persistence | Integrated | `shopService` + `localStorage` |
 
 ## 4. Security Note
 - `.env` file identified and verified to contain `API_BASE_URL` and other sensitive keys. Ensure these are never committed to version control.

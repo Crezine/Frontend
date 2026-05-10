@@ -42,9 +42,10 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
     try {
       setIsLoading(true);
       const data = await eventService.getEvents();
-      setEvents(data);
+      setEvents(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Failed to fetch events", error);
+      setEvents([]);
     } finally {
       setIsLoading(false);
     }
@@ -53,15 +54,18 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
   const handleEventClick = async (event: Event) => {
     try {
       const fullEvent = await eventService.getEvent(event.id);
+      if (!fullEvent) return;
+      
       setSelectedEvent(fullEvent);
       
       // Initialize ticket counts
       const initialCounts: { [key: string]: number } = {};
-      fullEvent.tiers.forEach(tier => {
+      const tiers = fullEvent.tiers || [];
+      tiers.forEach(tier => {
         initialCounts[tier.id] = 0;
       });
-      if (fullEvent.tiers.length > 0) {
-        initialCounts[fullEvent.tiers[0].id] = 1;
+      if (tiers.length > 0) {
+        initialCounts[tiers[0].id] = 1;
       }
       setTicketCounts(initialCounts);
       setShowDescription(false);
@@ -106,14 +110,35 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
   };
 
   const calculateTotal = () => {
-    if (!selectedEvent) return 0;
+    if (!selectedEvent || !selectedEvent.tiers) return 0;
     return selectedEvent.tiers.reduce((total, tier) => {
-      return total + (tier.price * (ticketCounts[tier.id] || 0));
+      const price = tier.price || 0;
+      const count = ticketCounts[tier.id] || 0;
+      return total + (price * count);
     }, 0);
   };
 
   const handleGetTicket = () => {
-    localStorage.setItem('crezine_checkout_total', (calculateTotal() / 100).toString());
+    const totalCents = calculateTotal();
+    const hasSelectedTickets = Object.values(ticketCounts).some(count => count > 0);
+
+    if (!selectedEvent?.tiers || selectedEvent.tiers.length === 0) {
+      alert("No ticket tiers available for this event.");
+      return;
+    }
+
+    if (!hasSelectedTickets && totalCents === 0) {
+      alert("Please select at least one ticket.");
+      return;
+    }
+
+    localStorage.setItem('crezine_checkout_total', (totalCents / 100).toString());
+    localStorage.setItem('crezine_ticket_data', JSON.stringify({
+      eventName: selectedEvent.title,
+      eventDate: new Date(selectedEvent.eventDate).toLocaleDateString(),
+      location: selectedEvent.location || 'Online',
+      eventImage: `https://picsum.photos/seed/${selectedEvent.id}/600/400`
+    }));
     navigate('ticket-checkout' as any);
   };
 
@@ -144,11 +169,11 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 font-montserrat relative">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 font-montserrat relative text-black dark:text-white transition-colors">
       <header className="mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl md:text-4xl font-medium text-secondary dark:text-primary mb-1 md:mb-2">Creative Events</h1>
-          <p className="text-black dark:text-white text-lg font-normal font-montserrat">Monetize your exhibitions, shows, and workshops.</p>
+          <p className="text-black dark:text-gray-300 text-lg font-normal font-montserrat">Monetize your exhibitions, shows, and workshops.</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
@@ -161,11 +186,11 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
 
       {isLoading ? (
         <div className="text-center py-20 text-black/40 dark:text-gray-500">Loading events...</div>
-      ) : events.length === 0 ? (
+      ) : (events || []).length === 0 ? (
         <div className="text-center py-20 text-black/40 dark:text-gray-500">No events found. Create one to get started!</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
+          {(events || []).map((event) => (
             <div 
               key={event.id} 
               onClick={() => handleEventClick(event)}
@@ -184,12 +209,12 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
               </div>
               <div className="p-6">
                 <h3 className="text-xl font-normal text-black dark:text-white mb-1 font-rubik truncate">{event.title}</h3>
-                <p className="text-black dark:text-gray-300 text-sm mb-6 font-normal font-montserrat">{new Date(event.eventDate).toLocaleDateString()}</p>
+                <p className="text-black/60 dark:text-gray-400 text-sm mb-6 font-normal font-montserrat">{new Date(event.eventDate).toLocaleDateString()}</p>
                 
                 <div className="flex justify-between items-end mb-4">
                   <div className="flex-1">
-                    <p className="text-xs text-black dark:text-gray-400 font-normal mb-1 font-rubik">Location</p>
-                    <p className="text-sm font-normal text-black dark:text-white font-rubik truncate">{event.location || 'Online'}</p>
+                    <p className="text-xs text-black/40 dark:text-gray-500 font-normal mb-1 font-rubik">Location</p>
+                    <p className="text-sm font-normal text-black dark:text-gray-200 font-rubik truncate">{event.location || 'Online'}</p>
                   </div>
                 </div>
               </div>
@@ -213,7 +238,7 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative bg-white dark:bg-gray-900 w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col"
+              className="relative bg-white dark:bg-gray-900 w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border border-black/5 dark:border-white/10"
             >
               <div className="h-48 md:h-56 relative overflow-hidden">
                 <img 
@@ -225,7 +250,7 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setSelectedEvent(null)}
-                  className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-secondary p-1.5 rounded-full hover:bg-white/40 transition-all z-10"
+                  className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-secondary dark:text-primary p-1.5 rounded-full hover:bg-white/40 transition-all z-10"
                 >
                   <X size={28} strokeWidth={3} />
                 </motion.button>
@@ -238,18 +263,18 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
                   </h2>
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
-                      <p className="text-sm font-normal text-black dark:text-white font-montserrat">
-                        Date: <span className="text-secondary">{new Date(selectedEvent.eventDate).toLocaleDateString()}</span>
+                      <p className="text-sm font-normal text-black/70 dark:text-gray-300 font-montserrat">
+                        Date: <span className="text-secondary dark:text-primary">{new Date(selectedEvent.eventDate).toLocaleDateString()}</span>
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-normal text-black dark:text-white font-montserrat">
-                        Location: <span className="text-secondary">{selectedEvent.location || 'Online'}</span>
+                      <p className="text-sm font-normal text-black/70 dark:text-gray-300 font-montserrat">
+                        Location: <span className="text-secondary dark:text-primary">{selectedEvent.location || 'Online'}</span>
                       </p>
                       <div className="flex justify-end mt-2">
                         <button 
                           onClick={() => setShowDescription(!showDescription)}
-                          className="bg-white dark:bg-gray-800 border border-black dark:border-white text-primary px-6 py-2 rounded-xl text-xs font-normal hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-montserrat"
+                          className="bg-white dark:bg-gray-800 border border-black/20 dark:border-white/20 text-primary dark:text-primary px-6 py-2 rounded-xl text-xs font-normal hover:bg-gray-50 dark:hover:bg-gray-700 transition-all font-montserrat"
                         >
                           {showDescription ? 'Hide' : 'Show'} description
                         </button>
@@ -263,32 +288,36 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
                   <motion.p 
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="text-xs text-black dark:text-gray-300 font-normal leading-relaxed font-montserrat text-center"
+                    className="text-xs text-black/60 dark:text-gray-400 font-normal leading-relaxed font-montserrat text-center"
                   >
                     {selectedEvent.description || 'No description available for this event.'}
                   </motion.p>
                 )}
 
                 <div className="space-y-4">
-                  <h4 className="text-sm font-medium text-secondary font-montserrat">
+                  <h4 className="text-sm font-medium text-secondary dark:text-primary font-montserrat uppercase tracking-wider">
                     Tickets
                   </h4>
                   <div className="h-px bg-black/10 dark:bg-white/10 w-full" />
 
                   <div className="space-y-6 py-2">
-                    {selectedEvent.tiers.map(tier => (
-                      <div key={tier.id} className="flex items-center justify-between">
-                        <div className="flex flex-col">
-                          <span className="text-sm font-normal text-black dark:text-white font-montserrat">{tier.name}</span>
-                          <span className="text-xs text-secondary font-montserrat">${(tier.price / 100).toLocaleString()}</span>
+                    {Array.isArray(selectedEvent.tiers) && selectedEvent.tiers.length > 0 ? (
+                      (selectedEvent.tiers || []).map(tier => (
+                        <div key={tier.id} className="flex items-center justify-between">
+                          <div className="flex flex-col">
+                            <span className="text-sm font-normal text-black dark:text-white font-montserrat">{tier.name}</span>
+                            <span className="text-xs text-secondary dark:text-primary font-montserrat">${(tier.price / 100).toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center border border-black/40 dark:border-white/40 rounded-lg h-10 px-2 gap-4">
+                            <button onClick={() => handleDecrement(tier.id)} className="text-black dark:text-white hover:opacity-70"><Minus size={16} /></button>
+                            <span className="text-sm font-normal w-4 text-center text-black dark:text-white">{ticketCounts[tier.id] || 0}</span>
+                            <button onClick={() => handleIncrement(tier.id)} className="text-black dark:text-white hover:opacity-70"><Plus size={16} /></button>
+                          </div>
                         </div>
-                        <div className="flex items-center border border-black dark:border-white rounded-lg h-10 px-2 gap-4">
-                          <button onClick={() => handleDecrement(tier.id)} className="text-black dark:text-white hover:opacity-70"><Minus size={16} /></button>
-                          <span className="text-sm font-normal w-4 text-center text-black dark:text-white">{ticketCounts[tier.id] || 0}</span>
-                          <button onClick={() => handleIncrement(tier.id)} className="text-black dark:text-white hover:opacity-70"><Plus size={16} /></button>
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-center text-xs text-black/40 dark:text-gray-500 py-4 font-montserrat italic">No ticket tiers available for this event.</p>
+                    )}
                   </div>
 
                   <div className="h-px bg-black/10 dark:bg-white/10 w-full" />
@@ -303,7 +332,7 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
                 <div className="flex justify-center pt-1 pb-2">
                   <button 
                     onClick={handleGetTicket}
-                    className="bg-secondary text-white w-full py-3 rounded-full text-sm font-normal hover:opacity-90 transition-all transform active:scale-95 shadow-lg shadow-secondary/20 font-montserrat"
+                    className="bg-secondary text-white w-full py-3 rounded-full text-sm font-normal hover:opacity-90 transition-all transform active:scale-95 shadow-lg shadow-secondary/20 font-montserrat uppercase tracking-widest"
                   >
                     Get ticket
                   </button>

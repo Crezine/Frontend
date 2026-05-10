@@ -23,6 +23,7 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
   const [isSending, setIsSending] = useState(false);
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   // Real ticket data from localStorage or default
   const ticketData = useMemo(() => {
@@ -75,8 +76,6 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
       setWalletBalance(data.balance / 100);
     } catch (error) {
       console.error("Failed to fetch balance", error);
-      // Sincere fallback: if unauthorized, don't show fake money for real apps, 
-      // but for this task I will use a default or 0 if strictly sincere.
       setWalletBalance(0); 
     } finally {
       setIsLoadingBalance(false);
@@ -93,6 +92,24 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.cardNumber) newErrors.cardNumber = "Card number is required";
+    if (!formData.expiry) newErrors.expiry = "Expiry is required";
+    if (!formData.cvc) newErrors.cvc = "CVC is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleConfirmPayment = () => {
@@ -101,6 +118,8 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
         setIsError(true);
         return;
       }
+    } else {
+      if (!validateForm()) return;
     }
     setIsSuccess(true);
   };
@@ -196,7 +215,7 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
     <div className="fixed inset-0 z-[100] flex items-center justify-center font-montserrat p-4 md:p-8">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/40 backdrop-blur-md" />
       <div className="relative w-full max-w-xl flex flex-col items-center">
-        <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative bg-white rounded-[2rem] w-full min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh] transition-colors">
+        <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative bg-white rounded-[2rem] w-full min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh] transition-colors border border-black/5">
           <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="absolute top-4 right-4 z-[120] p-1.5 bg-white/20 backdrop-blur-md border border-black/10 rounded-full text-black hover:bg-white/40 transition-all shadow-sm"><FiX size={28} strokeWidth={3} /></motion.button>
           <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
             <div className="flex gap-2 mb-8 bg-pink-100 p-1.5 rounded-xl border border-black/5">
@@ -224,11 +243,27 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
                   ) : (
                     <>
                       <div className="space-y-4">
-                        <div className="flex flex-col gap-1.5"><label className="text-[10px] tracking-wide text-black font-normal ml-1">Email address</label><input type="email" placeholder="Enter your email" className="w-full h-[44px] px-4 bg-transparent border border-black rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black" /></div>
-                        <div className="flex flex-col gap-1.5"><label className="text-[10px] tracking-wide text-black font-normal ml-1">Card number</label><input type="text" placeholder="0000 0000 0000 0000" className="w-full h-[44px] px-4 bg-transparent border border-black rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black" /></div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] tracking-wide text-black font-normal ml-1">Email address</label>
+                          <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className={`w-full h-[44px] px-4 bg-transparent border ${errors.email ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                          {errors.email && <span className="text-[9px] text-red-500 ml-1">{errors.email}</span>}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-[10px] tracking-wide text-black font-normal ml-1">Card number</label>
+                          <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleInputChange} placeholder="0000 0000 0000 0000" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cardNumber ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                          {errors.cardNumber && <span className="text-[9px] text-red-500 ml-1">{errors.cardNumber}</span>}
+                        </div>
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="flex flex-col gap-1.5"><label className="text-[10px] tracking-wide text-black font-normal ml-1">Expiration</label><input type="text" placeholder="MM / YY" className="w-full h-[44px] px-4 bg-transparent border border-black rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black" /></div>
-                          <div className="flex flex-col gap-1.5"><label className="text-[10px] tracking-wide text-black font-normal ml-1">CVC</label><input type="text" placeholder="CVC" className="w-full h-[44px] px-4 bg-transparent border border-black rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black" /></div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">Expiration</label>
+                            <input type="text" name="expiry" value={formData.expiry} onChange={handleInputChange} placeholder="MM / YY" className={`w-full h-[44px] px-4 bg-transparent border ${errors.expiry ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                            {errors.expiry && <span className="text-[9px] text-red-500 ml-1">{errors.expiry}</span>}
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] tracking-wide text-black font-normal ml-1">CVC</label>
+                            <input type="text" name="cvc" value={formData.cvc} onChange={handleInputChange} placeholder="CVC" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cvc ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                            {errors.cvc && <span className="text-[9px] text-red-500 ml-1">{errors.cvc}</span>}
+                          </div>
                         </div>
                       </div>
                       <div className="pt-6 space-y-4">
