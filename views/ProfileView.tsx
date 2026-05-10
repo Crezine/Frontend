@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AppView, UserData } from '../types';
 import { CgProfile } from "react-icons/cg";
 import { motion, AnimatePresence } from 'framer-motion';
+import { authService } from '../src/services/authService';
 
 interface ProfileViewProps {
   navigate: (view: AppView) => void;
@@ -11,6 +12,7 @@ interface ProfileViewProps {
 const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
   const [isVerified, setIsVerified] = useState(true);
   const [isCraftMenuOpen, setIsCraftMenuOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     fullName: userData?.name || 'Creative',
     email: userData?.email || 'creative@crezine.com',
@@ -31,6 +33,8 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
   ];
 
   const handleLogout = () => {
+    localStorage.removeItem('firebaseToken');
+    localStorage.removeItem('userData');
     navigate('landing');
   };
 
@@ -39,11 +43,37 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
     setIsCraftMenuOpen(false);
   };
 
+  const handleSave = async () => {
+    try {
+      setIsSaving(true);
+      await authService.updateProfile({
+        name: formData.fullName,
+        craft: formData.craft,
+        // Backend UserProfile type might need updating to support dob/phone
+      });
+      
+      // Update local storage too
+      const updatedUser = {
+        ...userData,
+        name: formData.fullName,
+        craft: formData.craft
+      };
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Failed to update profile", error);
+      alert("Failed to update profile");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 font-montserrat transition-colors relative">
       <header className="mb-12 text-left">
         <h1 className="text-3xl md:text-4xl font-normal text-black dark:text-white mb-2">Profile Settings</h1>
-        <p className="text-black/60 dark:text-white/60 font-normal text-sm md:text-base">Manage your person information</p>
+        <p className="text-black/60 dark:text-white/60 font-normal text-sm md:text-base">Manage your personal information</p>
       </header>
 
       <div className="flex flex-col items-center mb-12">
@@ -126,8 +156,8 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
             <input 
               type="email" 
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="w-full h-[52px] px-4 bg-white dark:bg-gray-900 border border-black dark:border-white/30 rounded-xl focus:outline-none focus:border-secondary transition-all font-normal text-sm text-black dark:text-white"
+              readOnly
+              className="w-full h-[52px] px-4 bg-gray-50 dark:bg-gray-800 border border-black dark:border-white/30 rounded-xl focus:outline-none font-normal text-sm text-black/50 dark:text-white/50 cursor-not-allowed"
             />
           </div>
         </div>
@@ -203,8 +233,12 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
         </div>
 
         <div className="pt-10 flex justify-center">
-          <button className="w-full max-w-lg py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest uppercase">
-            Save status
+          <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full max-w-lg py-4 bg-secondary text-white rounded-full font-normal text-sm hover:opacity-95 transition-all shadow-lg tracking-widest uppercase disabled:opacity-50"
+          >
+            {isSaving ? 'Saving...' : 'Save status'}
           </button>
         </div>
       </div>

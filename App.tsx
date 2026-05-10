@@ -30,8 +30,11 @@ import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
 import './styles/overrides.css';
 
+import { authService } from './src/services/authService';
+
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(() => {
     try {
       const saved = localStorage.getItem('userData');
@@ -54,6 +57,32 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const token = localStorage.getItem('firebaseToken');
+      if (token && !userData) {
+        try {
+          setIsLoading(true);
+          const profile = await authService.getMe();
+          const user: UserData = {
+            name: profile.name || profile.displayName || 'Creative User',
+            email: profile.email,
+            craft: profile.craft || 'Creator'
+          };
+          setUserData(user);
+          localStorage.setItem('userData', JSON.stringify(user));
+        } catch (error) {
+          console.error("Auth check failed", error);
+          localStorage.removeItem('firebaseToken');
+          localStorage.removeItem('userData');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    checkAuth();
+  }, [userData]);
+
   const handleNavigate = (view: AppView) => {
     if (view === 'landing') {
       navigate('/');
@@ -69,21 +98,52 @@ const App: React.FC = () => {
     }
   };
 
-  const handleOnboarding = (data: UserData) => {
-    localStorage.setItem('userData', JSON.stringify(data));
-    setUserData(data);
-    navigate('/dashboard');
+  const handleOnboarding = async (data: UserData) => {
+    try {
+      setIsLoading(true);
+      
+      await authService.updateProfile({
+        name: data.name,
+        craft: data.craft
+      });
+
+      localStorage.setItem('userData', JSON.stringify(data));
+      setUserData(data);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Onboarding update failed", error);
+      localStorage.setItem('userData', JSON.stringify(data));
+      setUserData(data);
+      navigate('/dashboard');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogin = () => {
-    const dummyUser: UserData = {
-      name: 'Creative User',
-      email: 'creative@crezine.com',
-      craft: 'Creator'
-    };
-    localStorage.setItem('userData', JSON.stringify(dummyUser));
-    setUserData(dummyUser);
-    navigate('/dashboard');
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const profile = await authService.getMe();
+      
+      const user: UserData = {
+        name: profile.name || profile.displayName || 'Creative User',
+        email: profile.email,
+        craft: profile.craft || 'Creator'
+      };
+      
+      localStorage.setItem('userData', JSON.stringify(user));
+      setUserData(user);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Login failed", error);
+      const saved = localStorage.getItem('userData');
+      if (saved) {
+        setUserData(JSON.parse(saved));
+        navigate('/dashboard');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetAnimation = () => {
@@ -91,12 +151,24 @@ const App: React.FC = () => {
   };
 
   // Do not show the global footer on dashboard routes and shop as it has its own refurbished footer
-  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop');
+  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop') && !['/checkout', '/ticket-checkout'].includes(location.pathname);
+
+  // Determine if we should show the shop background for checkout
+  const isCheckoutModal = location.pathname === '/checkout' || location.pathname === '/ticket-checkout';
+  const showShopBackground = isCheckoutModal && location.state?.background;
 
   return (
     <div className="App">
       <Analytics />
-      <Routes>
+      
+      {/* Background for modals */}
+      {showShopBackground && (
+        <div className="fixed inset-0 z-0 opacity-50 blur-sm pointer-events-none">
+          <ShopView navigate={handleNavigate} />
+        </div>
+      )}
+
+      <Routes location={location.state?.background || location}>
         {/* Landing and Auth */}
         <Route 
           path="/" 
@@ -154,6 +226,15 @@ const App: React.FC = () => {
         {/* Catch-all route for 404 Page Not Found */}
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
+
+      {/* Actual Modal Rendering */}
+      {isCheckoutModal && (
+        <Routes>
+          <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+          <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+        </Routes>
+      )}
+
       {showGlobalFooter && <BackToTop />}
       <CookieConsent />
       {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}

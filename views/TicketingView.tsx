@@ -1,26 +1,103 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AppView } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, X } from 'lucide-react';
+import { ChevronDown, X, Plus } from 'lucide-react';
+import { eventService, Event } from '../src/services/eventService';
 
 interface TicketingViewProps {
   navigate: (view: AppView) => void;
 }
 
+interface SalesStats {
+  ticketsSold: number;
+  revenue: number;
+  remaining: number;
+  pending: number;
+  referrers: { label: string; percentage: number }[];
+  locations: { label: string; percentage: number }[];
+  countries: { label: string; percentage: number }[];
+}
+
 const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
   const [activeTab, setActiveTab] = useState<'tickets' | 'revenue'>('tickets');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [myEvents, setMyEvents] = useState<Event[]>([]);
+  const [stats, setStats] = useState<SalesStats>({
+    ticketsSold: 0,
+    revenue: 0,
+    remaining: 0,
+    pending: 0,
+    referrers: [],
+    locations: [],
+    countries: []
+  });
   
   const [currency, setCurrency] = useState('USD');
   const [language, setLanguage] = useState('ENGLISH');
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
+  // Form states
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
+  const [location, setLocation] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [salesStart, setSalesStart] = useState('publish');
   const [salesEnd, setSalesEnd] = useState('soldout');
 
   const currencyRef = useRef<HTMLDivElement>(null);
   const languageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetchMyEvents();
+  }, []);
+
+  const fetchMyEvents = async () => {
+    try {
+      setIsLoading(true);
+      const events = await eventService.getMyEvents();
+      setMyEvents(events);
+      
+      let totalTickets = 0;
+      let totalRevenue = 0;
+      let totalRemaining = 0;
+      let totalPending = 0;
+      
+      // Mocked analytics for now since backend might not have full analytics yet
+      // In a real scenario, this would come from a dedicated summary endpoint
+      for (const event of events) {
+        try {
+          const sales = await eventService.getEventSales(event.id);
+          totalTickets += sales.totalTickets || 0;
+          totalRevenue += (sales.totalRevenue || 0) / 100;
+          totalRemaining += sales.remainingTickets || 0;
+          totalPending += (sales.pendingRevenue || 0) / 100;
+        } catch (e) {
+          console.error(`Failed to fetch sales for event ${event.id}`, e);
+        }
+      }
+      
+      setStats({
+        ticketsSold: totalTickets,
+        revenue: totalRevenue,
+        remaining: totalRemaining,
+        pending: totalPending,
+        referrers: [], // Backend needs to provide this
+        locations: [], // Backend needs to provide this
+        countries: []  // Backend needs to provide this
+      });
+
+    } catch (error) {
+      console.error("Failed to fetch my events", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (isModalOpen) {
@@ -49,10 +126,50 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
   const currencies = ['USD', 'EUR', 'GBP', 'KES', 'ZAR'];
   const languages = ['ENGLISH', 'FRENCH', 'SPANISH', 'SWAHILI'];
 
-  const handlePublish = () => {
-    // Logic for publishing event would go here
-    setIsModalOpen(false);
+  const handlePublish = async () => {
+    if (!name || !date || !location) {
+      alert("Please fill in required fields");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const eventDate = new Date(`${date}T${startTime || '00:00'}:00`).toISOString();
+      
+      await eventService.createEvent({
+        title: name,
+        description,
+        eventDate,
+        location
+      });
+
+      setIsModalOpen(false);
+      fetchMyEvents();
+      alert("Event created successfully!");
+    } catch (error) {
+      console.error("Failed to create event", error);
+      alert("Failed to create event");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
+  const StatColumn = ({ title, items }: { title: string; items: { label: string; percentage: number }[] }) => (
+    <div className="space-y-6">
+      <h3 className="text-secondary font-medium uppercase text-sm tracking-widest mb-6 font-montserrat">
+        {title}
+      </h3>
+      <div className="space-y-4 font-rubik font-light text-black dark:text-gray-300 text-sm tracking-wide">
+        {items.length === 0 ? (
+          <p className="text-black dark:text-white font-montserrat font-medium italic">No data yet</p>
+        ) : (
+          items.map((item, idx) => (
+            <p key={idx}>{item.percentage}% {item.label}</p>
+          ))
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-12 font-montserrat">
@@ -109,19 +226,19 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
 
         <div className="flex justify-center items-baseline gap-24 md:gap-40 mb-1">
           <div className="text-4xl md:text-5xl font-normal text-secondary font-rubik leading-none w-48 md:w-64 text-center">
-            114
+            {isLoading ? '...' : stats.ticketsSold}
           </div>
           <div className="text-4xl md:text-5xl font-normal text-secondary font-rubik leading-none w-48 md:w-64 text-center">
-            $5,094
+            {isLoading ? '...' : `$${stats.revenue.toLocaleString()}`}
           </div>
         </div>
 
         <div className="flex justify-center gap-24 md:gap-40">
           <div className="text-sm font-light text-black dark:text-gray-300 font-rubik tracking-wide w-48 md:w-64 text-center">
-            8 Remaining
+            {isLoading ? '...' : `${stats.remaining} Remaining`}
           </div>
           <div className="text-sm font-light text-black dark:text-gray-300 font-rubik tracking-wide w-48 md:w-64 text-center">
-            $ 2116.00 pending
+            {isLoading ? '...' : `$ ${stats.pending.toLocaleString()} pending`}
           </div>
         </div>
       </div>
@@ -156,44 +273,9 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
 
       {/* 3 Columns Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 mb-20">
-        {/* Column 1 */}
-        <div className="space-y-6">
-          <h3 className="text-secondary font-medium uppercase text-sm tracking-widest mb-6 font-montserrat">
-            TOP REFERRERS
-          </h3>
-          <div className="space-y-4 font-rubik font-light text-black dark:text-gray-300 text-sm tracking-wide">
-            <p>9% Facebook</p>
-            <p>12% Instagram</p>
-            <p>23% Linked In</p>
-            <p>64% Tiktok</p>
-          </div>
-        </div>
-
-        {/* Column 2 */}
-        <div className="space-y-6">
-          <h3 className="text-secondary font-medium uppercase text-sm tracking-widest mb-6 font-montserrat">
-            TOP LOCATIONS
-          </h3>
-          <div className="space-y-4 font-rubik font-light text-black dark:text-gray-300 text-sm tracking-wide">
-            <p>9% Durban</p>
-            <p>12% Kileleshwa</p>
-            <p>23% Roysambu</p>
-            <p>64% Fedha</p>
-          </div>
-        </div>
-
-        {/* Column 3 */}
-        <div className="space-y-6">
-          <h3 className="text-secondary font-medium uppercase text-sm tracking-widest mb-6 font-montserrat">
-            TOP COUNTRIES
-          </h3>
-          <div className="space-y-4 font-rubik font-light text-black dark:text-gray-300 text-sm tracking-wide">
-            <p>9% Nairobi</p>
-            <p>12% South Africa</p>
-            <p>23% Congo</p>
-            <p>64% Nigeria</p>
-          </div>
-        </div>
+        <StatColumn title="TOP REFERRERS" items={stats.referrers} />
+        <StatColumn title="TOP LOCATIONS" items={stats.locations} />
+        <StatColumn title="TOP COUNTRIES" items={stats.countries} />
       </div>
 
       {/* Bottom Create Event Button */}
@@ -254,7 +336,7 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                                     setCurrency(curr);
                                     setShowCurrencyDropdown(false);
                                   }}
-                                  className="w-full text-left px-4 py-2.5 text-[11px] font-rubik hover:bg-primary/10 transition-colors"
+                                  className="w-full text-left px-4 py-2.5 text-[11px] font-rubik hover:bg-primary/10 transition-colors text-white"
                                 >
                                   {curr}
                                 </button>
@@ -289,7 +371,7 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                                     setLanguage(lang);
                                     setShowLanguageDropdown(false);
                                   }}
-                                  className="w-full text-left px-4 py-2.5 text-[11px] font-rubik hover:bg-primary/10 transition-colors"
+                                  className="w-full text-left px-4 py-2.5 text-[11px] font-rubik hover:bg-primary/10 transition-colors text-white"
                                 >
                                   {lang}
                                 </button>
@@ -319,7 +401,9 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                     <label className="font-montserrat text-xs text-black dark:text-white">Name *</label>
                     <input 
                       type="text"
-                      className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent text-black dark:text-white"
                     />
                   </div>
 
@@ -327,16 +411,10 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                   <div className="flex flex-col gap-1.5">
                     <label className="font-montserrat text-xs text-black dark:text-white">Description (Optional)</label>
                     <textarea 
-                      className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 h-16 outline-none text-[13px] font-rubik bg-transparent resize-none"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 h-16 outline-none text-[13px] font-rubik bg-transparent resize-none text-black dark:text-white"
                     />
-                  </div>
-
-                  {/* Poster */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="font-montserrat text-xs text-black dark:text-white">Poster (optional)</label>
-                    <div className="w-full border border-black/40 dark:border-white/40 rounded-lg h-16 flex items-center justify-center border-dashed cursor-pointer">
-                      <span className="text-[10px] text-gray-400 font-rubik">Click or drag to upload poster</span>
-                    </div>
                   </div>
 
                   {/* Date & Location */}
@@ -345,14 +423,18 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                       <label className="font-montserrat text-xs text-black dark:text-white">Date *</label>
                       <input 
                         type="date"
-                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark]"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark] text-black dark:text-white"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="font-montserrat text-xs text-black dark:text-white">Location *</label>
                       <input 
                         type="text"
-                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent text-black dark:text-white"
                       />
                     </div>
                   </div>
@@ -363,63 +445,19 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                       <label className="font-montserrat text-xs text-black dark:text-white">Starting Time *</label>
                       <input 
                         type="time"
-                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark]"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark] text-black dark:text-white"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="font-montserrat text-xs text-black dark:text-white">Ending Time *</label>
                       <input 
                         type="time"
-                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark]"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        className="w-full border border-black/40 dark:border-white/40 rounded-lg px-3 py-2 outline-none text-[13px] font-rubik bg-transparent dark:[color-scheme:dark] text-black dark:text-white"
                       />
-                    </div>
-                  </div>
-
-                  {/* Black Line Separator */}
-                  <div className="w-full h-px bg-black/10 dark:bg-white my-6"></div>
-
-                  {/* Ticket Sales Section */}
-                  <div className="grid grid-cols-2 gap-8">
-                    {/* Sales Start */}
-                    <div className="space-y-3">
-                      <h3 className="font-rubik text-xs font-normal text-black dark:text-white uppercase">
-                        TICKET SALES STARTS
-                      </h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                          <input 
-                            type="checkbox" 
-                            name="salesStart"
-                            checked={salesStart === 'publish'}
-                            onChange={() => setSalesStart(salesStart === 'publish' ? '' : 'publish')}
-                            className="custom-checkbox"
-                          />
-                          <span className="font-montserrat font-normal text-[12px] text-secondary group-hover:opacity-80 transition-opacity">
-                            When i publish event
-                          </span>
-                        </label>
-                      </div>
-                    </div>
-
-                    {/* Sales End */}
-                    <div className="space-y-3">
-                      <h3 className="font-rubik text-xs font-normal text-black dark:text-white uppercase">
-                        TICKET SALES END
-                      </h3>
-                      <div className="space-y-2">
-                        <label className="flex items-center gap-2 cursor-pointer group">
-                          <input 
-                            type="checkbox" 
-                            name="salesEnd"
-                            checked={salesEnd === 'soldout'}
-                            onChange={() => setSalesEnd(salesEnd === 'soldout' ? '' : 'soldout')}
-                            className="custom-checkbox"
-                          />
-                          <span className="font-montserrat font-normal text-[12px] text-secondary group-hover:opacity-80 transition-opacity">
-                            When tickets sold out
-                          </span>
-                        </label>
-                      </div>
                     </div>
                   </div>
 
@@ -427,9 +465,10 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
                   <div className="flex justify-center pt-8 pb-4">
                     <button 
                       onClick={handlePublish}
-                      className="bg-secondary text-white px-16 py-3 rounded-full text-xs font-normal tracking-[0.1em] shadow-lg shadow-secondary/20 hover:opacity-90 transition-all transform active:scale-95"
+                      disabled={isSubmitting}
+                      className="bg-secondary text-white px-16 py-3 rounded-full text-xs font-normal tracking-[0.1em] shadow-lg shadow-secondary/20 hover:opacity-90 transition-all transform active:scale-95 disabled:opacity-50"
                     >
-                      Publish Event
+                      {isSubmitting ? 'Publishing...' : 'Publish Event'}
                     </button>
                   </div>
                 </div>
