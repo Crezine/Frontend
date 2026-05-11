@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://crezine-api-1057458775492.us-central1.run.app/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 async function getAuthToken(): Promise<string | null> {
   // TODO: Integrate with Firebase Auth to get the real ID token
