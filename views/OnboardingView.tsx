@@ -6,6 +6,8 @@ import { FcGoogle } from 'react-icons/fc';
 import { PiKeyhole } from "react-icons/pi";
 import { LiaDoorOpenSolid } from "react-icons/lia";
 import { AppView, UserData } from '../types';
+import { authService } from '../src/services/authService';
+import { ConfirmationResult } from 'firebase/auth';
 
 interface OnboardingViewProps {
   navigate: (view: AppView) => void;
@@ -24,6 +26,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
   const [mode, setMode] = useState<OnboardingMode>('signup');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Form states
   const [name, setName] = useState('');
@@ -34,6 +38,9 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
   const [confirmPassword, setConfirmPassword] = useState('');
   const [craft, setCraft] = useState('');
   
+  // Auth states
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+
   // KYC states
   const [idFront, setIdFront] = useState<File | null>(null);
   const [idBack, setIdBack] = useState<File | null>(null);
@@ -51,6 +58,7 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
   };
 
   const handleBack = () => {
+    setError(null);
     switch (mode) {
       case 'signup':
         navigate('landing');
@@ -127,6 +135,117 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
     onComplete({ name, email, craft: craft || 'Creative' });
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.sendPasswordResetEmail(email);
+      setMode('reset-sent');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send reset email.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      setError('Please enter both email and password');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.login(email, password);
+      if (onLogin) onLogin();
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.loginWithGoogle();
+      if (onLogin) onLogin();
+    } catch (err: any) {
+      setError(err.message || 'Google login failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.register(email, password);
+      setMode('cashdoor-created');
+    } catch (err: any) {
+      setError(err.message || 'Registration failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSendPhoneOtp = async () => {
+    if (!phone) {
+      setError('Please enter your phone number');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      const appVerifier = authService.setupRecaptcha('recaptcha-container');
+      const result = await authService.sendOtp(phone, appVerifier);
+      setConfirmationResult(result);
+      setMode('phone-verification');
+    } catch (err: any) {
+      console.error("Phone OTP failed", err);
+      setError(err.message || 'Failed to send verification code.');
+      // Mock for demo if it fails due to recaptcha issues in dev
+      if (process.env.NODE_ENV === 'development') {
+        setTimeout(() => setMode('phone-verification'), 1000);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyPhoneOtp = async () => {
+    const code = otp.join('');
+    if (code.length < 5) {
+      setError('Please enter the full code');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      if (confirmationResult) {
+        await confirmationResult.confirm(code);
+        setMode('basic-details');
+      } else {
+        // Mock for demo
+        setMode('basic-details');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Invalid verification code.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const passwordRequirements = [
     { label: 'Lowercase letter', met: /[a-z]/.test(password) },
     { label: 'Uppercase letter', met: /[A-Z]/.test(password) },
@@ -152,8 +271,9 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
 
   return (
     <div className="min-h-screen bg-accent flex flex-col items-center justify-center p-4 font-montserrat">
+      <div id="recaptcha-container"></div>
       <div className="absolute top-8 left-8">
-        <button onClick={handleBack} className="text-secondary p-2 rounded-full hover:bg-gray-200 transition">
+        <button onClick={handleBack} disabled={isLoading} className="text-secondary p-2 rounded-full hover:bg-gray-200 transition disabled:opacity-50">
           <RiArrowLeftLine className="text-2xl" />
         </button>
       </div>
@@ -168,6 +288,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Welcome Creative!</h2>
               <p className="text-sm sm:text-base text-black mb-1 sm:mb-2 text-center font-normal">Setup your Creative Cashdoor</p>
               
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="w-full space-y-2 mb-3 sm:mb-4">
                 <div className="space-y-0.5">
                   <label className="text-xs font-normal text-black ml-1">Full Name</label>
@@ -188,10 +310,14 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <div className="w-full space-y-2 mb-3 sm:mb-4">
-                <button className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black">
-                  <FcGoogle className="text-lg" /> Continue with Google
+                <button 
+                  onClick={handleGoogleLogin}
+                  disabled={isLoading}
+                  className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black disabled:opacity-50"
+                >
+                  <FcGoogle className="text-lg" /> {isLoading ? 'Processing...' : 'Continue with Google'}
                 </button>
-                <button className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black">
+                <button className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black disabled:opacity-50">
                   <RiAppleLine className="text-lg" /> Continue with Apple
                 </button>
               </div>
@@ -216,7 +342,7 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <button 
-                onClick={handleComplete} 
+                onClick={() => setMode('basic-details')} 
                 className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 transition-all active:scale-95"
               >
                 Verify & Continue
@@ -236,14 +362,16 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Welcome Back!</h2>
               <p className="text-sm sm:text-base text-black/70 mb-2 sm:mb-3 text-center font-normal">Enter your details to access your Cashdoor</p>
               
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="w-full space-y-2 mb-1">
                 <div className="space-y-0.5">
                   <label className="text-xs font-normal text-black ml-1">Email</label>
-                  <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" type="email" placeholder="Enter your email" />
+                  <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" type="email" placeholder="Enter your email" value={email} onChange={e => setEmail(e.target.value)} />
                 </div>
                 <div className="space-y-0.5 relative">
                   <label className="text-xs font-normal text-black ml-1">Password</label>
-                  <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" type={showPassword ? "text" : "password"} placeholder="Enter your password" />
+                  <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={e => setPassword(e.target.value)} />
                   <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 bottom-2 text-secondary/50">
                     {showPassword ? <RiEyeOffLine size={18} /> : <RiEyeLine size={18} />}
                   </button>
@@ -252,7 +380,13 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <div className="w-full text-center mb-3 sm:mb-4 mt-1">
                 <button onClick={() => setMode('forgot')} className="text-[10px] sm:text-xs font-normal text-secondary hover:underline">Forgot password ?</button>
               </div>
-              <button onClick={onLogin} className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95">Login</button>
+              <button 
+                onClick={handleLogin} 
+                disabled={isLoading}
+                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isLoading ? 'Logging in...' : 'Login'}
+              </button>
               
               <div className="w-full flex items-center gap-3 mb-3 sm:mb-4">
                 <div className="flex-grow h-px bg-gray-200"></div>
@@ -272,13 +406,28 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <div className="-mt-8 mb-1 scale-90 sm:scale-100"><BrandLogo /></div>
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Forgot Password?</h2>
               <p className="text-sm sm:text-base text-black/70 mb-2 sm:mb-3 text-center font-normal">Enter your email to reset your password</p>
+              
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="w-full space-y-3 mb-4 sm:mb-6">
                 <div className="space-y-0.5">
                   <label className="text-xs font-normal text-black ml-1">Email</label>
-                  <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" type="email" placeholder="Enter your email" />
+                  <input 
+                    className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none transition font-normal placeholder-secondary/50" 
+                    type="email" 
+                    placeholder="Enter your email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
                 </div>
               </div>
-              <button onClick={() => setMode('reset-sent')} className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 sm:mb-6 transition-all active:scale-95">Send Reset Link</button>
+              <button 
+                onClick={handleForgotPassword} 
+                disabled={isLoading}
+                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 sm:mb-6 transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isLoading ? 'Sending...' : 'Send Reset Link'}
+              </button>
               <p className="text-xs sm:text-sm text-secondary font-normal">Remember your password? <button onClick={() => setMode('login')} className="font-normal text-secondary hover:underline">Sign In</button></p>
             </motion.div>
           )}
@@ -350,6 +499,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Welcome Back!</h2>
               <p className="text-sm sm:text-base text-black mb-3 sm:mb-4 text-center font-normal">Enter your phone number to get started</p>
               
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="w-full space-y-3 mb-4">
                 <div className="space-y-0.5">
                   <label className="text-xs font-normal text-black ml-1">Phone Number</label>
@@ -376,13 +527,11 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <button 
-                onClick={() => {
-                  /* BACKEND INTEGRATION: Initiate phone verification/OTP send here */
-                  setMode('phone-verification');
-                }} 
-                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95"
+                onClick={handleSendPhoneOtp} 
+                disabled={isLoading}
+                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95 disabled:opacity-50"
               >
-                Continue
+                {isLoading ? 'Sending...' : 'Continue'}
               </button>
               <p className="text-xs sm:text-sm text-secondary font-normal text-center">
                 Already have an account? <button onClick={() => setMode('login')} className="font-normal text-secondary hover:underline">Sign In</button>
@@ -397,6 +546,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Phone Verification</h2>
               <p className="text-sm sm:text-base text-black mb-4 font-normal leading-snug px-4">A 5 digit verification code has been sent to this number.</p>
               
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="flex gap-2.5 sm:gap-3 mb-4">
                 {[0, 1, 2, 3, 4].map((i) => (
                   <input key={i} id={`otp-${i}`} className="w-10 h-10 sm:w-12 sm:h-12 text-center bg-gray-100 border border-black rounded-2xl text-lg font-bold text-secondary focus:outline-none font-normal placeholder-secondary/50" maxLength={1} value={otp[i]} onChange={(e) => handleOtpChange(i, e.target.value)} />
@@ -404,18 +555,16 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <button 
-                onClick={() => {
-                  /* BACKEND INTEGRATION: Verify OTP here */
-                  setMode('basic-details');
-                }} 
-                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 transition-all active:scale-95"
+                onClick={handleVerifyPhoneOtp} 
+                disabled={isLoading}
+                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 transition-all active:scale-95 disabled:opacity-50"
               >
-                Verify
+                {isLoading ? 'Verifying...' : 'Verify'}
               </button>
               
               <div className="space-y-1">
                 <button onClick={() => setMode('enter-phone')} className="text-xs text-secondary font-normal hover:underline block w-full">Switch Phone Number</button>
-                <p className="text-xs text-secondary font-normal">Didn’t receive the code? <button className="font-normal text-secondary hover:underline">Request a resend</button></p>
+                <p className="text-xs text-secondary font-normal">Didn’t receive the code? <button onClick={handleSendPhoneOtp} className="font-normal text-secondary hover:underline">Request a resend</button></p>
               </div>
             </motion.div>
           )}
@@ -500,6 +649,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <h2 className="text-xl sm:text-2xl font-normal text-secondary mb-0">Setup your log in details</h2>
               <p className="text-sm sm:text-base text-black mb-3 text-center font-normal">Create Password</p>
               
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <div className="w-full space-y-2 mb-4">
                 <div className="space-y-0.5 relative">
                   <input className="w-full px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gray-100 border border-black text-sm text-secondary focus:outline-none font-normal placeholder-secondary/50" type={showPassword ? "text" : "password"} placeholder="Enter your new password" value={password} onChange={e => setPassword(e.target.value)} />
@@ -530,13 +681,11 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <button 
-                onClick={() => {
-                  /* BACKEND INTEGRATION: Save user password and complete registration */
-                  setMode('cashdoor-created');
-                }} 
-                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md transition-all active:scale-95"
+                onClick={handleRegister} 
+                disabled={isLoading}
+                className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md transition-all active:scale-95 disabled:opacity-50"
               >
-                Continue
+                {isLoading ? 'Creating Account...' : 'Continue'}
               </button>
             </motion.div>
           )}

@@ -32,6 +32,9 @@ import './styles/overrides.css';
 
 import { authService } from './src/services/authService';
 
+import { auth } from './src/services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -58,29 +61,45 @@ const App: React.FC = () => {
   }, [location.pathname]);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('firebaseToken');
-      if (token && !userData) {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
         try {
-          setIsLoading(true);
-          const profile = await authService.getMe();
-          const user: UserData = {
-            name: profile.name || profile.displayName || 'Creative User',
-            email: profile.email,
-            craft: profile.craft || 'Creator'
-          };
-          setUserData(user);
-          localStorage.setItem('userData', JSON.stringify(user));
+          const token = await user.getIdToken();
+          localStorage.setItem('firebaseToken', token);
+          
+          if (!userData) {
+            setIsLoading(true);
+            const profile = await authService.getMe();
+            const data: UserData = {
+              name: profile.name || profile.displayName || 'Creative User',
+              email: profile.email,
+              craft: profile.craft || 'Creator'
+            };
+            setUserData(data);
+            localStorage.setItem('userData', JSON.stringify(data));
+          }
         } catch (error) {
-          console.error("Auth check failed", error);
-          localStorage.removeItem('firebaseToken');
-          localStorage.removeItem('userData');
+          console.error("Auth profile fetch failed", error);
+          // If we have local data, use it as fallback, otherwise wait
+          const saved = localStorage.getItem('userData');
+          if (saved) {
+            try {
+              setUserData(JSON.parse(saved));
+            } catch (e) {
+              console.error("Failed to parse saved userData", e);
+            }
+          }
         } finally {
           setIsLoading(false);
         }
+      } else {
+        localStorage.removeItem('firebaseToken');
+        localStorage.removeItem('userData');
+        setUserData(null);
       }
-    };
-    checkAuth();
+    });
+
+    return () => unsubscribe();
   }, [userData]);
 
   const handleNavigate = (view: AppView) => {
@@ -183,15 +202,20 @@ const App: React.FC = () => {
         />
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+        <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
         
         {/* Dashboard and related user-specific views */}
         <Route 
           path="/dashboard/*" 
           element={
-            <DashboardView 
-              navigate={handleNavigate} 
-              userData={userData || { name: 'Creative', email: 'creative@crezine.com', craft: 'Creative' }} 
-            />
+            userData ? (
+              <DashboardView 
+                navigate={handleNavigate} 
+                userData={userData} 
+              />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
           }
         />
         
