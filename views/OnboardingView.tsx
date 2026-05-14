@@ -27,6 +27,8 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Form states
@@ -135,6 +137,49 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
     onComplete({ name, email, craft: craft || 'Creative' });
   };
 
+  const handleSendEmailCode = async () => {
+    if (!name || !email) {
+      setError('Full Name and Email are required to proceed.');
+      return;
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.sendEmailOtp(email);
+      setMode('email-verification');
+    } catch (err: any) {
+      setError(err.message || 'Failed to send verification code.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyEmailOtp = async () => {
+    const code = otp.join('');
+    if (code.length < 5) {
+      setError('Please enter the full code');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      setError(null);
+      await authService.verifyEmailOtp(email, code);
+      setMode('basic-details');
+    } catch (err: any) {
+      setError(err.message || 'Invalid verification code.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleForgotPassword = async () => {
     if (!email) {
       setError('Please enter your email address');
@@ -171,14 +216,27 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
 
   const handleGoogleLogin = async () => {
     try {
-      setIsLoading(true);
+      setIsGoogleLoading(true);
       setError(null);
       await authService.loginWithGoogle();
       if (onLogin) onLogin();
     } catch (err: any) {
       setError(err.message || 'Google login failed.');
     } finally {
-      setIsLoading(false);
+      setIsGoogleLoading(false);
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      setIsAppleLoading(true);
+      setError(null);
+      await authService.loginWithApple();
+      if (onLogin) onLogin();
+    } catch (err: any) {
+      setError(err.message || 'Apple login failed.');
+    } finally {
+      setIsAppleLoading(false);
     }
   };
 
@@ -301,7 +359,7 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
                 </div>
               </div>
 
-              <button onClick={() => setMode('email-verification')} className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95">Send email code</button>
+              <button onClick={handleSendEmailCode} className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-3 sm:mb-4 transition-all active:scale-95">Send email code</button>
 
               <div className="w-full flex items-center gap-3 mb-3 sm:mb-4">
                 <div className="flex-grow h-px bg-gray-200"></div>
@@ -312,13 +370,17 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               <div className="w-full space-y-2 mb-3 sm:mb-4">
                 <button 
                   onClick={handleGoogleLogin}
-                  disabled={isLoading}
+                  disabled={isGoogleLoading || isAppleLoading || isLoading}
                   className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black disabled:opacity-50"
                 >
-                  <FcGoogle className="text-lg" /> {isLoading ? 'Processing...' : 'Continue with Google'}
+                  <FcGoogle className="text-lg" /> {isGoogleLoading ? 'Processing...' : 'Continue with Google'}
                 </button>
-                <button className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black disabled:opacity-50">
-                  <RiAppleLine className="text-lg" /> Continue with Apple
+                <button 
+                  onClick={handleAppleLogin}
+                  disabled={isGoogleLoading || isAppleLoading || isLoading}
+                  className="w-full border border-black py-2 sm:py-2.5 rounded-full flex items-center justify-center gap-2 hover:bg-gray-50 transition text-xs sm:text-sm font-normal text-black disabled:opacity-50"
+                >
+                  <RiAppleLine className="text-lg" /> {isAppleLoading ? 'Processing...' : 'Continue with Apple'}
                 </button>
               </div>
 
@@ -342,7 +404,7 @@ const OnboardingView: React.FC<OnboardingViewProps> = ({ navigate, onComplete, o
               </div>
 
               <button 
-                onClick={() => setMode('basic-details')} 
+                onClick={handleVerifyEmailOtp} 
                 className="w-full bg-secondary text-white font-normal py-2.5 sm:py-3 rounded-full text-sm sm:text-base shadow-md mb-4 transition-all active:scale-95"
               >
                 Verify & Continue

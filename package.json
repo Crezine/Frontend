@@ -12,6 +12,7 @@
     "@react-pdf/renderer": "^4.5.1",
     "@types/react-transition-group": "^4.4.12",
     "@vercel/analytics": "^2.0.1",
+    "firebase": "^12.13.0",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
     "react": "^19.2.3",

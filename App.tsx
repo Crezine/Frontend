@@ -31,13 +31,16 @@ import CookieConsent from './components/CookieConsent';
 import './styles/overrides.css';
 
 import { authService } from './src/services/authService';
+import { ApiError } from './src/services/api';
 
 import { auth } from './src/services/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(() => {
     try {
       const saved = localStorage.getItem('userData');
@@ -62,45 +65,65 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setAuthUser(user);
+
       if (user) {
         try {
           const token = await user.getIdToken();
           localStorage.setItem('firebaseToken', token);
           
-          if (!userData) {
-            setIsLoading(true);
-            const profile = await authService.getMe();
-            const data: UserData = {
-              name: profile.name || profile.displayName || 'Creative User',
-              email: profile.email,
-              craft: profile.craft || 'Creator'
-            };
-            setUserData(data);
-            localStorage.setItem('userData', JSON.stringify(data));
-          }
+          setIsLoading(true);
+          const profile = await authService.getMe();
+          const data: UserData = {
+            name: profile.name || profile.displayName || 'Creative User',
+            email: profile.email,
+            craft: profile.craft || 'Creator'
+          };
+          setUserData(data);
+          localStorage.setItem('userData', JSON.stringify(data));
         } catch (error) {
           console.error("Auth profile fetch failed", error);
-          // If we have local data, use it as fallback, otherwise wait
-          const saved = localStorage.getItem('userData');
-          if (saved) {
+          const canUseCachedProfile =
+            !(error instanceof ApiError) || ![401, 403].includes(error.status);
+          const saved = canUseCachedProfile ? localStorage.getItem('userData') : null;
+
+          if (saved && auth.currentUser) {
             try {
               setUserData(JSON.parse(saved));
             } catch (e) {
               console.error("Failed to parse saved userData", e);
+              setUserData(null);
             }
+          } else {
+            setUserData(null);
           }
         } finally {
           setIsLoading(false);
+          setAuthReady(true);
         }
       } else {
         localStorage.removeItem('firebaseToken');
         localStorage.removeItem('userData');
         setUserData(null);
+        setAuthReady(true);
       }
     });
 
     return () => unsubscribe();
-  }, [userData]);
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setAuthUser(null);
+      setUserData(null);
+      if (location.pathname.startsWith('/dashboard')) {
+        navigate('/onboarding', { replace: true });
+      }
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, [location.pathname, navigate]);
 
   const handleNavigate = (view: AppView) => {
     if (view === 'landing') {
@@ -131,9 +154,6 @@ const App: React.FC = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error("Onboarding update failed", error);
-      localStorage.setItem('userData', JSON.stringify(data));
-      setUserData(data);
-      navigate('/dashboard');
     } finally {
       setIsLoading(false);
     }
@@ -155,11 +175,6 @@ const App: React.FC = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error("Login failed", error);
-      const saved = localStorage.getItem('userData');
-      if (saved) {
-        setUserData(JSON.parse(saved));
-        navigate('/dashboard');
-      }
     } finally {
       setIsLoading(false);
     }
@@ -208,7 +223,11 @@ const App: React.FC = () => {
         <Route 
           path="/dashboard/*" 
           element={
-            userData ? (
+            !authReady || isLoading ? (
+              <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                Loading...
+              </div>
+            ) : authUser && userData ? (
               <DashboardView 
                 navigate={handleNavigate} 
                 userData={userData} 

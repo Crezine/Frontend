@@ -32,10 +32,17 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
     'Other'
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem('firebaseToken');
-    localStorage.removeItem('userData');
-    navigate('landing');
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      navigate('landing');
+    } catch (error) {
+      console.error("Logout failed", error);
+      // Fallback
+      localStorage.removeItem('firebaseToken');
+      localStorage.removeItem('userData');
+      navigate('landing');
+    }
   };
 
   const handleCraftChange = (craft: string) => {
