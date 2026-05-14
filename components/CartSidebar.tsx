@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { AppView } from '../types';
 import { FiX, FiMinus, FiPlus } from 'react-icons/fi';
 import { ShopSubView } from '../views/ShopView';
 
 interface CartItem {
-  id: number;
+  id: string | number;
+  productId?: string;
   name: string;
   price: number;
   image: string;
@@ -16,10 +18,10 @@ interface CartItem {
 interface CartSidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  navigate: (view: AppView) => void;
+  navigate: (view: AppView, options?: any) => void;
   items: CartItem[];
-  onUpdateQuantity: (id: number, delta: number) => void;
-  onRemove: (id: number) => void;
+  onUpdateQuantity: (id: string | number, delta: number) => void;
+  onRemove: (id: string | number) => void;
   setSubView: (view: ShopSubView) => void;
 }
 
@@ -32,6 +34,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   onRemove,
   setSubView
 }) => {
+  const location = useLocation();
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleEmptyCartAction = (target: ShopSubView) => {
@@ -42,9 +45,10 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <React.Fragment key="cart-sidebar-fragment">
           {/* Backdrop */}
           <motion.div
+            key="cart-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -54,6 +58,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 
           {/* Sidebar */}
           <motion.div
+            key="cart-container"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -82,9 +87,9 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               ) : (
                 <div className="space-y-8">
                   <h3 className="text-sm font-normal text-black tracking-tight">Product</h3>
-                  {items.map((item) => (
-                    <div key={item.id} className="flex gap-8">
-                      {/* Product Image - Increased Size */}
+                  {items.map((item, index) => (
+                    <div key={item.productId || item.id || `cart-item-${index}`} className="flex gap-8">
+                      {/* Product Image */}
                       <div className="w-32 h-40 border border-black flex-shrink-0">
                         <img 
                           src={item.image} 
@@ -161,7 +166,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
                   <div className="flex justify-center">
                     <button 
                       onClick={() => {
-                        navigate('checkout' as any);
+                        navigate('checkout' as any, { state: { background: location } });
                         onClose();
                       }}
                       className="w-full bg-secondary text-white py-2.5 rounded-full text-sm font-normal hover:opacity-90 transition-all tracking-widest"
@@ -173,7 +178,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
               )}
             </div>
           </motion.div>
-        </>
+        </React.Fragment>
       )}
       <style>{`
         .no-scrollbar::-webkit-scrollbar {

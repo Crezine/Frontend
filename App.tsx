@@ -30,8 +30,17 @@ import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
 import './styles/overrides.css';
 
+import { authService } from './src/services/authService';
+import { ApiError } from './src/services/api';
+
+import { auth } from './src/services/firebase';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(() => {
     try {
       const saved = localStorage.getItem('userData');
@@ -54,6 +63,68 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setAuthUser(user);
+
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          localStorage.setItem('firebaseToken', token);
+          
+          setIsLoading(true);
+          const profile = await authService.getMe();
+          const data: UserData = {
+            name: profile.name || profile.displayName || 'Creative User',
+            email: profile.email,
+            craft: profile.craft || 'Creator'
+          };
+          setUserData(data);
+          localStorage.setItem('userData', JSON.stringify(data));
+        } catch (error) {
+          console.error("Auth profile fetch failed", error);
+          const canUseCachedProfile =
+            !(error instanceof ApiError) || ![401, 403].includes(error.status);
+          const saved = canUseCachedProfile ? localStorage.getItem('userData') : null;
+
+          if (saved && auth.currentUser) {
+            try {
+              setUserData(JSON.parse(saved));
+            } catch (e) {
+              console.error("Failed to parse saved userData", e);
+              setUserData(null);
+            }
+          } else {
+            setUserData(null);
+          }
+        } finally {
+          setIsLoading(false);
+          setAuthReady(true);
+        }
+      } else {
+        localStorage.removeItem('firebaseToken');
+        localStorage.removeItem('userData');
+        setUserData(null);
+        setAuthReady(true);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setAuthUser(null);
+      setUserData(null);
+      if (location.pathname.startsWith('/dashboard')) {
+        navigate('/onboarding', { replace: true });
+      }
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, [location.pathname, navigate]);
+
   const handleNavigate = (view: AppView) => {
     if (view === 'landing') {
       navigate('/');
@@ -69,21 +140,44 @@ const App: React.FC = () => {
     }
   };
 
-  const handleOnboarding = (data: UserData) => {
-    localStorage.setItem('userData', JSON.stringify(data));
-    setUserData(data);
-    navigate('/dashboard');
+  const handleOnboarding = async (data: UserData) => {
+    try {
+      setIsLoading(true);
+      
+      await authService.updateProfile({
+        name: data.name,
+        craft: data.craft
+      });
+
+      localStorage.setItem('userData', JSON.stringify(data));
+      setUserData(data);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Onboarding update failed", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogin = () => {
-    const dummyUser: UserData = {
-      name: 'Creative User',
-      email: 'creative@crezine.com',
-      craft: 'Creator'
-    };
-    localStorage.setItem('userData', JSON.stringify(dummyUser));
-    setUserData(dummyUser);
-    navigate('/dashboard');
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const profile = await authService.getMe();
+      
+      const user: UserData = {
+        name: profile.name || profile.displayName || 'Creative User',
+        email: profile.email,
+        craft: profile.craft || 'Creator'
+      };
+      
+      localStorage.setItem('userData', JSON.stringify(user));
+      setUserData(user);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Login failed", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetAnimation = () => {
@@ -91,12 +185,24 @@ const App: React.FC = () => {
   };
 
   // Do not show the global footer on dashboard routes and shop as it has its own refurbished footer
-  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop');
+  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop') && !['/checkout', '/ticket-checkout'].includes(location.pathname);
+
+  // Determine if we should show the shop background for checkout
+  const isCheckoutModal = location.pathname === '/checkout' || location.pathname === '/ticket-checkout';
+  const showShopBackground = isCheckoutModal && location.state?.background;
 
   return (
     <div className="App">
       <Analytics />
-      <Routes>
+      
+      {/* Background for modals */}
+      {showShopBackground && (
+        <div className="fixed inset-0 z-0 opacity-50 blur-sm pointer-events-none">
+          <ShopView navigate={handleNavigate} />
+        </div>
+      )}
+
+      <Routes location={location.state?.background || location}>
         {/* Landing and Auth */}
         <Route 
           path="/" 
@@ -111,15 +217,24 @@ const App: React.FC = () => {
         />
         <Route path="/landing" element={<Navigate to="/" replace />} />
         <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+        <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
         
         {/* Dashboard and related user-specific views */}
         <Route 
           path="/dashboard/*" 
           element={
-            <DashboardView 
-              navigate={handleNavigate} 
-              userData={userData || { name: 'Creative', email: 'creative@crezine.com', craft: 'Creative' }} 
-            />
+            !authReady || isLoading ? (
+              <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                Loading...
+              </div>
+            ) : authUser && userData ? (
+              <DashboardView 
+                navigate={handleNavigate} 
+                userData={userData} 
+              />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
           }
         />
         
@@ -154,6 +269,15 @@ const App: React.FC = () => {
         {/* Catch-all route for 404 Page Not Found */}
         <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
       </Routes>
+
+      {/* Actual Modal Rendering */}
+      {isCheckoutModal && (
+        <Routes>
+          <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+          <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+        </Routes>
+      )}
+
       {showGlobalFooter && <BackToTop />}
       <CookieConsent />
       {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}

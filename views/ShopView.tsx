@@ -7,34 +7,10 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import ShopSidebar from '../components/ShopSidebar';
 import ShopFooter from '../components/ShopFooter';
 import CartSidebar from '../components/CartSidebar';
+import { shopService, Product, CartItem } from '../src/services/shopService';
 
 export type ShopSubView = 'all-products' | 'collections' | 'pencil-portrait' | 'paintings';
 
-interface Product {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  size: string;
-  category: ShopSubView;
-}
-
-interface CartItem extends Product {
-  quantity: number;
-}
-
-const ARTWORKS: Product[] = [
-  { id: 1, name: 'Nigerian Beauty 001', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 2, name: 'Nigerian Beauty 002', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 3, name: 'Nigerian Beauty 003', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 4, name: 'Nigerian Beauty 004', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 5, name: 'Nigerian Beauty 005', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 6, name: 'Nigerian Beauty 006', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 7, name: 'Nigerian Beauty 007', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-  { id: 8, name: 'Nigerian Beauty 008', price: 250, image: '/art.png', size: '80cm by 60cm', category: 'all-products' },
-];
-
-// STABLE COMPONENTS DEFINED OUTSIDE TO PREVENT FLICKERING
 const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: Product) => void }) => (
   <div className="group flex flex-col items-center">
     <div 
@@ -43,7 +19,7 @@ const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: 
     >
       <div className="aspect-[4/5] w-full overflow-hidden bg-accent/20">
         <img 
-          src={art.image} 
+          src={art.imageUrl || '/art.png'} 
           alt={art.name}
           className="w-full h-full object-cover transition-transform duration-500"
           loading="lazy"
@@ -52,7 +28,7 @@ const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: 
     </div>
     <div className="text-center space-y-1">
       <h3 className="text-sm font-normal text-black font-montserrat">{art.name}</h3>
-      <p className="text-sm font-normal text-black font-montserrat">$ {art.price.toFixed(2)}</p>
+      <p className="text-sm font-normal text-black font-montserrat">$ {(art.price / 100).toFixed(2)}</p>
     </div>
   </div>
 );
@@ -83,7 +59,6 @@ const ComingSoonSection: React.FC<{ title: string }> = ({ title }) => (
         We are curating something special for {title}. Stay tuned.
       </motion.p>
       
-      {/* Centered background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-full h-full overflow-hidden opacity-10 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/15 rounded-full blur-[140px]" />
       </div>
@@ -96,6 +71,12 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    const saved = localStorage.getItem('crezine_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -104,67 +85,99 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
     ['collections', 'pencil-portrait', 'paintings'].some(path => location.pathname.includes(path)),
   [location.pathname]);
 
-  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('crezine_cart');
-    try {
-      return saved ? JSON.parse(saved) : [{ 
-        id: 1, name: 'Nigerian Beauty 001', price: 250.00, 
-        image: '/art.png', size: '80cm by 60cm', quantity: 1 
-      }];
-    } catch (e) { return []; }
-  });
-
+  // Initial fetch
   useEffect(() => {
-    localStorage.setItem('crezine_cart', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  useEffect(() => {
-    const shouldLock = isSidebarOpen || isCartOpen;
-    document.body.style.overflow = shouldLock ? 'hidden' : 'unset';
-  }, [isSidebarOpen, isCartOpen]);
-
-  useEffect(() => {
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = window.scrollY;
-          if (currentScrollY < 50) {
-            setIsHeaderVisible(true);
-          } else {
-            setIsHeaderVisible(currentScrollY < lastScrollY);
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const productsData = await shopService.getProducts();
+        setProducts(productsData);
+        
+        // Only try to sync cart if we have a token
+        if (localStorage.getItem('firebaseToken')) {
+          const cartData = await shopService.getCart();
+          if (cartData && cartData.items) {
+            setCartItems(cartData.items);
+            localStorage.setItem('crezine_cart', JSON.stringify(cartData.items));
           }
-          setLastScrollY(currentScrollY);
-          ticking = false;
-        });
-        ticking = true;
+        }
+      } catch (error) {
+        console.warn("Auth needed for backend cart, using local cart instead");
+      } finally {
+        setIsLoading(false);
       }
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    fetchData();
+  }, []);
 
-  const addToCart = (product: Product) => {
+  const addToCart = async (product: Product) => {
+    // 1. Update Local State & Storage immediately for responsive UI
     setCartItems(prev => {
-      const existing = prev.find(item => item.id === product.id);
+      const existing = prev.find(item => item.productId === product.id);
+      let newItems;
       if (existing) {
-        return prev.map(item => 
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        newItems = prev.map(item => 
+          item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
+      } else {
+        newItems = [...prev, { 
+          productId: product.id, 
+          name: product.name, 
+          price: product.price, 
+          quantity: 1,
+          imageUrl: product.imageUrl 
+        }];
       }
-      return [...prev, { ...product, quantity: 1 }];
+      localStorage.setItem('crezine_cart', JSON.stringify(newItems));
+      return newItems;
     });
     setIsCartOpen(true);
+
+    // 2. Try to sync with backend in background
+    if (localStorage.getItem('firebaseToken')) {
+      try {
+        await shopService.addToCart(product.id, 1);
+      } catch (error) {
+        console.warn("Background cart sync failed (likely unauthorized)");
+      }
+    }
   };
 
-  const updateQuantity = (id: number, delta: number) => {
-    setCartItems(prev => prev.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-    ));
+  const updateQuantity = async (productId: string, delta: number) => {
+    setCartItems(prev => {
+      const newItems = prev.map(item => 
+        item.productId === productId ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
+      );
+      localStorage.setItem('crezine_cart', JSON.stringify(newItems));
+      return newItems;
+    });
+
+    if (localStorage.getItem('firebaseToken')) {
+      try {
+        const item = cartItems.find(i => i.productId === productId);
+        if (item) {
+          await shopService.addToCart(productId, Math.max(1, item.quantity + delta));
+        }
+      } catch (error) {
+        console.warn("Background quantity sync failed");
+      }
+    }
   };
 
-  const removeItem = (id: number) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+  const removeItem = async (productId: string) => {
+    setCartItems(prev => {
+      const newItems = prev.filter(item => item.productId !== productId);
+      localStorage.setItem('crezine_cart', JSON.stringify(newItems));
+      return newItems;
+    });
+
+    if (localStorage.getItem('firebaseToken')) {
+      try {
+        await shopService.removeFromCart(productId);
+      } catch (error) {
+        console.warn("Background remove sync failed");
+      }
+    }
   };
 
   const cartTotalQuantity = useMemo(() => 
@@ -189,9 +202,17 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         navigate={parentNavigate}
-        items={cartItems}
-        onUpdateQuantity={updateQuantity}
-        onRemove={removeItem}
+        items={cartItems.map((item, index) => ({
+          id: item.productId || `item-${index}`,
+          productId: item.productId,
+          name: item.name,
+          price: item.price / 100,
+          image: item.imageUrl || '/art.png',
+          size: 'Standard',
+          quantity: item.quantity
+        }))}
+        onUpdateQuantity={(id, delta) => updateQuantity(id as string, delta)}
+        onRemove={(id) => removeItem(id as string)}
         setSubView={handleSubViewChange}
       />
 
@@ -241,11 +262,19 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         <Routes>
           <Route path="/" element={<Navigate to="all-products" replace />} />
           <Route path="all-products" element={
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 md:gap-x-16 lg:gap-x-20 gap-y-20 pb-24">
-              {ARTWORKS.map((art) => (
-                <ProductGridItem key={art.id} art={art} onAddToCart={addToCart} />
-              ))}
-            </div>
+            isLoading ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="w-10 h-10 border-4 border-secondary/10 border-t-secondary rounded-full animate-spin"></div>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-20 text-black/40">No products available at the moment.</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 md:gap-x-16 lg:gap-x-20 gap-y-20 pb-24">
+                {products.map((art) => (
+                  <ProductGridItem key={art.id} art={art} onAddToCart={addToCart} />
+                ))}
+              </div>
+            )
           } />
           <Route path="collections" element={<ComingSoonSection title="collections" />} />
           <Route path="pencil-portrait" element={<ComingSoonSection title="pencil portraits" />} />

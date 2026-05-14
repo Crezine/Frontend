@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   RiTimeLine,
 } from 'react-icons/ri';
@@ -6,15 +6,16 @@ import { HiSwitchVertical } from "react-icons/hi";
 import { BiHide, BiShow } from "react-icons/bi";
 import { ViewProps } from '../types';
 import { motion } from 'framer-motion';
+import { walletService, WalletBalance, Transaction } from '../src/services/walletService';
 
 const ActionButton: React.FC<{ label: string; onClick: () => void; variant?: 'default' | 'maroon' }> = ({ label, onClick, variant = 'default' }) => (
-  <motion.button 
+  <motion.button
     whileHover={{ scale: 1.02, y: -1 }}
     whileTap={{ scale: 0.98 }}
     onClick={onClick}
     className={`${
-      variant === 'maroon' 
-        ? 'bg-secondary text-primary dark:bg-secondary dark:text-primary' 
+      variant === 'maroon'
+        ? 'bg-secondary text-primary dark:bg-secondary dark:text-primary'
         : 'bg-white text-secondary dark:bg-gray-800 dark:text-primary border-gray-100 dark:border-gray-700'
     } p-3 md:p-4 rounded-[24px] border flex flex-col items-center justify-center shadow-sm h-full w-full overflow-hidden transition-colors`}
   >
@@ -31,11 +32,11 @@ const TransactionItem: React.FC<{ title: string; date: string; amount: string; t
         <RiTimeLine className="h-5 w-5 md:h-6 md:w-6" />
       </div>
       <div>
-        <p className="font-montserrat font-normal text-secondary dark:text-gray-200 text-sm md:text-base">{title}</p>
+        <p className="font-montserrat font-normal text-secondary dark:text-gray-200 text-sm md:text-base truncate max-w-[150px] md:max-w-xs">{title}</p>
         <p className="text-xs text-secondary/60 dark:text-gray-400 font-montserrat font-normal">{date}</p>
       </div>
     </div>
-    <span className={`font-rubik font-normal text-sm md:text-base ${type === 'positive' ? 'text-primary' : 'text-secondary dark:text-secondary'}`}>{amount}</span>
+    <span className={`font-rubik font-normal text-sm md:text-base shrink-0 ${type === 'positive' ? 'text-primary' : 'text-secondary dark:text-secondary'}`}>{amount}</span>
   </div>
 );
 
@@ -43,17 +44,59 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
   const [showBalance, setShowBalance] = useState(false);
   const [currency, setCurrency] = useState<'USD' | 'NGN'>('USD');
   const [isVerified, setIsVerified] = useState(true);
+  const [balance, setBalance] = useState<WalletBalance | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [balanceData, transactionsData] = await Promise.all([
+          walletService.getBalance(),
+          walletService.getTransactions({ limit: 3 })
+        ]);
+        setBalance(balanceData);
+        setTransactions(transactionsData);
+      } catch (error) {
+        console.error("Failed to fetch dashboard data", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toggleCurrency = () => {
     setCurrency(prev => prev === 'USD' ? 'NGN' : 'USD');
   };
 
-  const balanceData = {
-    USD: { symbol: '$', amount: '12,450', cents: '.00' },
-    NGN: { symbol: '₦', amount: '19,920,000', cents: '.00' }
+  const formatCurrency = (amountInCents: number) => {
+    const amount = amountInCents / 100;
+    return amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
   };
 
-  const currentBalance = balanceData[currency];
+  const getDisplayBalance = () => {
+    if (!balance) return { symbol: currency === 'USD' ? '$' : '₦', amount: '0', cents: '.00' };
+
+    let amount = balance.balance;
+    let symbol = '$';
+
+    if (currency === 'NGN') {
+      amount = amount * 1600; // Mock exchange rate
+      symbol = '₦';
+    }
+
+    const formatted = formatCurrency(amount);
+    const [main, cents] = formatted.split('.');
+    return { symbol, amount: main, cents: '.' + (cents || '00') };
+  };
+
+  const currentBalance = getDisplayBalance();
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 font-montserrat font-normal text-black dark:text-white transition-colors">
@@ -67,25 +110,25 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           <p className="text-black dark:text-gray-300 mt-1 font-normal text-base md:text-lg">Welcome to Your Creative Cashdoor.</p>
         </motion.div>
 
-        <button 
+        <button
           onClick={() => setIsVerified(!isVerified)}
           className="flex flex-col items-center gap-2 hover:opacity-90 transition-all group pt-2"
         >
-          <div 
+          <div
             className={`w-20 h-10 rounded-full border-[4px] flex items-center transition-all duration-300 ${
-              isVerified 
-                ? 'border-secondary bg-white dark:border-primary dark:bg-gray-800' 
+              isVerified
+                ? 'border-secondary bg-white dark:border-primary dark:bg-gray-800'
                 : 'border-gray-300 bg-gray-100 dark:border-gray-700 dark:bg-gray-900'
             }`}
           >
-            <motion.div 
+            <motion.div
               animate={{ x: isVerified ? 40 : 0 }}
               transition={{ type: "spring", stiffness: 500, damping: 30 }}
               className="w-7 h-7 rounded-full flex items-center justify-center ml-1"
             >
               <div className={`rounded-full transition-all duration-300 ${
-                isVerified 
-                  ? 'w-5 h-5 border-[4px] border-primary bg-transparent' 
+                isVerified
+                  ? 'w-5 h-5 border-[4px] border-primary bg-transparent'
                   : 'w-4 h-4 border-2 border-gray-400 bg-transparent'
               }`} />
             </motion.div>
@@ -98,7 +141,7 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
 
       {/* Main Dashboard Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-10 items-stretch">
-        
+
         {/* Left: Balance Card */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -131,14 +174,16 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
               <span 
                 className={`text-4xl md:text-6xl font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}
               >
-                {currentBalance.symbol} {currentBalance.amount}
+                {isLoading ? '...' : `${currentBalance.symbol} ${currentBalance.amount}`}
               </span>
-              <span className={`text-xl md:text-2xl text-white/90 font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}>
-                {currentBalance.cents}
-              </span>
+              {!isLoading && (
+                <span className={`text-xl md:text-2xl text-white/90 font-rubik font-normal transition-all duration-300 ${!showBalance ? 'blur-md select-none' : ''}`}>
+                  {currentBalance.cents}
+                </span>
+              )}
             </div>
           </div>
-          
+
           <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
         </motion.div>
 
@@ -188,9 +233,21 @@ const Home: React.FC<ViewProps> = ({ navigate, userData }) => {
           <button onClick={() => navigate('wallet')} className="text-primary font-normal text-sm hover:underline">View All History</button>
         </div>
         <div className="space-y-1">
-          <TransactionItem title="Escrow Release: Brand Identity" date="Oct 24, 2024" amount="+ $1,200.00" type="positive" />
-          <TransactionItem title="Workshop Ticket Sold" date="Oct 23, 2024" amount="+ $45.00" type="positive" />
-          <TransactionItem title="Payout to Local Bank" date="Oct 22, 2024" amount="- $500.00" type="negative" />
+          {isLoading ? (
+            <div className="py-10 text-center text-black/40 dark:text-gray-500">Loading history...</div>
+          ) : transactions.length === 0 ? (
+            <div className="py-10 text-center text-black/40 dark:text-gray-500 font-montserrat">No recent transactions</div>
+          ) : (
+            transactions.map(tx => (
+              <TransactionItem 
+                key={tx.id}
+                title={tx.description || tx.type.replace('_', ' ')} 
+                date={new Date(tx.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })} 
+                amount={`${tx.amount > 0 ? '+ ' : '- '}$${formatCurrency(Math.abs(tx.amount))}`} 
+                type={tx.amount > 0 ? 'positive' : 'negative'} 
+              />
+            ))
+          )}
         </div>
       </motion.div>
     </div>
