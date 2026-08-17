@@ -13,6 +13,7 @@ import HelpCenterView from './views/HelpCenterView';
 import ContactView from './views/ContactView';
 import WhatsAppView from './views/WhatsAppView';
 import About from './views/About';
+import BrandView from './views/BrandView';
 import ShopView from './views/ShopView';
 import CheckoutView from './views/CheckoutView';
 import TicketCheckoutView from './views/TicketCheckoutView';
@@ -35,6 +36,92 @@ import { ApiError } from './src/services/api';
 
 import { auth } from './src/services/firebase';
 import { onAuthStateChanged, type User } from 'firebase/auth';
+
+const getPageTitle = (pathname: string): string => {
+  const suffix = "The Creative cashdoor";
+
+  if (pathname === '/' || pathname === '/landing') {
+    return `Crezine | ${suffix}`;
+  }
+  if (pathname.startsWith('/shop')) {
+    return `Shop | ${suffix}`;
+  }
+  if (pathname.startsWith('/brand')) {
+    return `Brand | ${suffix}`;
+  }
+  if (pathname.startsWith('/about')) {
+    return `About | ${suffix}`;
+  }
+  if (pathname.startsWith('/features')) {
+    return `Features | ${suffix}`;
+  }
+  if (pathname.startsWith('/product')) {
+    return `Product | ${suffix}`;
+  }
+  if (pathname.startsWith('/pricing')) {
+    return `Pricing | ${suffix}`;
+  }
+  if (pathname.startsWith('/support')) {
+    return `Support | ${suffix}`;
+  }
+  if (pathname.startsWith('/help-center') || pathname.startsWith('/help')) {
+    return `Help Center | ${suffix}`;
+  }
+  if (pathname.startsWith('/contact')) {
+    return `Contact | ${suffix}`;
+  }
+  if (pathname.startsWith('/onboarding')) {
+    return `Join | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/wallet')) {
+    return `Wallet | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/pay') || pathname.startsWith('/dashboard/payments')) {
+    return `Payments | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/escrow')) {
+    return `Escrow | ${suffix}`;
+  }
+  if (
+    pathname.startsWith('/dashboard/events') ||
+    pathname.startsWith('/dashboard/ticket') ||
+    pathname.startsWith('/dashboard/ticketing')
+  ) {
+    return `Events & Tickets | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/fund') || pathname.startsWith('/dashboard/funding')) {
+    return `Funding | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/profile')) {
+    return `Profile | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard')) {
+    return `Dashboard | ${suffix}`;
+  }
+  if (pathname.startsWith('/checkout')) {
+    return `Checkout | ${suffix}`;
+  }
+  if (pathname.startsWith('/ticket-checkout')) {
+    return `Ticket Checkout | ${suffix}`;
+  }
+  if (pathname.startsWith('/privacy-policy')) {
+    return `Privacy Policy | ${suffix}`;
+  }
+  if (pathname.startsWith('/terms-of-service')) {
+    return `Terms of Service | ${suffix}`;
+  }
+  if (pathname.startsWith('/whatsapp')) {
+    return `Community | ${suffix}`;
+  }
+  if (pathname.startsWith('/cookie-settings')) {
+    return `Cookie Settings | ${suffix}`;
+  }
+  if (pathname.startsWith('/unauthorized')) {
+    return `Unauthorized | ${suffix}`;
+  }
+
+  return `Crezine | ${suffix}`;
+};
 
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
@@ -61,6 +148,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const title = getPageTitle(location.pathname);
+    document.title = title;
+
+    const metaTitle = document.querySelector('meta[name="title"]');
+    if (metaTitle) {
+      metaTitle.setAttribute('content', title);
+    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', title);
+    }
+    const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', title);
+    }
   }, [location.pathname]);
 
   useEffect(() => {
@@ -258,6 +360,7 @@ const App: React.FC = () => {
         <Route path="/help" element={<Navigate to="/help-center" replace />} />
         <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
         <Route path="/about" element={<About navigate={handleNavigate} />} />
+        <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
         <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
         <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
         <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
@@ -280,7 +383,7 @@ const App: React.FC = () => {
 
       {showGlobalFooter && <BackToTop />}
       <CookieConsent />
-      {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}
+      {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={['/shop', '/brand'].includes(location.pathname)} />}
     </div>
   );
 };

@@ -41,6 +41,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
       label: 'Resources',
       subItems: [
         { label: 'Home', path: '/' },
+        { label: 'Brand', path: '/brand' },
         { label: 'Shop', path: '/shop' },
         { label: 'Share', path: '/share' },
       ]
@@ -92,7 +93,11 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
   }, [isMenuOpen]);
 
   const handleLinkClick = (path: string) => {
-    navigate(path);
+    if (path === '/brand') {
+      window.open('/brand', '_blank', 'noopener,noreferrer');
+    } else {
+      navigate(path);
+    }
     setIsMenuOpen(false);
     setActiveDropdown(null);
   };

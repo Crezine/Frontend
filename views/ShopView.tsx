@@ -87,6 +87,7 @@ const ShopView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
 
   // Initial fetch
   useEffect(() => {
+    document.title = "Shop | The Creative cashdoor";
     const fetchData = async () => {
       try {
         setIsLoading(true);

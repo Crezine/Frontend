@@ -19,6 +19,8 @@ export default {
         'rubik': ["Rubik", "sans-serif"],
         'century-gothic': ["Century Gothic", "sans-serif"],
         'nunito': ["Nunito", "sans-serif"],
+        'silkscreen': ["Silkscreen", "monospace"],
+        'vt323': ["VT323", "monospace"],
       },
     },
   },

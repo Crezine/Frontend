@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
-import TrustSection from '../components/TrustSection';
+import BrandSection from '../components/BrandSection';
 import AnimatedButton from '../components/AnimatedButton';
 import { motion } from 'framer-motion';
 import { PiWhatsappLogoThin } from "react-icons/pi";
@@ -65,7 +65,7 @@ const LandingView: React.FC<LandingViewProps> = ({
       <PublicHeader onLogoClick={resetAnimation} />
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="container mx-auto px-6 pt-28 pb-12 md:pt-20 md:pb-16 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden">
+        <section className="container mx-auto px-6 pt-28 pb-4 md:pt-20 md:pb-6 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden">
           <div className="w-full lg:w-1/2 xl:w-3/5 text-left flex flex-col items-start relative z-10 lg:pt-12">
             <motion.div 
               initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
@@ -77,59 +77,30 @@ const LandingView: React.FC<LandingViewProps> = ({
                 Your global cashdoor for creative dreams.
               </p>
             </motion.div>
-            <motion.h1 
-              variants={sentence}
-              initial={hasInitialAnimated ? "visible" : "hidden"}
-              animate="visible"
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight"
-            >
-              <span className="text-black">
-                  {splitText('The Global', 'global')}
-              </span>{' '}
-              <span className="text-primary">
-                  {splitText('Creative', 'creative')}
-              </span>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight">
+              <span className="text-black">The Global </span>
+              <span className="text-primary">Creative</span>
               <br />
-              <span className="text-black">
-                  {splitText('Cashdoor', 'cashdoor')}
-              </span>
-            </motion.h1>
-            <motion.p 
-              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl leading-relaxed"
-            >
+              <span className="text-black">Cashdoor</span>
+            </h1>
+            <p className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl leading-relaxed">
               Secure Global payments for Creatives, Transact across the world Simple and Easy,
               Sell Experiences, Ticket Events and access creative fund and residencies
               all Behind One Cashdoor.
-            </motion.p>
-            <motion.div 
-              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="flex flex-col sm:flex-row items-start justify-start gap-3 sm:gap-4 w-full sm:w-auto"
-            >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            </p>
+            <div className="flex flex-col sm:flex-row items-start justify-start gap-3 sm:gap-4 w-full sm:w-auto">
+              <button
                 onClick={() => navigate('onboarding' as AppView)}
                 className="bg-secondary text-white font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap h-[48px] min-w-[160px]"
               >
                 Create your cashdoor
-              </motion.button>
+              </button>
               <AnimatedButton onClick={() => navigate('features' as AppView)} />
-            </motion.div>
+            </div>
           </div>
 
           {/* Right Side Image - Creative Mobile Display */}
-          <motion.div 
-            initial={hasInitialAnimated ? false : { opacity: 0, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-            className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-32 lg:mt-0"
-          >
+          <div className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-32 lg:mt-0">
             <div className="relative">
               <div className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40" />
               <div className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30" />
@@ -142,21 +113,8 @@ const LandingView: React.FC<LandingViewProps> = ({
                 />
               </div>
 
-              {/* Floating UI Elements */}
-              <motion.div 
-                initial={hasInitialAnimated ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: 20 }}
-                whileInView={{ 
-                  opacity: 1, 
-                  x: 0,
-                  y: [0, -10, 0] 
-                }}
-                viewport={{ once: true }}
-                transition={{ 
-                  x: { delay: 0.8, duration: 0.6 },
-                  y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100"
-              >
+              {/* Static Floating UI Badges */}
+              <div className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
                   <span className="text-xs md:text-sm font-normal font-montserrat">$</span>
                 </div>
@@ -164,22 +122,9 @@ const LandingView: React.FC<LandingViewProps> = ({
                   <span className="text-[10px] md:text-xs text-black/70 font-montserrat font-normal uppercase tracking-tighter leading-none mb-1">Received</span>
                   <span className="text-xs md:text-sm text-black font-normal font-montserrat leading-none">Global Payment</span>
                 </div>
-              </motion.div>
+              </div>
               
-              <motion.div 
-                initial={hasInitialAnimated ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, x: -20 }}
-                whileInView={{ 
-                  opacity: 1, 
-                  x: 0,
-                  y: [0, 10, 0] 
-                }}
-                viewport={{ once: true }}
-                transition={{ 
-                  x: { delay: 1, duration: 0.6 },
-                  y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }
-                }}
-                className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100"
-              >
+              <div className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center text-secondary">
                    <span className="text-xs md:text-sm font-normal font-montserrat">✓</span>
                 </div>
@@ -187,16 +132,16 @@ const LandingView: React.FC<LandingViewProps> = ({
                   <span className="text-[10px] md:text-xs text-black/70 font-montserrat font-normal uppercase tracking-tighter leading-none mb-1">Verified</span>
                   <span className="text-xs md:text-sm text-black font-normal font-montserrat leading-none">Escrow Protected</span>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
-        {/* Trust Section */}
-        <TrustSection hasInitialAnimated={hasInitialAnimated} />
+        {/* Brand Showcase Section */}
+        <BrandSection hasInitialAnimated={hasInitialAnimated} />
 
         {/* About Us Section */}
-        <section className="py-20 md:py-28 container mx-auto px-6 flex flex-col justify-center">
+        <section className="pt-12 pb-20 md:pt-16 md:pb-28 container mx-auto px-6 flex flex-col justify-center">
           <div className="w-full text-center mb-16 md:mb-20">
             <motion.h2 
               initial={{ opacity: 0, y: -10 }}
@@ -242,14 +187,9 @@ const LandingView: React.FC<LandingViewProps> = ({
                 desc: "Discover Residencies and Creative Funds curated specifically for powering and boosting your creative career."
               }
             ].map((item, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                whileHover={{ scale: 1.02, translateY: -3 }}
-                className="bg-accent p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-xl transition-all duration-300 border border-secondary/30 overflow-hidden"
+                className="bg-accent p-8 pt-6 rounded-[40px] flex flex-col items-center text-center h-full shadow-sm hover:shadow-md transition-all duration-200 border border-secondary/30 overflow-hidden"
               >
                 <div className="text-4xl md:text-5xl font-montserrat font-medium text-secondary mb-4 tracking-widest">{item.num}</div>
                 <h3 className="text-lg md:text-xl font-bold text-primary mb-4 tracking-tight font-rubik leading-tight min-h-[3.5rem] flex items-center justify-center capitalize">
@@ -258,7 +198,7 @@ const LandingView: React.FC<LandingViewProps> = ({
                 <p className="text-sm md:text-base text-black font-montserrat font-light leading-relaxed">
                   {item.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>
@@ -349,55 +289,33 @@ const LandingView: React.FC<LandingViewProps> = ({
           <div className="container mx-auto px-6 max-w-7xl relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-x-20 gap-y-12 items-center">
               <div className="w-full text-center lg:text-left flex flex-col items-center lg:items-start order-1">
-                <motion.h2 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6 }}
-                  className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal tracking-tighter leading-[1.1]"
-                >
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-rubik font-normal tracking-tighter leading-[1.1]">
                   <span className="text-secondary">Would you like to </span>
                   <span className="text-primary">share your <br className="hidden sm:block" /> story</span>
                   <span className="text-secondary"> as a Creative and be <br className="hidden sm:block" /> </span>
                   <span className="text-primary">part of our Community?</span>
-                </motion.h2>
+                </h2>
               </div>
 
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="w-full flex justify-center lg:justify-end order-2 lg:row-span-2"
-              >
+              <div className="w-full flex justify-center lg:justify-end order-2 lg:row-span-2">
                 <img src="/art.png" alt="Creative Art" className="w-full max-w-[320px] sm:max-w-[400px] md:max-w-[450px] h-auto object-contain" />
-              </motion.div>
+              </div>
 
               <div className="w-full flex flex-col items-center lg:items-start space-y-10 order-3">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="bg-white px-6 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-all whitespace-nowrap overflow-hidden"
-                >
+                <div className="bg-white px-6 py-3 rounded-full border border-secondary/10 inline-flex items-center gap-2 shadow-sm hover:shadow-md transition-all whitespace-nowrap overflow-hidden">
                   <span className="text-black font-montserrat font-normal text-xs sm:text-sm md:text-base">Email Us: </span>
                   <a href="mailto:crezinecashdoor@gmail.com" className="text-secondary font-montserrat font-normal text-xs sm:text-sm md:text-base hover:underline transition-all">
                     crezinecashdoor@gmail.com
                   </a>
-                </motion.div>
+                </div>
 
-                <motion.a
+                <a
                   href="https://whatsapp.com/channel/0029Vb7BP3aDJ6GyeKfw2u18"
                   target="_blank"
                   rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
                   className="flex flex-col sm:flex-row items-center gap-4 group cursor-pointer"
                 >
-                  <div className="flex-shrink-0 text-[#25D366] transition-all duration-500 group-hover:scale-110">
+                  <div className="flex-shrink-0 text-[#25D366] transition-all duration-300">
                     <PiWhatsappLogoThin size={56} />
                   </div>
                   <div className="flex flex-col text-center lg:text-left">
@@ -406,7 +324,7 @@ const LandingView: React.FC<LandingViewProps> = ({
                       Connect and share your work with other Creatives globally.
                     </p>
                   </div>
-                </motion.a>
+                </a>
               </div>
             </div>
           </div>
