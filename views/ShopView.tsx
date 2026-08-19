@@ -39,7 +39,7 @@ const ComingSoonSection: React.FC<{ title: string }> = ({ title }) => (
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      className="flex flex-col items-center max-w-2xl"
+      className="flex flex-col items-center text-center max-w-2xl"
     >
       <motion.h2 
         initial={{ opacity: 0, y: 5 }}
@@ -54,7 +54,7 @@ const ComingSoonSection: React.FC<{ title: string }> = ({ title }) => (
         initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="text-black text-[13px] md:text-lg font-medium tracking-wide font-montserrat mt-2"
+        className="text-black text-[13px] md:text-lg font-normal tracking-wide font-montserrat mt-2 text-center"
       >
         We are curating something special for {title}. Stay tuned.
       </motion.p>

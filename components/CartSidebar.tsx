@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { AppView } from '../types';
@@ -36,6 +36,16 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
 }) => {
   const location = useLocation();
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  useEffect(() => {
+    if (isOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
 
   const handleEmptyCartAction = (target: ShopSubView) => {
     setSubView(target);

@@ -12,25 +12,17 @@ const NotFoundView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigat
       <main className="flex-grow flex items-center justify-center px-4 sm:px-6 py-12 md:py-20">
         <div className="max-w-2xl w-full text-center">
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
+            initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="mb-6 md:mb-10 relative"
+            className="mb-6 md:mb-10 relative px-2"
           >
-            {/* 404 Background Text - Scaled for mobile */}
-            <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[12rem] font-montserrat font-bold text-primary opacity-20 select-none leading-none">
-              404
-            </h1>
-            
-            {/* Foreground Content - Adjusted positioning for better overlapping */}
-            <div className="-mt-10 sm:-mt-16 md:-mt-20 relative z-10 px-2">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary tracking-tighter mb-4 leading-tight">
-                Oops! Door not found.
-              </h2>
-              <p className="text-base sm:text-lg md:text-xl text-black font-montserrat font-normal mb-8 md:mb-12 max-w-md mx-auto">
-                The page you're looking for has been moved, deleted, or never existed in the first place.
-              </p>
-            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-rubik font-normal text-secondary tracking-tighter mb-4 leading-tight">
+              Oops! Door not found.
+            </h2>
+            <p className="text-base sm:text-lg md:text-xl text-black font-montserrat font-normal mb-8 md:mb-12 max-w-md mx-auto">
+              The page you're looking for has been moved, deleted, or never existed in the first place.
+            </p>
           </motion.div>
 
           {/* Action Buttons - Uniform height and one-line layout */}
