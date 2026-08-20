@@ -5,6 +5,7 @@ import BrandSection from '../components/BrandSection';
 import AnimatedButton from '../components/AnimatedButton';
 import { motion } from 'framer-motion';
 import { PiWhatsappLogoThin } from "react-icons/pi";
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface LandingViewProps {
   navigate: (view: AppView) => void;
@@ -16,9 +17,10 @@ interface LandingViewProps {
 const LandingView: React.FC<LandingViewProps> = ({ 
   navigate, 
   hasInitialAnimated = false, 
-  onAnimationComplete,
+  onAnimationComplete, 
   resetAnimation 
 }) => {
+  const { isBannerVisible } = useWaitlist();
 
   useEffect(() => {
     if (!hasInitialAnimated && onAnimationComplete) {
@@ -65,7 +67,11 @@ const LandingView: React.FC<LandingViewProps> = ({
       <PublicHeader onLogoClick={resetAnimation} />
       <main className="relative z-10">
         {/* Hero Section */}
-        <section className="container mx-auto px-6 pt-28 pb-4 md:pt-20 md:pb-6 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden">
+        <section 
+          className={`container mx-auto px-6 pb-4 md:pb-6 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 overflow-hidden transition-all duration-500 ease-in-out ${
+            isBannerVisible ? 'pt-36 md:pt-32' : 'pt-28 md:pt-20'
+          }`}
+        >
           <div className="w-full lg:w-1/2 xl:w-3/5 text-left flex flex-col items-start relative z-10 lg:pt-12">
             <motion.div 
               initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}

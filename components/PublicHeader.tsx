@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppView } from '../types';
 import BrandLogo from './BrandLogo';
+import WaitlistBanner from './WaitlistBanner';
+import { useWaitlist } from '../src/context/WaitlistContext';
 import { FaBarsStaggered } from "react-icons/fa6";
 import { FiX, FiChevronDown } from 'react-icons/fi';
 
@@ -24,6 +26,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [expandedMobileItem, setExpandedMobileItem] = useState<string | null>(null);
   
+  const { openWaitlistModal, isBannerVisible, hasJoined } = useWaitlist();
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -113,14 +116,22 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
 
   return (
     <>
+      {/* Top Banner Above the Navigation Bar (Not end-to-end, floating centered capsule) */}
+      <div className="fixed top-2.5 sm:top-3 left-2.5 sm:left-3 right-2.5 sm:right-3 z-50 pointer-events-none flex justify-center">
+        <WaitlistBanner onOpenModal={openWaitlistModal} />
+      </div>
+
+      {/* Floating Main Navigation Bar with visible space below waitlist banner */}
       <header 
-        className={`fixed top-3 left-3 right-3 z-50 transition-all duration-500 ease-in-out transform ${
-          isVisible ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0'
+        className={`fixed left-2.5 sm:left-3 right-2.5 sm:right-3 z-40 transition-all duration-500 ease-in-out transform ${
+          isBannerVisible ? 'top-[48px] sm:top-[56px] lg:top-[62px]' : 'top-2.5 sm:top-3'
+        } ${
+          isVisible ? 'translate-y-0 opacity-100' : '-translate-y-36 opacity-0'
         } pointer-events-none`}
       >
         <div className="max-w-7xl mx-auto pointer-events-auto" ref={dropdownRef}>
-          <div className="bg-white rounded-full shadow-lg border border-secondary/10 flex items-center justify-between h-12 lg:h-16 px-6 lg:px-12 relative">
-            <div className="flex-shrink-0 cursor-pointer scale-90 lg:scale-110 origin-left">
+          <div className="bg-white/95 backdrop-blur-md rounded-full shadow-lg border border-secondary/10 flex items-center justify-between h-12 lg:h-16 px-5 sm:px-6 lg:px-10 relative">
+            <div className="flex-shrink-0 cursor-pointer scale-90 lg:scale-105 origin-left">
               <BrandLogo onClick={() => {
                 if (onLogoClick) onLogoClick();
                 handleLinkClick('/');
@@ -258,6 +269,15 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
                     </AnimatePresence>
                   </div>
                 ))}
+                
+                <div className="pt-4">
+                  <button
+                    onClick={() => handleLinkClick('/onboarding')}
+                    className="w-full py-3 bg-secondary text-white font-montserrat font-medium rounded-full shadow-lg"
+                  >
+                    Open Cashdoor
+                  </button>
+                </div>
               </nav>
             </div>
           </motion.div>

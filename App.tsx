@@ -29,6 +29,8 @@ import UnauthorizedView from './views/UnauthorizedView';
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
+import { WaitlistProvider } from './src/context/WaitlistContext';
+import WaitlistModal from './components/WaitlistModal';
 import './styles/overrides.css';
 
 import { authService } from './src/services/authService';
@@ -294,97 +296,100 @@ const App: React.FC = () => {
   const showShopBackground = isCheckoutModal && location.state?.background;
 
   return (
-    <div className="App">
-      <Analytics />
-      
-      {/* Background for modals */}
-      {showShopBackground && (
-        <div className="fixed inset-0 z-0 opacity-50 blur-sm pointer-events-none">
-          <ShopView navigate={handleNavigate} />
-        </div>
-      )}
-
-      <Routes location={location.state?.background || location}>
-        {/* Landing and Auth */}
-        <Route 
-          path="/" 
-          element={
-            <LandingView 
-              navigate={handleNavigate} 
-              hasInitialAnimated={hasInitialAnimated}
-              onAnimationComplete={() => setHasInitialAnimated(true)}
-              resetAnimation={resetAnimation}
-            />
-          } 
-        />
-        <Route path="/landing" element={<Navigate to="/" replace />} />
-        <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
-        <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
+    <WaitlistProvider>
+      <div className="App">
+        <Analytics />
+        <WaitlistModal />
         
-        {/* Dashboard and related user-specific views */}
-        <Route 
-          path="/dashboard/*" 
-          element={
-            !authReady || isLoading ? (
-              <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
-                Loading...
-              </div>
-            ) : authUser && userData ? (
-              <DashboardView 
+        {/* Background for modals */}
+        {showShopBackground && (
+          <div className="fixed inset-0 z-0 opacity-50 blur-sm pointer-events-none">
+            <ShopView navigate={handleNavigate} />
+          </div>
+        )}
+
+        <Routes location={location.state?.background || location}>
+          {/* Landing and Auth */}
+          <Route 
+            path="/" 
+            element={
+              <LandingView 
                 navigate={handleNavigate} 
-                userData={userData} 
+                hasInitialAnimated={hasInitialAnimated}
+                onAnimationComplete={() => setHasInitialAnimated(true)}
+                resetAnimation={resetAnimation}
               />
-            ) : (
-              <Navigate to="/onboarding" replace />
-            )
-          }
-        />
-        
-        {/* Redirect old top-level routes to dashboard */}
-        <Route path="/home" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
-        <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
-        <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
-        <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
-        <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
-        <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
-        <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
-        <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
+            } 
+          />
+          <Route path="/landing" element={<Navigate to="/" replace />} />
+          <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+          <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
+          
+          {/* Dashboard and related user-specific views */}
+          <Route 
+            path="/dashboard/*" 
+            element={
+              !authReady || isLoading ? (
+                <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                  Loading...
+                </div>
+              ) : authUser && userData ? (
+                <DashboardView 
+                  navigate={handleNavigate} 
+                  userData={userData} 
+                />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
+            } 
+          />
+          
+          {/* Redirect old top-level routes to dashboard */}
+          <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
+          <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
+          <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
+          <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
+          <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
+          <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
+          <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
+          <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
 
-        {/* Public Informational Views */}
-        <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
-        <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
-        <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
-        <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
-        <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
-        <Route path="/help" element={<Navigate to="/help-center" replace />} />
-        <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
-        <Route path="/about" element={<About navigate={handleNavigate} />} />
-        <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
-        <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
-        <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
-        <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
-        <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
-        <Route path="/whatsapp" element={<WhatsAppView />} />
-        <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
-        
-        {/* Catch-all route for 404 Page Not Found */}
-        <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
-      </Routes>
-
-      {/* Actual Modal Rendering */}
-      {isCheckoutModal && (
-        <Routes>
+          {/* Public Informational Views */}
+          <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
+          <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
+          <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
+          <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
+          <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
+          <Route path="/help" element={<Navigate to="/help-center" replace />} />
+          <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
+          <Route path="/about" element={<About navigate={handleNavigate} />} />
+          <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
+          <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
           <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
           <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
+          <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
+          <Route path="/whatsapp" element={<WhatsAppView />} />
+          <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
+          
+          {/* Catch-all route for 404 Page Not Found */}
+          <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
         </Routes>
-      )}
 
-      {showGlobalFooter && <BackToTop />}
-      <CookieConsent />
-      {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={['/shop', '/brand'].includes(location.pathname)} />}
-    </div>
+        {/* Actual Modal Rendering */}
+        {isCheckoutModal && (
+          <Routes>
+            <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+            <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+          </Routes>
+        )}
+
+        {showGlobalFooter && <BackToTop />}
+        <CookieConsent />
+        {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={['/shop', '/brand'].includes(location.pathname)} />}
+      </div>
+    </WaitlistProvider>
   );
 };
 
