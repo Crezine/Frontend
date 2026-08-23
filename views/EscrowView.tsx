@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
 import { escrowService, EscrowContract } from '../src/services/escrowService';
+import { showToast } from '../src/utils/toast';
 
 interface EscrowViewProps {
   navigate: (view: AppView) => void;
@@ -36,7 +37,7 @@ const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
 
   const handleGenerateLink = async () => {
     if (!clientName || !amount || !description) {
-      alert("Please fill in all fields");
+      showToast.error("Please fill in all required fields.");
       return;
     }
 
@@ -57,10 +58,10 @@ const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
       
       // Refresh list
       fetchContracts();
-      alert("Escrow link generated successfully!");
+      showToast.success("Escrow link generated successfully!");
     } catch (error) {
       console.error("Failed to create contract", error);
-      alert("Failed to generate escrow link");
+      showToast.error("Failed to generate escrow link");
     } finally {
       setIsSubmitting(false);
     }
@@ -197,7 +198,7 @@ const EscrowView: React.FC<EscrowViewProps> = ({ navigate }) => {
                 </div>
                 {contract.status === 'locked' && (
                   <button 
-                    onClick={() => alert("Release requested!")}
+                    onClick={() => showToast.info("Release requested!")}
                     className="bg-secondary text-white px-6 py-2 rounded-xl font-normal text-xs hover:bg-secondary/90 transition-colors whitespace-nowrap h-[40px] font-montserrat"
                   >
                     Request release

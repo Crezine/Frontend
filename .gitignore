@@ -28,5 +28,7 @@ lerna-debug.log*
 *.njsproj
 *.sln
 
-# macOS
+# macOS and editors
 .DS_Store
+*.swp
+*.swo

@@ -3,6 +3,7 @@ import { AppView } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minus, Plus, ChevronDown } from 'lucide-react';
 import { eventService, Event, TicketTier } from '../src/services/eventService';
+import { showToast } from '../src/utils/toast';
 
 interface EventsViewProps {
   navigate: (view: AppView) => void;
@@ -120,15 +121,15 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
 
   const handleGetTicket = () => {
     const totalCents = calculateTotal();
-    const hasSelectedTickets = Object.values(ticketCounts).some(count => count > 0);
+    const hasSelectedTickets = (Object.values(ticketCounts) as number[]).some(count => count > 0);
 
     if (!selectedEvent?.tiers || selectedEvent.tiers.length === 0) {
-      alert("No ticket tiers available for this event.");
+      showToast.warning("No ticket tiers available for this event.");
       return;
     }
 
     if (!hasSelectedTickets && totalCents === 0) {
-      alert("Please select at least one ticket.");
+      showToast.warning("Please select at least one ticket.");
       return;
     }
 
@@ -144,7 +145,7 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
 
   const handlePublish = async () => {
     if (!newName || !newDate || !newLocation) {
-      alert("Please fill in required fields");
+      showToast.error("Please fill in required fields");
       return;
     }
 
@@ -159,10 +160,10 @@ const EventsView: React.FC<EventsViewProps> = ({ navigate }) => {
 
       setIsModalOpen(false);
       fetchEvents();
-      alert("Event created successfully!");
+      showToast.success("Event created successfully!");
     } catch (error) {
       console.error("Failed to create event", error);
-      alert("Failed to create event");
+      showToast.error("Failed to create event");
     } finally {
       setIsSubmitting(false);
     }

@@ -3,6 +3,7 @@ import { AppView } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, X, Plus } from 'lucide-react';
 import { eventService, Event } from '../src/services/eventService';
+import { showToast } from '../src/utils/toast';
 
 interface TicketingViewProps {
   navigate: (view: AppView) => void;
@@ -128,7 +129,7 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
 
   const handlePublish = async () => {
     if (!name || !date || !location) {
-      alert("Please fill in required fields");
+      showToast.error("Please fill in required fields");
       return;
     }
 
@@ -145,10 +146,10 @@ const TicketingView: React.FC<TicketingViewProps> = ({ navigate }) => {
 
       setIsModalOpen(false);
       fetchMyEvents();
-      alert("Event created successfully!");
+      showToast.success("Event created successfully!");
     } catch (error) {
       console.error("Failed to create event", error);
-      alert("Failed to create event");
+      showToast.error("Failed to create event");
     } finally {
       setIsSubmitting(false);
     }

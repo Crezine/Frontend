@@ -3,6 +3,7 @@ import { AppView, UserData } from '../types';
 import { CgProfile } from "react-icons/cg";
 import { motion, AnimatePresence } from 'framer-motion';
 import { authService } from '../src/services/authService';
+import { showToast } from '../src/utils/toast';
 
 interface ProfileViewProps {
   navigate: (view: AppView) => void;
@@ -67,10 +68,10 @@ const ProfileView: React.FC<ProfileViewProps> = ({ navigate, userData }) => {
       };
       localStorage.setItem('userData', JSON.stringify(updatedUser));
       
-      alert("Profile updated successfully!");
+      showToast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile", error);
-      alert("Failed to update profile");
+      showToast.error("Failed to update profile");
     } finally {
       setIsSaving(false);
     }

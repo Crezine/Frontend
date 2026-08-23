@@ -8,6 +8,7 @@ import { PDFDownloadLink } from '@react-pdf/renderer'; // Library for PDF downlo
 import EventTicket from '../components/EventTicket';
 import TicketPDF from '../components/TicketPDF'; // The PDF layout component
 import { walletService } from '../src/services/walletService';
+import { showToast } from '../src/utils/toast';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
@@ -126,13 +127,13 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
 
   const handleSendEmail = async () => {
     if (!email) {
-      alert("Please enter an email address");
+      showToast.error("Please enter an email address");
       return;
     }
     setIsSending(true);
     setTimeout(() => {
       setIsSending(false);
-      alert("Success! Ticket has been sent to " + email);
+      showToast.success("Success! Ticket has been sent to " + email);
     }, 1500);
   };
 

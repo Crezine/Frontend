@@ -11,7 +11,7 @@ import { shopService, Product, CartItem } from '../src/services/shopService';
 
 export type ShopSubView = 'all-products' | 'collections' | 'pencil-portrait' | 'paintings';
 
-const ProductGridItem = ({ art, onAddToCart }: { art: Product, onAddToCart: (p: Product) => void }) => (
+const ProductGridItem: React.FC<{ art: Product; onAddToCart: (p: Product) => void | Promise<void> }> = ({ art, onAddToCart }) => (
   <div className="group flex flex-col items-center">
     <div 
       onClick={() => onAddToCart(art)}

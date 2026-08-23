@@ -1,36 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AppView, UserData } from './types';
 import LandingView from './views/LandingView';
 import OnboardingView from './views/OnboardingView';
-import DashboardView from './views/DashboardView';
-import ProductView from './views/ProductView';
-import FeaturesView from './views/FeaturesView';
-import PricingView from './views/PricingView';
-import SupportView from './views/SupportView';
-import HelpCenterView from './views/HelpCenterView';
-import ContactView from './views/ContactView';
-import WhatsAppView from './views/WhatsAppView';
-import About from './views/About';
-import BrandView from './views/BrandView';
-import ShopView from './views/ShopView';
-import CheckoutView from './views/CheckoutView';
-import TicketCheckoutView from './views/TicketCheckoutView';
-import CookieSettingsView from './views/CookieSettingsView';
-import FundingView from './views/FundingView';
-import PaymentsView from './views/PaymentsView';
-import TicketingView from './views/TicketingView';
-import PrivacyPolicyView from './views/PrivacyPolicyView';
-import TermsOfServiceView from './views/TermsOfServiceView';
-import NotFoundView from './views/NotFoundView';
-import UnauthorizedView from './views/UnauthorizedView';
+
+// Lazy load secondary and dashboard views
+const DashboardView = lazy(() => import('./views/DashboardView'));
+const ProductView = lazy(() => import('./views/ProductView'));
+const FeaturesView = lazy(() => import('./views/FeaturesView'));
+const PricingView = lazy(() => import('./views/PricingView'));
+const SupportView = lazy(() => import('./views/SupportView'));
+const HelpCenterView = lazy(() => import('./views/HelpCenterView'));
+const ContactView = lazy(() => import('./views/ContactView'));
+const WhatsAppView = lazy(() => import('./views/WhatsAppView'));
+const About = lazy(() => import('./views/About'));
+const BrandView = lazy(() => import('./views/BrandView'));
+const ShopView = lazy(() => import('./views/ShopView'));
+const CheckoutView = lazy(() => import('./views/CheckoutView'));
+const TicketCheckoutView = lazy(() => import('./views/TicketCheckoutView'));
+const CookieSettingsView = lazy(() => import('./views/CookieSettingsView'));
+const PrivacyPolicyView = lazy(() => import('./views/PrivacyPolicyView'));
+const TermsOfServiceView = lazy(() => import('./views/TermsOfServiceView'));
+const NotFoundView = lazy(() => import('./views/NotFoundView'));
+const UnauthorizedView = lazy(() => import('./views/UnauthorizedView'));
 
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
 import { WaitlistProvider } from './src/context/WaitlistContext';
 import WaitlistModal from './components/WaitlistModal';
+import { Toaster } from 'sonner';
+import ErrorBoundary from './src/components/feedback/ErrorBoundary';
 import './styles/overrides.css';
 
 import { authService } from './src/services/authService';
@@ -296,10 +297,22 @@ const App: React.FC = () => {
   const showShopBackground = isCheckoutModal && location.state?.background;
 
   return (
-    <WaitlistProvider>
-      <div className="App">
-        <Analytics />
-        <WaitlistModal />
+    <ErrorBoundary>
+      <WaitlistProvider>
+        <div className="App">
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            toastOptions={{
+              style: {
+                fontFamily: 'Montserrat, sans-serif',
+                borderRadius: '1rem',
+              },
+            }}
+          />
+          <Analytics />
+          <WaitlistModal />
         
         {/* Background for modals */}
         {showShopBackground && (
@@ -308,89 +321,96 @@ const App: React.FC = () => {
           </div>
         )}
 
-        <Routes location={location.state?.background || location}>
-          {/* Landing and Auth */}
-          <Route 
-            path="/" 
-            element={
-              <LandingView 
-                navigate={handleNavigate} 
-                hasInitialAnimated={hasInitialAnimated}
-                onAnimationComplete={() => setHasInitialAnimated(true)}
-                resetAnimation={resetAnimation}
-              />
-            } 
-          />
-          <Route path="/landing" element={<Navigate to="/" replace />} />
-          <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
-          <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
-          
-          {/* Dashboard and related user-specific views */}
-          <Route 
-            path="/dashboard/*" 
-            element={
-              !authReady || isLoading ? (
-                <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
-                  Loading...
-                </div>
-              ) : authUser && userData ? (
-                <DashboardView 
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+            <div className="w-10 h-10 border-4 border-secondary/20 border-t-secondary rounded-full animate-spin"></div>
+          </div>
+        }>
+          <Routes location={location.state?.background || location}>
+            {/* Landing and Auth */}
+            <Route 
+              path="/" 
+              element={
+                <LandingView 
                   navigate={handleNavigate} 
-                  userData={userData} 
+                  hasInitialAnimated={hasInitialAnimated}
+                  onAnimationComplete={() => setHasInitialAnimated(true)}
+                  resetAnimation={resetAnimation}
                 />
-              ) : (
-                <Navigate to="/onboarding" replace />
-              )
-            } 
-          />
-          
-          {/* Redirect old top-level routes to dashboard */}
-          <Route path="/home" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
-          <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
-          <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
-          <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
-          <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
-          <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
-          <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
-          <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
+              } 
+            />
+            <Route path="/landing" element={<Navigate to="/" replace />} />
+            <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+            <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
+            
+            {/* Dashboard and related user-specific views */}
+            <Route 
+              path="/dashboard/*" 
+              element={
+                !authReady || isLoading ? (
+                  <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                    Loading...
+                  </div>
+                ) : authUser && userData ? (
+                  <DashboardView 
+                    navigate={handleNavigate} 
+                    userData={userData} 
+                  />
+                ) : (
+                  <Navigate to="/onboarding" replace />
+                )
+              } 
+            />
+            
+            {/* Redirect old top-level routes to dashboard */}
+            <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
+            <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
+            <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
+            <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
+            <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
+            <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
+            <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
+            <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
 
-          {/* Public Informational Views */}
-          <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
-          <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
-          <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
-          <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
-          <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
-          <Route path="/help" element={<Navigate to="/help-center" replace />} />
-          <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
-          <Route path="/about" element={<About navigate={handleNavigate} />} />
-          <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
-          <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
-          <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
-          <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
-          <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
-          <Route path="/whatsapp" element={<WhatsAppView />} />
-          <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
-          
-          {/* Catch-all route for 404 Page Not Found */}
-          <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
-        </Routes>
-
-        {/* Actual Modal Rendering */}
-        {isCheckoutModal && (
-          <Routes>
+            {/* Public Informational Views */}
+            <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
+            <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
+            <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
+            <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
+            <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
+            <Route path="/help" element={<Navigate to="/help-center" replace />} />
+            <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
+            <Route path="/about" element={<About navigate={handleNavigate} />} />
+            <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
+            <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
             <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
             <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
+            <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
+            <Route path="/whatsapp" element={<WhatsAppView />} />
+            <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
+            
+            {/* Catch-all route for 404 Page Not Found */}
+            <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
           </Routes>
-        )}
+
+          {/* Actual Modal Rendering */}
+          {isCheckoutModal && (
+            <Routes>
+              <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+              <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+            </Routes>
+          )}
+        </Suspense>
 
         {showGlobalFooter && <BackToTop />}
         <CookieConsent />
         {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={['/shop', '/brand'].includes(location.pathname)} />}
       </div>
     </WaitlistProvider>
-  );
+  </ErrorBoundary>
+);
 };
 
 export default App;
