@@ -30,6 +30,7 @@ import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
 import { WaitlistProvider } from './src/context/WaitlistContext';
 import WaitlistModal from './components/WaitlistModal';
+import OfflineBanner from './components/OfflineBanner';
 import { Toaster } from 'sonner';
 import ErrorBoundary from './src/components/feedback/ErrorBoundary';
 import './styles/overrides.css';
@@ -312,6 +313,7 @@ const App: React.FC = () => {
             }}
           />
           <Analytics />
+          <OfflineBanner />
           <WaitlistModal />
         
         {/* Background for modals */}

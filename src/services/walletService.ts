@@ -31,7 +31,9 @@ export const walletService = {
     return api.get<Transaction[]>(endpoint);
   },
 
-  withdraw: async (amount: number): Promise<{ message: string }> => {
-    return api.post<{ message: string }>('/wallet/withdraw', { amount });
+  withdraw: async (amount: number, idempotencyKey?: string): Promise<{ message: string }> => {
+    return idempotencyKey
+      ? api.post<{ message: string }>('/wallet/withdraw', { amount }, { headers: { 'x-idempotency-key': idempotencyKey } })
+      : api.post<{ message: string }>('/wallet/withdraw', { amount });
   },
 };

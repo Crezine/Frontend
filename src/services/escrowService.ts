@@ -38,8 +38,10 @@ export interface CreateMilestoneDto {
 }
 
 export const escrowService = {
-  createContract: async (data: CreateEscrowDto): Promise<EscrowContract> => {
-    return api.post<EscrowContract>('/escrow', data);
+  createContract: async (data: CreateEscrowDto, idempotencyKey?: string): Promise<EscrowContract> => {
+    return idempotencyKey
+      ? api.post<EscrowContract>('/escrow', data, { headers: { 'x-idempotency-key': idempotencyKey } })
+      : api.post<EscrowContract>('/escrow', data);
   },
 
   getContracts: async (): Promise<EscrowContract[]> => {
@@ -50,16 +52,20 @@ export const escrowService = {
     return api.get<EscrowContract>(`/escrow/${id}`);
   },
 
-  lockContract: async (id: string): Promise<any> => {
-    return api.post(`/escrow/${id}/lock`);
+  lockContract: async (id: string, idempotencyKey?: string): Promise<any> => {
+    return idempotencyKey
+      ? api.post(`/escrow/${id}/lock`, {}, { headers: { 'x-idempotency-key': idempotencyKey } })
+      : api.post(`/escrow/${id}/lock`);
   },
 
   markInProgress: async (id: string): Promise<any> => {
     return api.post(`/escrow/${id}/in-progress`);
   },
 
-  createMilestone: async (id: string, data: CreateMilestoneDto): Promise<any> => {
-    return api.post(`/escrow/${id}/milestones`, data);
+  createMilestone: async (id: string, data: CreateMilestoneDto, idempotencyKey?: string): Promise<any> => {
+    return idempotencyKey
+      ? api.post(`/escrow/${id}/milestones`, data, { headers: { 'x-idempotency-key': idempotencyKey } })
+      : api.post(`/escrow/${id}/milestones`, data);
   },
 
   getMilestones: async (id: string): Promise<Milestone[]> => {
@@ -74,8 +80,10 @@ export const escrowService = {
     return api.post(`/escrow/${id}/milestones/${milestoneId}/release`);
   },
 
-  releaseFunds: async (id: string): Promise<any> => {
-    return api.post(`/escrow/${id}/release`);
+  releaseFunds: async (id: string, idempotencyKey?: string): Promise<any> => {
+    return idempotencyKey
+      ? api.post(`/escrow/${id}/release`, {}, { headers: { 'x-idempotency-key': idempotencyKey } })
+      : api.post(`/escrow/${id}/release`);
   },
 
   disputeContract: async (id: string): Promise<any> => {

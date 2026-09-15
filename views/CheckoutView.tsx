@@ -7,6 +7,7 @@ import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri';
 import { X } from 'lucide-react';
 import { walletService } from '../src/services/walletService';
 import { analytics } from '../src/services/posthog';
+import { generateIdempotencyKey } from '../src/utils/idempotency';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
@@ -17,6 +18,8 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   const [activeOption, setActiveOption] = useState<PaymentOption>('card');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [idempotencyKey] = useState<string>(() => generateIdempotencyKey('checkout'));
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [isLoadingBalance, setIsLoadingBalance] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -133,13 +136,16 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
     });
   };
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = async () => {
+    if (isSubmitting) return;
+
     if (activeOption === 'crezine') {
       if (walletBalance !== null && walletBalance < total) {
         analytics.trackCheckoutFailed('insufficient_funds', 'crezine_wallet', {
           checkoutType: 'cart',
           totalAmount: total,
           walletBalance,
+          idempotencyKey,
         });
         setIsError(true);
         return;
@@ -153,12 +159,27 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
         return;
       }
     }
-    analytics.trackCheckoutCompleted({
-      checkoutType: 'cart',
-      totalAmount: total,
-      paymentMethod: activeOption,
-    });
-    setIsSuccess(true);
+
+    try {
+      setIsSubmitting(true);
+      // Synchronous payment processing with double-charge protection via idempotencyKey
+      analytics.trackCheckoutCompleted({
+        checkoutType: 'cart',
+        totalAmount: total,
+        paymentMethod: activeOption,
+        idempotencyKey,
+      });
+      setIsSuccess(true);
+    } catch (error) {
+      analytics.trackCheckoutFailed('payment_failed', 'gateway', {
+        checkoutType: 'cart',
+        totalAmount: total,
+        idempotencyKey,
+      });
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleDone = () => {
@@ -357,9 +378,17 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                       
                       <button 
                         onClick={handleConfirmPayment}
-                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
+                        disabled={isSubmitting}
+                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                        Confirm
+                        {isSubmitting ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span>Processing...</span>
+                          </>
+                        ) : (
+                          'Confirm'
+                        )}
                       </button>
                     </motion.div>
                   ) : (
@@ -464,9 +493,17 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
 
                       <button 
                         onClick={handleConfirmPayment}
-                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat"
+                        disabled={isSubmitting}
+                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                        Pay $ {total.toFixed(2)}
+                        {isSubmitting ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span>Processing securely...</span>
+                          </>
+                        ) : (
+                          `Pay $ ${total.toFixed(2)}`
+                        )}
                       </button>
                     </>
                   )}

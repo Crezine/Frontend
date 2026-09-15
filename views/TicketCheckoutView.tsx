@@ -10,6 +10,7 @@ import TicketPDF from '../components/TicketPDF'; // The PDF layout component
 import { walletService } from '../src/services/walletService';
 import { showToast } from '../src/utils/toast';
 import { analytics } from '../src/services/posthog';
+import { generateIdempotencyKey } from '../src/utils/idempotency';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
@@ -20,6 +21,8 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
   const [activeOption, setActiveOption] = useState<PaymentOption>('card');
   const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [idempotencyKey] = useState<string>(() => generateIdempotencyKey('ticket'));
   const [showTicketModal, setShowTicketModal] = useState(false);
   const [email, setEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -144,13 +147,16 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
     });
   };
 
-  const handleConfirmPayment = () => {
+  const handleConfirmPayment = async () => {
+    if (isSubmitting) return;
+
     if (activeOption === 'crezine') {
       if (walletBalance !== null && walletBalance < total) {
         analytics.trackCheckoutFailed('insufficient_funds', 'crezine_wallet', {
           checkoutType: 'ticket',
           totalAmount: total,
           walletBalance,
+          idempotencyKey,
         });
         setIsError(true);
         return;
@@ -164,13 +170,27 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
         return;
       }
     }
-    analytics.trackCheckoutCompleted({
-      checkoutType: 'ticket',
-      totalAmount: total,
-      paymentMethod: activeOption,
-      eventName: ticketData.eventName,
-    });
-    setIsSuccess(true);
+
+    try {
+      setIsSubmitting(true);
+      analytics.trackCheckoutCompleted({
+        checkoutType: 'ticket',
+        totalAmount: total,
+        paymentMethod: activeOption,
+        eventName: ticketData.eventName,
+        idempotencyKey,
+      });
+      setIsSuccess(true);
+    } catch (error) {
+      analytics.trackCheckoutFailed('payment_failed', 'gateway', {
+        checkoutType: 'ticket',
+        totalAmount: total,
+        idempotencyKey,
+      });
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSendEmail = async () => {
@@ -287,7 +307,20 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
                         <span className="text-sm font-normal text-[#AB3625]">Wallet balance: </span>
                         <span className="text-sm font-normal text-black">{isLoadingBalance ? '...' : `$ ${walletBalance?.toFixed(2) || '0.00'}`}</span>
                       </div>
-                      <button onClick={handleConfirmPayment} className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat">Confirm</button>
+                      <button 
+                        onClick={handleConfirmPayment}
+                        disabled={isSubmitting}
+                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span>Processing...</span>
+                          </>
+                        ) : (
+                          'Confirm'
+                        )}
+                      </button>
                     </div>
                   ) : (
                     <>
@@ -321,7 +354,20 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
                           <span className="text-xl md:text-2xl font-normal text-black tracking-tighter">$ {total.toFixed(2)}</span>
                         </div>
                       </div>
-                      <button onClick={handleConfirmPayment} className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat">Pay $ {total.toFixed(2)}</button>
+                      <button 
+                        onClick={handleConfirmPayment}
+                        disabled={isSubmitting}
+                        className="w-full py-2.5 bg-secondary text-white rounded-full text-sm font-normal tracking-widest hover:opacity-90 transition-all shadow-md font-montserrat disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        {isSubmitting ? (
+                          <>
+                            <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            <span>Processing securely...</span>
+                          </>
+                        ) : (
+                          `Pay $ ${total.toFixed(2)}`
+                        )}
+                      </button>
                     </>
                   )}
                 </motion.div>
