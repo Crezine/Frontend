@@ -6,6 +6,7 @@ import { FiX } from 'react-icons/fi';
 import { RiCheckLine, RiErrorWarningLine } from 'react-icons/ri';
 import { X } from 'lucide-react';
 import { walletService } from '../src/services/walletService';
+import { analytics } from '../src/services/posthog';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
@@ -37,6 +38,11 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     fetchBalance();
+    analytics.trackCheckoutStarted({
+      checkoutType: 'cart',
+      totalAmount: total,
+      itemCount: cartItems.length,
+    });
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -104,18 +110,54 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
   ];
 
   const handleClose = () => {
+    analytics.trackCheckoutAbandoned(`${activeTab}:${activeOption}`, {
+      checkoutType: 'cart',
+      totalAmount: total,
+    });
     navigate(-1);
+  };
+
+  const handleTabSelect = (tab: MainTab) => {
+    setActiveTab(tab);
+    analytics.trackPaymentMethodSelected(tab, {
+      checkoutType: 'cart',
+      totalAmount: total,
+    });
+  };
+
+  const handleOptionSelect = (option: PaymentOption) => {
+    setActiveOption(option);
+    analytics.trackPaymentMethodSelected(option, {
+      checkoutType: 'cart',
+      totalAmount: total,
+    });
   };
 
   const handleConfirmPayment = () => {
     if (activeOption === 'crezine') {
       if (walletBalance !== null && walletBalance < total) {
+        analytics.trackCheckoutFailed('insufficient_funds', 'crezine_wallet', {
+          checkoutType: 'cart',
+          totalAmount: total,
+          walletBalance,
+        });
         setIsError(true);
         return;
       }
     } else {
-      if (!validateForm()) return;
+      if (!validateForm()) {
+        analytics.trackCheckoutFailed('validation_error', 'card_details', {
+          checkoutType: 'cart',
+          totalAmount: total,
+        });
+        return;
+      }
     }
+    analytics.trackCheckoutCompleted({
+      checkoutType: 'cart',
+      totalAmount: total,
+      paymentMethod: activeOption,
+    });
     setIsSuccess(true);
   };
 
@@ -250,7 +292,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
           <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
             <div className="flex gap-2 mb-8 bg-pink-100 p-1.5 rounded-xl border border-black/5">
               <button 
-                onClick={() => setActiveTab('card')}
+                onClick={() => handleTabSelect('card')}
                 className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'card' 
                     ? 'bg-secondary text-white shadow-md' 
@@ -260,7 +302,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                 Pay by card
               </button>
               <button 
-                onClick={() => setActiveTab('mpesa')}
+                onClick={() => handleTabSelect('mpesa')}
                 className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${
                   activeTab === 'mpesa' 
                     ? 'bg-secondary text-white shadow-md' 
@@ -284,7 +326,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                     {paymentOptions.map((option) => (
                       <button
                         key={option.id}
-                        onClick={() => setActiveOption(option.id)}
+                        onClick={() => handleOptionSelect(option.id)}
                         className={`flex-1 h-[52px] border text-[10px] md:text-xs font-normal transition-all rounded-xl whitespace-nowrap px-1 ${
                           activeOption === option.id 
                             ? 'bg-secondary border-secondary text-white shadow-sm' 
@@ -335,7 +377,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               placeholder={field.placeholder}
                               value={(formData as any)[field.name]}
                               onChange={handleInputChange}
-                              className={`w-full h-[44px] px-4 bg-transparent border ${errors[field.name] ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`}
+                              className={`w-full h-[44px] px-4 bg-transparent border ${errors[field.name] ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`}
                             />
                             {errors[field.name] && <span className="text-[9px] text-red-500 ml-1">{errors[field.name]}</span>}
                           </div>
@@ -350,7 +392,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               placeholder="MM / YY"
                               value={formData.expiry}
                               onChange={handleInputChange}
-                              className={`w-full h-[44px] px-4 bg-transparent border ${errors.expiry ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`}
+                              className={`w-full h-[44px] px-4 bg-transparent border ${errors.expiry ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`}
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
@@ -361,7 +403,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               placeholder="CVC"
                               value={formData.cvc}
                               onChange={handleInputChange}
-                              className={`w-full h-[44px] px-4 bg-transparent border ${errors.cvc ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`}
+                              className={`w-full h-[44px] px-4 bg-transparent border ${errors.cvc ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`}
                             />
                           </div>
                         </div>
@@ -379,7 +421,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               name={field.name}
                               value={(formData as any)[field.name]}
                               onChange={handleInputChange}
-                              className={`w-full h-[44px] px-4 bg-transparent border ${errors[field.name] ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`}
+                              className={`w-full h-[44px] px-4 bg-transparent border ${errors[field.name] ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`}
                             />
                           </div>
                         ))}
@@ -392,7 +434,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               name="town"
                               value={formData.town}
                               onChange={handleInputChange}
-                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture"
                             />
                           </div>
                           <div className="flex flex-col gap-1.5">
@@ -402,7 +444,7 @@ const CheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) => {
                               name="postalCode"
                               value={formData.postalCode}
                               onChange={handleInputChange}
-                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black"
+                              className="w-full h-[44px] px-4 bg-transparent border border-black/40 rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture"
                             />
                           </div>
                         </div>

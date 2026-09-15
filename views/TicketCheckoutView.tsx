@@ -9,6 +9,7 @@ import EventTicket from '../components/EventTicket';
 import TicketPDF from '../components/TicketPDF'; // The PDF layout component
 import { walletService } from '../src/services/walletService';
 import { showToast } from '../src/utils/toast';
+import { analytics } from '../src/services/posthog';
 
 type MainTab = 'card' | 'mpesa';
 type PaymentOption = 'card' | 'apple-pay' | 'google-pay' | 'crezine';
@@ -65,6 +66,11 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     fetchBalance();
+    analytics.trackCheckoutStarted({
+      checkoutType: 'ticket',
+      totalAmount: total,
+      eventName: ticketData.eventName,
+    });
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -113,15 +119,57 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleClose = () => {
+    analytics.trackCheckoutAbandoned(`${activeTab}:${activeOption}`, {
+      checkoutType: 'ticket',
+      totalAmount: total,
+      eventName: ticketData.eventName,
+    });
+    navigate(-1);
+  };
+
+  const handleTabSelect = (tab: MainTab) => {
+    setActiveTab(tab);
+    analytics.trackPaymentMethodSelected(tab, {
+      checkoutType: 'ticket',
+      totalAmount: total,
+    });
+  };
+
+  const handleOptionSelect = (option: PaymentOption) => {
+    setActiveOption(option);
+    analytics.trackPaymentMethodSelected(option, {
+      checkoutType: 'ticket',
+      totalAmount: total,
+    });
+  };
+
   const handleConfirmPayment = () => {
     if (activeOption === 'crezine') {
       if (walletBalance !== null && walletBalance < total) {
+        analytics.trackCheckoutFailed('insufficient_funds', 'crezine_wallet', {
+          checkoutType: 'ticket',
+          totalAmount: total,
+          walletBalance,
+        });
         setIsError(true);
         return;
       }
     } else {
-      if (!validateForm()) return;
+      if (!validateForm()) {
+        analytics.trackCheckoutFailed('validation_error', 'card_details', {
+          checkoutType: 'ticket',
+          totalAmount: total,
+        });
+        return;
+      }
     }
+    analytics.trackCheckoutCompleted({
+      checkoutType: 'ticket',
+      totalAmount: total,
+      paymentMethod: activeOption,
+      eventName: ticketData.eventName,
+    });
     setIsSuccess(true);
   };
 
@@ -217,18 +265,18 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="absolute inset-0 bg-black/40 backdrop-blur-md" />
       <div className="relative w-full max-w-xl flex flex-col items-center">
         <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} className="relative bg-white rounded-[2rem] w-full min-h-[90vh] overflow-hidden shadow-2xl flex flex-col max-h-[95vh] transition-colors border border-black/5">
-          <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={() => navigate(-1)} className="absolute top-4 right-4 z-[120] p-1.5 bg-white/20 backdrop-blur-md border border-black/10 rounded-full text-black hover:bg-white/40 transition-all shadow-sm"><FiX size={28} strokeWidth={3} /></motion.button>
+          <motion.button whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }} onClick={handleClose} className="absolute top-4 right-4 z-[120] p-1.5 bg-white/20 backdrop-blur-md border border-black/10 rounded-full text-black hover:bg-white/40 transition-all shadow-sm"><FiX size={28} strokeWidth={3} /></motion.button>
           <div className="flex-grow overflow-y-auto p-6 md:p-12 no-scrollbar">
             <div className="flex gap-2 mb-8 bg-pink-100 p-1.5 rounded-xl border border-black/5">
-              <button onClick={() => setActiveTab('card')} className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${activeTab === 'card' ? 'bg-secondary text-white shadow-md' : 'bg-pink-100 text-black hover:bg-pink-200'}`}>Pay by card</button>
-              <button onClick={() => setActiveTab('mpesa')} className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${activeTab === 'mpesa' ? 'bg-secondary text-white shadow-md' : 'bg-pink-100 text-black hover:bg-pink-200'}`}>Pay by Mpesa</button>
+              <button onClick={() => handleTabSelect('card')} className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${activeTab === 'card' ? 'bg-secondary text-white shadow-md' : 'bg-pink-100 text-black hover:bg-pink-200'}`}>Pay by card</button>
+              <button onClick={() => handleTabSelect('mpesa')} className={`flex-1 px-4 py-2.5 rounded-lg text-xs font-normal transition-all duration-300 ${activeTab === 'mpesa' ? 'bg-secondary text-white shadow-md' : 'bg-pink-100 text-black hover:bg-pink-200'}`}>Pay by Mpesa</button>
             </div>
             <AnimatePresence mode="wait">
               {activeTab === 'card' ? (
                 <motion.div key="card-content" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-8">
                   <div className="flex flex-row gap-3 md:gap-4 justify-between">
                     {['card', 'apple-pay', 'google-pay', 'crezine'].map((opt) => (
-                      <button key={opt} onClick={() => setActiveOption(opt as PaymentOption)} className={`flex-1 h-[52px] border text-[10px] md:text-xs font-normal transition-all rounded-xl whitespace-nowrap px-1 ${activeOption === opt ? 'bg-secondary border-secondary text-white shadow-sm' : 'bg-transparent border-black text-black hover:bg-black/5'}`}>{opt}</button>
+                      <button key={opt} onClick={() => handleOptionSelect(opt as PaymentOption)} className={`flex-1 h-[52px] border text-[10px] md:text-xs font-normal transition-all rounded-xl whitespace-nowrap px-1 ${activeOption === opt ? 'bg-secondary border-secondary text-white shadow-sm' : 'bg-transparent border-black text-black hover:bg-black/5'}`}>{opt}</button>
                     ))}
                   </div>
                   {activeOption === 'crezine' ? (
@@ -246,23 +294,23 @@ const TicketCheckoutView: React.FC<ViewProps> = ({ navigate: parentNavigate }) =
                       <div className="space-y-4">
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] tracking-wide text-black font-normal ml-1">Email address</label>
-                          <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className={`w-full h-[44px] px-4 bg-transparent border ${errors.email ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                          <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Enter your email" className={`w-full h-[44px] px-4 bg-transparent border ${errors.email ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`} />
                           {errors.email && <span className="text-[9px] text-red-500 ml-1">{errors.email}</span>}
                         </div>
                         <div className="flex flex-col gap-1.5">
                           <label className="text-[10px] tracking-wide text-black font-normal ml-1">Card number</label>
-                          <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleInputChange} placeholder="0000 0000 0000 0000" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cardNumber ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                          <input type="text" name="cardNumber" value={formData.cardNumber} onChange={handleInputChange} placeholder="0000 0000 0000 0000" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cardNumber ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`} />
                           {errors.cardNumber && <span className="text-[9px] text-red-500 ml-1">{errors.cardNumber}</span>}
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="flex flex-col gap-1.5">
                             <label className="text-[10px] tracking-wide text-black font-normal ml-1">Expiration</label>
-                            <input type="text" name="expiry" value={formData.expiry} onChange={handleInputChange} placeholder="MM / YY" className={`w-full h-[44px] px-4 bg-transparent border ${errors.expiry ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                            <input type="text" name="expiry" value={formData.expiry} onChange={handleInputChange} placeholder="MM / YY" className={`w-full h-[44px] px-4 bg-transparent border ${errors.expiry ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`} />
                             {errors.expiry && <span className="text-[9px] text-red-500 ml-1">{errors.expiry}</span>}
                           </div>
                           <div className="flex flex-col gap-1.5">
                             <label className="text-[10px] tracking-wide text-black font-normal ml-1">CVC</label>
-                            <input type="text" name="cvc" value={formData.cvc} onChange={handleInputChange} placeholder="CVC" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cvc ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black`} />
+                            <input type="text" name="cvc" value={formData.cvc} onChange={handleInputChange} placeholder="CVC" className={`w-full h-[44px] px-4 bg-transparent border ${errors.cvc ? 'border-red-500' : 'border-black/40'} rounded-xl text-xs font-normal focus:outline-none focus:border-secondary transition-colors text-black ph-no-capture`} />
                             {errors.cvc && <span className="text-[9px] text-red-500 ml-1">{errors.cvc}</span>}
                           </div>
                         </div>
