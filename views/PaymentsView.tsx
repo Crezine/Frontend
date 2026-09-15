@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { walletService, Transaction } from '../src/services/walletService';
 
 interface PaymentsViewProps {
   navigate: (view: AppView) => void;
@@ -11,9 +12,34 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ navigate }) => {
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [isTypeOpen, setIsTypeOpen] = useState(false);
   const [selectedType, setSelectedType] = useState('Standard payout (Normal payout)');
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const currencies = ['USD', 'KES', 'EUR', 'GBP', 'NGN'];
   const types = ['Standard payout (Normal payout)', 'Escrow payout (Handled by an escrow gateway)'];
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setIsLoading(true);
+        const data = await walletService.getTransactions({ limit: 5 });
+        setTransactions(data);
+      } catch (error) {
+        console.error("Failed to fetch transactions", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const formatCurrency = (amountInCents: number) => {
+    return (amountInCents / 100).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
 
   return (
     <div className="max-w-3xl mx-auto px-4 md:px-6 py-4 md:py-8 font-montserrat transition-colors">
@@ -138,23 +164,33 @@ const PaymentsView: React.FC<PaymentsViewProps> = ({ navigate }) => {
 
       <div className="space-y-4">
         <h3 className="text-lg font-normal text-black/80 dark:text-primary mb-4 px-1 font-rubik">Recent history</h3>
-        {[1, 2].map(i => (
-          <div key={i} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md cursor-pointer group">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 text-secondary rounded-xl flex items-center justify-center transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+        {isLoading ? (
+          <div className="text-center py-10 text-black/40">Loading history...</div>
+        ) : transactions.length === 0 ? (
+          <div className="text-center py-10 text-black/40">No recent activity</div>
+        ) : (
+          transactions.map(tx => (
+            <div key={tx.id} className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 shadow-sm hover:shadow-md cursor-pointer group">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 text-secondary rounded-xl flex items-center justify-center transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="font-normal text-black/80 dark:text-gray-200 text-sm truncate font-montserrat">{tx.description || tx.type.replace('_', ' ')}</p>
+                  <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal uppercase tracking-wider truncate font-montserrat">{new Date(tx.timestamp).toLocaleDateString()}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="font-normal text-black/80 dark:text-gray-200 text-sm truncate font-montserrat">Project #{4521 + i}</p>
-                <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal uppercase tracking-wider truncate font-montserrat">crezine.me/pay/creative-{i}23</p>
+              <div className="text-right shrink-0">
+                <p className={`font-normal text-base font-rubik ${tx.amount > 0 ? 'text-primary' : 'text-secondary'}`}>
+                  {tx.amount > 0 ? '+' : '-'}${formatCurrency(Math.abs(tx.amount))}
+                </p>
+                <p className={`text-[9px] font-normal uppercase tracking-wider font-montserrat ${tx.status === 'completed' ? 'text-green-600' : 'text-amber-600'}`}>
+                  {tx.status}
+                </p>
               </div>
             </div>
-            <div className="text-right shrink-0">
-              <p className="font-normal text-black/90 dark:text-primary text-base font-rubik">$850.00</p>
-              <p className="text-[9px] text-amber-600 dark:text-amber-400 font-normal uppercase tracking-wider font-montserrat">Pending</p>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

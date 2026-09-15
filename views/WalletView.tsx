@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
+import { walletService, WalletBalance, Transaction } from '../src/services/walletService';
 
 interface WalletViewProps {
   navigate: (view: AppView) => void;
@@ -7,6 +8,50 @@ interface WalletViewProps {
 
 const WalletView: React.FC<WalletViewProps> = ({ navigate }) => {
   const [isUSD, setIsUSD] = useState(true);
+  const [balance, setBalance] = useState<WalletBalance | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [balanceData, transactionsData] = await Promise.all([
+          walletService.getBalance(),
+          walletService.getTransactions({ limit: 10 })
+        ]);
+        setBalance(balanceData);
+        setTransactions(transactionsData);
+      } catch (error) {
+        console.error("Failed to fetch wallet data", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatCurrency = (amountInCents: number) => {
+    return (amountInCents / 100).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  const getDisplayBalance = () => {
+    if (!balance) return isUSD ? '$ 0.00' : '₦ 0.00';
+    
+    let amount = balance.balance;
+    let symbol = '$';
+    
+    if (!isUSD) {
+      amount = amount * 1600; // Mock exchange rate, ideally fetched from an API
+      symbol = '₦';
+    }
+    
+    return `${symbol} ${formatCurrency(amount)}`;
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 md:py-12 font-montserrat transition-colors">
@@ -21,7 +66,7 @@ const WalletView: React.FC<WalletViewProps> = ({ navigate }) => {
           <p className="text-black/60 dark:text-gray-400 font-normal uppercase tracking-widest text-[10px] mb-4 font-rubik">Total balance</p>
           <div className="flex flex-col items-center gap-4">
             <span className="text-5xl md:text-6xl font-normal text-primary dark:text-primary font-rubik">
-              {isUSD ? '$ 12,450.00' : '₦ 19,920,000'}
+              {isLoading ? '...' : getDisplayBalance()}
             </span>
             <div className="mt-4 flex bg-pink-100 dark:bg-gray-700 p-1.5 rounded-full w-fit border border-black/5">
               <button 
@@ -73,18 +118,28 @@ const WalletView: React.FC<WalletViewProps> = ({ navigate }) => {
       <div className="space-y-6">
         <h3 className="text-xl font-normal text-black dark:text-primary mb-6 px-1 font-rubik">Recent activity</h3>
         <div className="space-y-3">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 transition-colors shadow-sm hover:shadow-md cursor-pointer group">
+          {isLoading ? (
+            <div className="text-center py-10 text-black/40 dark:text-gray-500">Loading transactions...</div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-10 text-black/40 dark:text-gray-500 font-montserrat">No recent activity</div>
+          ) : transactions.map(tx => (
+            <div key={tx.id} className="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 transition-colors shadow-sm hover:shadow-md cursor-pointer group">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 text-secondary rounded-xl flex items-center justify-center transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                  </svg>
                 </div>
                 <div>
-                  <p className="font-normal text-black dark:text-gray-200 text-sm">Payout to local account</p>
-                  <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal">Oct {20 + i}, 2024 • Completed</p>
+                  <p className="font-normal text-black dark:text-gray-200 text-sm">{tx.description || tx.type.replace('_', ' ')}</p>
+                  <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal">
+                    {new Date(tx.timestamp).toLocaleDateString()} • {tx.status}
+                  </p>
                 </div>
               </div>
-              <span className="font-normal text-primary dark:text-primary font-rubik text-base">-$450.00</span>
+              <span className={`font-normal font-rubik text-base ${tx.amount < 0 ? 'text-secondary' : 'text-primary'}`}>
+                {tx.amount < 0 ? '-' : '+'}${formatCurrency(Math.abs(tx.amount))}
+              </span>
             </div>
           ))}
         </div>

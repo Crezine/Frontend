@@ -115,16 +115,17 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
             <Suspense fallback={<ViewLoader />}>
               <Routes location={location}>
                 <Route index element={<Home navigate={handleNavigation} userData={userData} />} />
-                <Route path="wallet" element={<WalletView navigate={handleNavigation} userData={userData} />} />
-                <Route path="pay" element={<PayView navigate={handleNavigation} userData={userData} />} />
-                <Route path="payments" element={<PaymentsView navigate={handleNavigation} userData={userData} />} />
-                <Route path="escrow" element={<EscrowView navigate={handleNavigation} userData={userData} />} />
-                <Route path="events" element={<EventsView navigate={handleNavigation} userData={userData} />} />
-                <Route path="ticketing" element={<TicketingView navigate={handleNavigation} userData={userData} />} />
-                <Route path="funding" element={<FundingView navigate={handleNavigation} userData={userData} />} />
-                <Route path="ticket" element={<TicketingView navigate={handleNavigation} userData={userData} />} />
+                <Route path="wallet" element={<WalletView navigate={handleNavigation} />} />
+                <Route path="pay" element={<PayView navigate={handleNavigation} />} />
+                <Route path="payments" element={<PaymentsView navigate={handleNavigation} />} />
+                <Route path="escrow" element={<EscrowView navigate={handleNavigation} />} />
+                <Route path="events" element={<EventsView navigate={handleNavigation} />} />
+                <Route path="ticketing" element={<TicketingView navigate={handleNavigation} />} />
+                <Route path="funding" element={<FundingView navigate={handleNavigation} />} />
+                <Route path="fund" element={<FundView navigate={handleNavigation} />} />
+                <Route path="ticket" element={<TicketingView navigate={handleNavigation} />} />
                 <Route path="ticket-checkout" element={<TicketCheckoutView navigate={handleNavigation} />} />
-                <Route path="profile" element={<ProfileView navigate={handleNavigation} userData={userData} isDarkMode={isDarkMode} onThemeToggle={toggleTheme} />} />
+                <Route path="profile" element={<ProfileView navigate={handleNavigation} userData={userData} />} />
 
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

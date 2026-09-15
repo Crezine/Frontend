@@ -1,37 +1,136 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AppView, UserData } from './types';
 import LandingView from './views/LandingView';
 import OnboardingView from './views/OnboardingView';
-import DashboardView from './views/DashboardView';
-import ProductView from './views/ProductView';
-import FeaturesView from './views/FeaturesView';
-import PricingView from './views/PricingView';
-import SupportView from './views/SupportView';
-import HelpCenterView from './views/HelpCenterView';
-import ContactView from './views/ContactView';
-import WhatsAppView from './views/WhatsAppView';
-import About from './views/About';
-import ShopView from './views/ShopView';
-import CheckoutView from './views/CheckoutView';
-import TicketCheckoutView from './views/TicketCheckoutView';
-import CookieSettingsView from './views/CookieSettingsView';
-import FundingView from './views/FundingView';
-import PaymentsView from './views/PaymentsView';
-import TicketingView from './views/TicketingView';
-import PrivacyPolicyView from './views/PrivacyPolicyView';
-import TermsOfServiceView from './views/TermsOfServiceView';
-import NotFoundView from './views/NotFoundView';
-import UnauthorizedView from './views/UnauthorizedView';
+
+// Lazy load secondary and dashboard views
+const DashboardView = lazy(() => import('./views/DashboardView'));
+const ProductView = lazy(() => import('./views/ProductView'));
+const FeaturesView = lazy(() => import('./views/FeaturesView'));
+const PricingView = lazy(() => import('./views/PricingView'));
+const SupportView = lazy(() => import('./views/SupportView'));
+const HelpCenterView = lazy(() => import('./views/HelpCenterView'));
+const ContactView = lazy(() => import('./views/ContactView'));
+const WhatsAppView = lazy(() => import('./views/WhatsAppView'));
+const About = lazy(() => import('./views/About'));
+const BrandView = lazy(() => import('./views/BrandView'));
+const ShopView = lazy(() => import('./views/ShopView'));
+const CheckoutView = lazy(() => import('./views/CheckoutView'));
+const TicketCheckoutView = lazy(() => import('./views/TicketCheckoutView'));
+const CookieSettingsView = lazy(() => import('./views/CookieSettingsView'));
+const PrivacyPolicyView = lazy(() => import('./views/PrivacyPolicyView'));
+const TermsOfServiceView = lazy(() => import('./views/TermsOfServiceView'));
+const NotFoundView = lazy(() => import('./views/NotFoundView'));
+const UnauthorizedView = lazy(() => import('./views/UnauthorizedView'));
 
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
 import CookieConsent from './components/CookieConsent';
+import { WaitlistProvider } from './src/context/WaitlistContext';
+import WaitlistModal from './components/WaitlistModal';
+import { Toaster } from 'sonner';
+import ErrorBoundary from './src/components/feedback/ErrorBoundary';
 import './styles/overrides.css';
+
+import { authService } from './src/services/authService';
+import { ApiError } from './src/services/api';
+
+import { auth } from './src/services/firebase';
+import { onAuthStateChanged, type User } from 'firebase/auth';
+
+const getPageTitle = (pathname: string): string => {
+  const suffix = "The Creative cashdoor";
+
+  if (pathname === '/' || pathname === '/landing') {
+    return `Crezine | ${suffix}`;
+  }
+  if (pathname.startsWith('/shop')) {
+    return `Shop | ${suffix}`;
+  }
+  if (pathname.startsWith('/brand')) {
+    return `Brand | ${suffix}`;
+  }
+  if (pathname.startsWith('/about')) {
+    return `About | ${suffix}`;
+  }
+  if (pathname.startsWith('/features')) {
+    return `Features | ${suffix}`;
+  }
+  if (pathname.startsWith('/product')) {
+    return `Product | ${suffix}`;
+  }
+  if (pathname.startsWith('/pricing')) {
+    return `Pricing | ${suffix}`;
+  }
+  if (pathname.startsWith('/support')) {
+    return `Support | ${suffix}`;
+  }
+  if (pathname.startsWith('/help-center') || pathname.startsWith('/help')) {
+    return `Help Center | ${suffix}`;
+  }
+  if (pathname.startsWith('/contact')) {
+    return `Contact | ${suffix}`;
+  }
+  if (pathname.startsWith('/onboarding')) {
+    return `Join | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/wallet')) {
+    return `Wallet | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/pay') || pathname.startsWith('/dashboard/payments')) {
+    return `Payments | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/escrow')) {
+    return `Escrow | ${suffix}`;
+  }
+  if (
+    pathname.startsWith('/dashboard/events') ||
+    pathname.startsWith('/dashboard/ticket') ||
+    pathname.startsWith('/dashboard/ticketing')
+  ) {
+    return `Events & Tickets | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/fund') || pathname.startsWith('/dashboard/funding')) {
+    return `Funding | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard/profile')) {
+    return `Profile | ${suffix}`;
+  }
+  if (pathname.startsWith('/dashboard')) {
+    return `Dashboard | ${suffix}`;
+  }
+  if (pathname.startsWith('/checkout')) {
+    return `Checkout | ${suffix}`;
+  }
+  if (pathname.startsWith('/ticket-checkout')) {
+    return `Ticket Checkout | ${suffix}`;
+  }
+  if (pathname.startsWith('/privacy-policy')) {
+    return `Privacy Policy | ${suffix}`;
+  }
+  if (pathname.startsWith('/terms-of-service')) {
+    return `Terms of Service | ${suffix}`;
+  }
+  if (pathname.startsWith('/whatsapp')) {
+    return `Community | ${suffix}`;
+  }
+  if (pathname.startsWith('/cookie-settings')) {
+    return `Cookie Settings | ${suffix}`;
+  }
+  if (pathname.startsWith('/unauthorized')) {
+    return `Unauthorized | ${suffix}`;
+  }
+
+  return `Crezine | ${suffix}`;
+};
 
 const App: React.FC = () => {
   const [hasInitialAnimated, setHasInitialAnimated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
+  const [authUser, setAuthUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(() => {
     try {
       const saved = localStorage.getItem('userData');
@@ -52,7 +151,84 @@ const App: React.FC = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const title = getPageTitle(location.pathname);
+    document.title = title;
+
+    const metaTitle = document.querySelector('meta[name="title"]');
+    if (metaTitle) {
+      metaTitle.setAttribute('content', title);
+    }
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', title);
+    }
+    const twitterTitle = document.querySelector('meta[property="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', title);
+    }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setAuthUser(user);
+
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          localStorage.setItem('firebaseToken', token);
+          
+          setIsLoading(true);
+          const profile = await authService.getMe();
+          const data: UserData = {
+            name: profile.name || profile.displayName || 'Creative User',
+            email: profile.email,
+            craft: profile.craft || 'Creator'
+          };
+          setUserData(data);
+          localStorage.setItem('userData', JSON.stringify(data));
+        } catch (error) {
+          console.error("Auth profile fetch failed", error);
+          const canUseCachedProfile =
+            !(error instanceof ApiError) || ![401, 403].includes(error.status);
+          const saved = canUseCachedProfile ? localStorage.getItem('userData') : null;
+
+          if (saved && auth.currentUser) {
+            try {
+              setUserData(JSON.parse(saved));
+            } catch (e) {
+              console.error("Failed to parse saved userData", e);
+              setUserData(null);
+            }
+          } else {
+            setUserData(null);
+          }
+        } finally {
+          setIsLoading(false);
+          setAuthReady(true);
+        }
+      } else {
+        localStorage.removeItem('firebaseToken');
+        localStorage.removeItem('userData');
+        setUserData(null);
+        setAuthReady(true);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setAuthUser(null);
+      setUserData(null);
+      if (location.pathname.startsWith('/dashboard')) {
+        navigate('/onboarding', { replace: true });
+      }
+    };
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, [location.pathname, navigate]);
 
   const handleNavigate = (view: AppView) => {
     if (view === 'landing') {
@@ -69,21 +245,44 @@ const App: React.FC = () => {
     }
   };
 
-  const handleOnboarding = (data: UserData) => {
-    localStorage.setItem('userData', JSON.stringify(data));
-    setUserData(data);
-    navigate('/dashboard');
+  const handleOnboarding = async (data: UserData) => {
+    try {
+      setIsLoading(true);
+      
+      await authService.updateProfile({
+        name: data.name,
+        craft: data.craft
+      });
+
+      localStorage.setItem('userData', JSON.stringify(data));
+      setUserData(data);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Onboarding update failed", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleLogin = () => {
-    const dummyUser: UserData = {
-      name: 'Creative User',
-      email: 'creative@crezine.com',
-      craft: 'Creator'
-    };
-    localStorage.setItem('userData', JSON.stringify(dummyUser));
-    setUserData(dummyUser);
-    navigate('/dashboard');
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      const profile = await authService.getMe();
+      
+      const user: UserData = {
+        name: profile.name || profile.displayName || 'Creative User',
+        email: profile.email,
+        craft: profile.craft || 'Creator'
+      };
+      
+      localStorage.setItem('userData', JSON.stringify(user));
+      setUserData(user);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Login failed", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const resetAnimation = () => {
@@ -91,74 +290,127 @@ const App: React.FC = () => {
   };
 
   // Do not show the global footer on dashboard routes and shop as it has its own refurbished footer
-  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop');
+  const showGlobalFooter = !['/onboarding', '/whatsapp'].includes(location.pathname) && !location.pathname.startsWith('/dashboard') && !location.pathname.startsWith('/shop') && !['/checkout', '/ticket-checkout'].includes(location.pathname);
+
+  // Determine if we should show the shop background for checkout
+  const isCheckoutModal = location.pathname === '/checkout' || location.pathname === '/ticket-checkout';
+  const showShopBackground = isCheckoutModal && location.state?.background;
 
   return (
-    <div className="App">
-      <Analytics />
-      <Routes>
-        {/* Landing and Auth */}
-        <Route 
-          path="/" 
-          element={
-            <LandingView 
-              navigate={handleNavigate} 
-              hasInitialAnimated={hasInitialAnimated}
-              onAnimationComplete={() => setHasInitialAnimated(true)}
-              resetAnimation={resetAnimation}
-            />
-          } 
-        />
-        <Route path="/landing" element={<Navigate to="/" replace />} />
-        <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+    <ErrorBoundary>
+      <WaitlistProvider>
+        <div className="App">
+          <Toaster
+            position="top-right"
+            richColors
+            closeButton
+            toastOptions={{
+              style: {
+                fontFamily: 'Montserrat, sans-serif',
+                borderRadius: '1rem',
+              },
+            }}
+          />
+          <Analytics />
+          <WaitlistModal />
         
-        {/* Dashboard and related user-specific views */}
-        <Route 
-          path="/dashboard/*" 
-          element={
-            <DashboardView 
-              navigate={handleNavigate} 
-              userData={userData || { name: 'Creative', email: 'creative@crezine.com', craft: 'Creative' }} 
-            />
-          }
-        />
-        
-        {/* Redirect old top-level routes to dashboard */}
-        <Route path="/home" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
-        <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
-        <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
-        <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
-        <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
-        <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
-        <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
-        <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
+        {/* Background for modals */}
+        {showShopBackground && (
+          <div className="fixed inset-0 z-0 opacity-50 blur-sm pointer-events-none">
+            <ShopView navigate={handleNavigate} />
+          </div>
+        )}
 
-        {/* Public Informational Views */}
-        <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
-        <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
-        <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
-        <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
-        <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
-        <Route path="/help" element={<Navigate to="/help-center" replace />} />
-        <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
-        <Route path="/about" element={<About navigate={handleNavigate} />} />
-        <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
-        <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
-        <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
-        <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
-        <Route path="/whatsapp" element={<WhatsAppView />} />
-        <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
-        
-        {/* Catch-all route for 404 Page Not Found */}
-        <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
-      </Routes>
-      {showGlobalFooter && <BackToTop />}
-      <CookieConsent />
-      {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={location.pathname === '/shop'} />}
-    </div>
-  );
+        <Suspense fallback={
+          <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+            <div className="w-10 h-10 border-4 border-secondary/20 border-t-secondary rounded-full animate-spin"></div>
+          </div>
+        }>
+          <Routes location={location.state?.background || location}>
+            {/* Landing and Auth */}
+            <Route 
+              path="/" 
+              element={
+                <LandingView 
+                  navigate={handleNavigate} 
+                  hasInitialAnimated={hasInitialAnimated}
+                  onAnimationComplete={() => setHasInitialAnimated(true)}
+                  resetAnimation={resetAnimation}
+                />
+              } 
+            />
+            <Route path="/landing" element={<Navigate to="/" replace />} />
+            <Route path="/onboarding" element={<OnboardingView navigate={handleNavigate} onComplete={handleOnboarding} onLogin={handleLogin} />} />
+            <Route path="/unauthorized" element={<UnauthorizedView navigate={handleNavigate} onLogin={() => navigate('/onboarding')} />} />
+            
+            {/* Dashboard and related user-specific views */}
+            <Route 
+              path="/dashboard/*" 
+              element={
+                !authReady || isLoading ? (
+                  <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                    Loading...
+                  </div>
+                ) : authUser && userData ? (
+                  <DashboardView 
+                    navigate={handleNavigate} 
+                    userData={userData} 
+                  />
+                ) : (
+                  <Navigate to="/onboarding" replace />
+                )
+              } 
+            />
+            
+            {/* Redirect old top-level routes to dashboard */}
+            <Route path="/home" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/wallet" element={<Navigate to="/dashboard/wallet" replace />} />
+            <Route path="/pay" element={<Navigate to="/dashboard/pay" replace />} />
+            <Route path="/payments" element={<Navigate to="/dashboard/payments" replace />} />
+            <Route path="/escrow" element={<Navigate to="/dashboard/escrow" replace />} />
+            <Route path="/events" element={<Navigate to="/dashboard/events" replace />} />
+            <Route path="/ticketing" element={<Navigate to="/dashboard/ticketing" replace />} />
+            <Route path="/fund" element={<Navigate to="/dashboard/fund" replace />} />
+            <Route path="/funding" element={<Navigate to="/dashboard/funding" replace />} />
+
+            {/* Public Informational Views */}
+            <Route path="/product" element={<ProductView navigate={handleNavigate} />} />
+            <Route path="/features" element={<FeaturesView navigate={handleNavigate} />} />
+            <Route path="/pricing" element={<PricingView navigate={handleNavigate} />} />
+            <Route path="/support" element={<SupportView navigate={handleNavigate} />} />
+            <Route path="/help-center" element={<HelpCenterView navigate={handleNavigate} />} />
+            <Route path="/help" element={<Navigate to="/help-center" replace />} />
+            <Route path="/contact" element={<ContactView navigate={handleNavigate} />} />
+            <Route path="/about" element={<About navigate={handleNavigate} />} />
+            <Route path="/brand" element={<BrandView navigate={handleNavigate} />} />
+            <Route path="/shop/*" element={<ShopView navigate={handleNavigate} />} />
+            <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+            <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
+            <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
+            <Route path="/whatsapp" element={<WhatsAppView />} />
+            <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
+            
+            {/* Catch-all route for 404 Page Not Found */}
+            <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />
+          </Routes>
+
+          {/* Actual Modal Rendering */}
+          {isCheckoutModal && (
+            <Routes>
+              <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
+              <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
+            </Routes>
+          )}
+        </Suspense>
+
+        {showGlobalFooter && <BackToTop />}
+        <CookieConsent />
+        {showGlobalFooter && <Footer navigate={handleNavigate} hideMovementCard={['/shop', '/brand'].includes(location.pathname)} />}
+      </div>
+    </WaitlistProvider>
+  </ErrorBoundary>
+);
 };
 
 export default App;

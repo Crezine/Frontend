@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppView } from '../types';
 import { motion, AnimatePresence } from 'framer-motion';
+import { walletService, Transaction } from '../src/services/walletService';
 
 interface FundViewProps {
   navigate: (view: AppView) => void;
@@ -11,9 +12,34 @@ const FundView: React.FC<FundViewProps> = ({ navigate }) => {
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
   const [isMethodOpen, setIsMethodOpen] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState('Debit / Credit card');
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const currencies = ['USD', 'KES', 'NGN'];
   const methods = ['Debit / Credit card', 'M-Pesa', 'Bank transfer', 'Apple pay', 'Google pay'];
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        setIsLoading(true);
+        const data = await walletService.getTransactions({ limit: 5, type: 'deposit' });
+        setTransactions(data);
+      } catch (error) {
+        console.error("Failed to fetch transactions", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+  const formatCurrency = (amountInCents: number) => {
+    return (amountInCents / 100).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
 
   return (
     <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 font-montserrat transition-colors">
@@ -119,20 +145,26 @@ const FundView: React.FC<FundViewProps> = ({ navigate }) => {
       <div className="space-y-6">
         <h3 className="text-xl font-normal text-black dark:text-primary mb-6 px-1 font-rubik">Recent activity</h3>
         <div className="space-y-3">
-          {[1, 2].map(i => (
-            <div key={i} className="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 transition-colors shadow-sm hover:shadow-md cursor-pointer group">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 text-secondary rounded-xl flex items-center justify-center transition-colors">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          {isLoading ? (
+            <div className="text-center py-10 text-black/40">Loading activity...</div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-10 text-black/40">No recent deposits</div>
+          ) : (
+            transactions.map(tx => (
+              <div key={tx.id} className="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-2xl border border-black/5 dark:border-white/5 transition-colors shadow-sm hover:shadow-md cursor-pointer group">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 bg-gray-50 dark:bg-gray-700 text-secondary rounded-xl flex items-center justify-center transition-colors">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                  </div>
+                  <div>
+                    <p className="font-normal text-black dark:text-gray-200 text-sm font-montserrat">{tx.description || 'Deposit'}</p>
+                    <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal font-montserrat">{new Date(tx.timestamp).toLocaleDateString()} • {tx.status}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-normal text-black dark:text-gray-200 text-sm font-montserrat">Deposit via card</p>
-                  <p className="text-[10px] text-black/40 dark:text-gray-400 font-normal font-montserrat">Oct {24 + i}, 2024 • Completed</p>
-                </div>
+                <span className="font-normal text-primary dark:text-primary font-rubik text-base">+{tx.amount > 0 ? '$' : '-$'}{formatCurrency(Math.abs(tx.amount))}</span>
               </div>
-              <span className="font-normal text-primary dark:text-primary font-rubik text-base">+$500.00</span>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

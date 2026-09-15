@@ -70,6 +70,7 @@ const Footer: React.FC<FooterProps> = ({ hideMovementCard = false }) => {
               <ul className="space-y-3 lg:space-y-4">
                 <li><button onClick={() => navigate('/contact' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Contact Us</button></li>
                 <li><button onClick={() => navigate('/about' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">About Us</button></li>
+                <li><a href="/brand" target="_blank" rel="noopener noreferrer" className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Brand</a></li>
                 <li><button onClick={() => navigate('/features' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Use Case</button></li>
                 <li><button onClick={() => navigate('/community' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors font-rubik font-light">Community</button></li>
               </ul>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AppView } from '../types';
 import { FiChevronDown, FiChevronRight, FiGlobe, FiDollarSign } from 'react-icons/fi';
@@ -20,10 +20,17 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
   const [selectedLang, setSelectedLang] = useState('English');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
-  const handleNavClick = (view: AppView) => {
-    navigate(view);
-    onClose();
-  };
+  // Lock scroll when sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   const handleSubViewClick = (view: ShopSubView) => {
     setSubView(view);
@@ -36,9 +43,10 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <React.Fragment key="sidebar-fragment">
           {/* Backdrop */}
           <motion.div
+            key="sidebar-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -48,6 +56,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
 
           {/* Sidebar */}
           <motion.div
+            key="sidebar-container"
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
@@ -70,7 +79,6 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                   Collections
                 </button>
 
-                {/* Shop by type Dropdown - Shows on Hover */}
                 <div 
                   className="space-y-1"
                   onMouseEnter={() => setIsTypeOpen(true)}
@@ -88,6 +96,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                   <AnimatePresence>
                     {isTypeOpen && (
                       <motion.div
+                        key="type-dropdown"
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -112,9 +121,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
               </div>
             </nav>
 
-            {/* Bottom Controls */}
             <div className="p-6 border-t border-secondary/5 space-y-6 bg-accent/10">
-              {/* Language Selection */}
               <div className="space-y-2">
                 <h4 className="text-xs font-normal text-black pl-1">Choose language</h4>
                 <div className="relative">
@@ -132,6 +139,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                   <AnimatePresence>
                     {isLangOpen && (
                       <motion.div
+                        key="lang-dropdown"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
@@ -139,7 +147,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                       >
                         {languages.map(lang => (
                           <button
-                            key={lang}
+                            key={`lang-${lang}`}
                             onClick={() => {
                               setSelectedLang(lang);
                               setIsLangOpen(false);
@@ -155,7 +163,6 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                 </div>
               </div>
 
-              {/* Currency Selection */}
               <div className="space-y-2">
                 <h4 className="text-xs font-normal text-black pl-1">Currency</h4>
                 <div className="relative">
@@ -173,6 +180,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                   <AnimatePresence>
                     {isCurrencyOpen && (
                       <motion.div
+                        key="currency-dropdown"
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
@@ -180,7 +188,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
                       >
                         {currencies.map(curr => (
                           <button
-                            key={curr}
+                            key={`curr-${curr}`}
                             onClick={() => {
                               setSelectedCurrency(curr);
                               setIsCurrencyOpen(false);
@@ -197,17 +205,8 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ isOpen, onClose, navigate, ac
               </div>
             </div>
           </motion.div>
-        </>
+        </React.Fragment>
       )}
-      <style>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </AnimatePresence>
   );
 };
