@@ -22,6 +22,10 @@ export default {
         'silkscreen': ["Silkscreen", "monospace"],
         'vt323': ["VT323", "monospace"],
       },
+      screens: {
+        '3xl': '1720px',
+        '4xl': '2100px',
+      },
     },
   },
   plugins: [],

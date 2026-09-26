@@ -68,28 +68,28 @@ const LandingView: React.FC<LandingViewProps> = ({
       <main className="relative z-10">
         {/* Hero Section */}
         <section 
-          className={`w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 min-h-[calc(100vh-100px)] lg:min-h-[86vh] xl:min-h-[88vh] flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12 transition-all duration-500 ease-in-out ${
-            isBannerVisible ? 'pt-36 sm:pt-40 lg:pt-36' : 'pt-28 sm:pt-32 lg:pt-28'
-          } pb-16 md:pb-20 lg:pb-24`}
+          className={`container mx-auto px-6 pb-4 md:pb-6 2xl:pb-12 flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12 2xl:gap-16 2xl:max-w-[1600px] 3xl:max-w-[1850px] overflow-hidden transition-all duration-500 ease-in-out ${
+            isBannerVisible ? 'pt-36 md:pt-32 2xl:pt-36' : 'pt-28 md:pt-20 2xl:pt-28'
+          }`}
         >
-          <div className="w-full lg:w-1/2 xl:w-7/12 text-left flex flex-col items-start relative z-10">
+          <div className="w-full lg:w-1/2 xl:w-3/5 text-left flex flex-col items-start relative z-10 lg:pt-12 2xl:pt-16">
             <motion.div 
               initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
               className="bg-white/40 backdrop-blur-sm rounded-full py-1.5 px-5 inline-block mb-4 md:mb-6 border border-secondary/10"
             >
-              <p className="text-xs sm:text-sm md:text-base text-black font-rubik font-light tracking-wide">
+              <p className="text-xs sm:text-sm md:text-base 2xl:text-lg text-black font-rubik font-light tracking-wide">
                 Your global cashdoor for creative dreams.
               </p>
             </motion.div>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl 2xl:text-[5.5rem] 3xl:text-[6.25rem] font-rubik font-normal tracking-tighter mb-4 md:mb-6 leading-tight">
               <span className="text-black">The Global </span>
               <span className="text-primary">Creative</span>
               <br />
               <span className="text-black">Cashdoor</span>
             </h1>
-            <p className="text-base md:text-lg text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl leading-relaxed">
+            <p className="text-base md:text-lg 2xl:text-xl text-black font-montserrat font-normal mb-6 md:mb-8 max-w-2xl 2xl:max-w-3xl leading-relaxed">
               Secure Global payments for Creatives, Transact across the world Simple and Easy,
               Sell Experiences, Ticket Events and access creative fund and residencies
               all Behind One Cashdoor.
@@ -106,21 +106,21 @@ const LandingView: React.FC<LandingViewProps> = ({
           </div>
 
           {/* Right Side Image - Creative Mobile Display */}
-          <div className="w-full lg:w-1/2 xl:w-5/12 flex justify-center lg:justify-end relative mt-12 sm:mt-16 lg:mt-0">
+          <div className="w-full lg:w-1/2 xl:w-2/5 flex justify-center lg:justify-end relative mt-32 lg:mt-0 2xl:mt-4">
             <div className="relative">
-              <div className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40" />
-              <div className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30" />
+              <div className="absolute -top-10 -right-10 w-48 h-48 md:w-64 md:h-64 2xl:w-80 2xl:h-80 bg-primary/20 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-40" />
+              <div className="absolute -bottom-10 -left-10 w-48 h-48 md:w-64 md:h-64 2xl:w-80 2xl:h-80 bg-secondary/10 rounded-full blur-[60px] md:blur-[80px] -z-10 opacity-30" />
               
               <div className="relative z-10">
                 <img 
                   src="/mobile.png" 
                   alt="Crezine Mobile App" 
-                  className="w-full max-w-[320px] sm:max-w-[360px] md:max-w-[400px] lg:max-w-[440px] xl:max-w-[470px] h-auto drop-shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
+                  className="w-full max-w-[340px] sm:max-w-[380px] md:max-w-[420px] lg:max-w-[450px] xl:max-w-[500px] 2xl:max-w-[560px] 3xl:max-w-[620px] h-auto drop-shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)]"
                 />
               </div>
 
               {/* Static Floating UI Badges */}
-              <div className="absolute -right-2 md:-right-6 lg:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100">
+              <div className="absolute -right-2 md:-right-8 top-[15%] md:top-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-right scale-[0.85] md:scale-100 2xl:scale-110">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-primary/20 rounded-full flex items-center justify-center text-primary">
                   <span className="text-xs md:text-sm font-normal font-montserrat">$</span>
                 </div>
@@ -130,7 +130,7 @@ const LandingView: React.FC<LandingViewProps> = ({
                 </div>
               </div>
               
-              <div className="absolute -left-2 md:-left-8 lg:-left-10 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100">
+              <div className="absolute -left-2 md:-left-12 bottom-[15%] md:bottom-1/4 bg-white/95 backdrop-blur-md p-2.5 md:p-4 rounded-2xl shadow-2xl border border-secondary/10 z-20 flex items-center gap-2 md:gap-3 origin-left scale-[0.85] md:scale-100 2xl:scale-110">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-secondary/20 rounded-full flex items-center justify-center text-secondary">
                    <span className="text-xs md:text-sm font-normal font-montserrat">✓</span>
                 </div>
@@ -147,7 +147,7 @@ const LandingView: React.FC<LandingViewProps> = ({
         <BrandSection hasInitialAnimated={hasInitialAnimated} />
 
         {/* About Us Section */}
-        <section className="pt-12 pb-20 md:pt-16 md:pb-28 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col justify-center">
+        <section className="pt-12 pb-20 md:pt-16 md:pb-28 container mx-auto px-6 flex flex-col justify-center">
           <div className="w-full text-center mb-16 md:mb-20">
             <motion.h2 
               initial={{ opacity: 0, y: -10 }}

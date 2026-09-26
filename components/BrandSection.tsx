@@ -36,9 +36,9 @@ const BrandSection: React.FC<BrandSectionProps> = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="w-full flex items-center justify-center font-rubik select-none py-12 md:py-20 lg:py-28"
+      className="w-full flex items-center justify-center font-rubik select-none py-6 md:py-10"
     >
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+      <div className="container mx-auto px-6 max-w-7xl 2xl:max-w-[1600px] 3xl:max-w-[1920px] 4xl:max-w-[2200px]">
         <motion.div
           ref={cardRef}
           style={{ scale, opacity }}
@@ -48,7 +48,7 @@ const BrandSection: React.FC<BrandSectionProps> = () => {
             setIsHovered(false);
             setMousePos({ x: -1000, y: -1000 });
           }}
-          className="w-full pt-12 pb-14 sm:pt-16 sm:pb-20 md:pt-20 md:pb-24 lg:pt-24 lg:pb-28 flex items-center justify-center bg-accent/40 border-2 border-secondary rounded-[32px] md:rounded-[40px] relative overflow-hidden text-center px-4 cursor-crosshair group shadow-sm transition-shadow hover:shadow-xl"
+          className="w-full pt-12 pb-16 sm:pt-16 sm:pb-24 md:pt-20 md:pb-28 2xl:py-36 3xl:py-48 flex items-center justify-center bg-accent/40 border-2 border-secondary rounded-[32px] md:rounded-[40px] 2xl:rounded-[56px] relative overflow-hidden text-center px-4 cursor-crosshair group shadow-sm transition-shadow hover:shadow-xl"
         >
           {/* Base Faint Grid Boxes Pattern */}
           <svg className="absolute inset-0 w-full h-full stroke-secondary/15 pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
@@ -82,7 +82,7 @@ const BrandSection: React.FC<BrandSectionProps> = () => {
 
             {/* Radial Glow Highlight */}
             <div
-              className="absolute w-72 h-72 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none blur-3xl"
+              className="absolute w-72 h-72 2xl:w-96 2xl:h-96 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none blur-3xl"
               style={{
                 left: `${mousePos.x}px`,
                 top: `${mousePos.y}px`,
@@ -94,13 +94,13 @@ const BrandSection: React.FC<BrandSectionProps> = () => {
           {/* Brand Wordmark Content */}
           <div className="flex flex-col items-center justify-center text-center relative z-10 pointer-events-none select-none">
             <h2 
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl 2xl:text-[10.5rem] tracking-tight text-secondary leading-none uppercase font-bold text-center drop-shadow-sm"
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[12rem] 2xl:text-[14rem] 3xl:text-[15.5rem] tracking-tight text-secondary leading-none uppercase font-bold text-center drop-shadow-sm font-silkscreen"
               style={{ fontFamily: "'Silkscreen', 'Geist Pixel', 'VT323', ui-monospace, monospace" }}
             >
               Crezine<span className="text-primary">.</span>
             </h2>
             <span 
-              className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl tracking-widest text-primary leading-none uppercase font-bold mt-4 sm:mt-6 text-center drop-shadow-sm"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl 3xl:text-[8.5rem] tracking-widest text-primary leading-none uppercase font-bold mt-4 sm:mt-6 2xl:mt-8 text-center drop-shadow-sm font-silkscreen"
               style={{ fontFamily: "'Silkscreen', 'Geist Pixel', 'VT323', ui-monospace, monospace" }}
             >
               CASHDOOR
