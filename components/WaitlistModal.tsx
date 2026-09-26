@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FiX, FiCheck, FiMail, FiUser, FiCopy, FiCheckCircle } from 'react-icons/fi';
+import { FiX, FiCheck, FiMail, FiUser, FiCopy, FiCheckCircle, FiPhone, FiInfo } from 'react-icons/fi';
 import { FaXTwitter, FaWhatsapp } from 'react-icons/fa6';
 import { useWaitlist } from '../src/context/WaitlistContext';
 import { WaitlistEntry } from '../src/services/waitlistService';
+import { showToast } from '../src/utils/toast';
 
 const CRAFTS = [
   'Visual Art & Design',
@@ -29,11 +30,13 @@ export const WaitlistModal: React.FC = () => {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [selectedCraft, setSelectedCraft] = useState<string>('Visual Art & Design');
   const [selectedInterests, setSelectedInterests] = useState<string[]>(['Global Payments', 'Event Ticketing']);
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alreadyRegisteredEmail, setAlreadyRegisteredEmail] = useState<string | null>(null);
   const [submittedEntry, setSubmittedEntry] = useState<WaitlistEntry | null>(savedEntry);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -77,25 +80,45 @@ export const WaitlistModal: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setAlreadyRegisteredEmail(null);
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim() || !emailRegex.test(email.trim())) {
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
       setError('Please enter a valid email address.');
+      showToast.warning('Please enter a valid email address.');
       return;
     }
 
     try {
       setIsSubmitting(true);
       const entry = await submitWaitlist({
-        name: name.trim() || 'Creative Pioneer',
-        email: email.trim().toLowerCase(),
+        name: cleanName || 'Creative Pioneer',
+        email: cleanEmail,
+        phoneNumber: phone.trim() || undefined,
         craft: selectedCraft,
         interests: selectedInterests,
       });
+
       setSubmittedEntry(entry);
+      showToast.success("You're on the waitlist! Priority spot confirmed.");
     } catch (err: any) {
       console.error('Waitlist join error:', err);
-      setError(err?.message || 'Something went wrong. Please try again.');
+      const isAlreadyOnList =
+        err?.status === 409 ||
+        err?.isAlreadyOnWaitlist ||
+        /already on the waitlist|conflict/i.test(err?.message || '');
+
+      if (isAlreadyOnList) {
+        setAlreadyRegisteredEmail(cleanEmail);
+        showToast.info('This email is already registered on our waitlist.');
+      } else {
+        const errorMsg = err?.message || 'Something went wrong. Please try again.';
+        setError(errorMsg);
+        showToast.error(errorMsg);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -103,7 +126,7 @@ export const WaitlistModal: React.FC = () => {
 
   const referralUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}?ref=${submittedEntry?.referralCode || 'EARLY'}`
-    : 'https://crezine.com';
+    : 'https://crezine.app';
 
   const shareText = `I just joined the waitlist for Crezine — the global creative cashdoor for payments, gigs, and funding. Check it out:`;
 
@@ -140,7 +163,7 @@ export const WaitlistModal: React.FC = () => {
             aria-hidden="true"
           />
 
-          {/* Modal Container: Expanded width & height on mobile for full visibility */}
+          {/* Modal Container */}
           <motion.div
             initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -158,8 +181,103 @@ export const WaitlistModal: React.FC = () => {
               <FiX className="w-5 h-5 stroke-[2.5]" />
             </button>
 
-            {submittedEntry ? (
-              /* SUCCESS STATE */
+            {/* STATE 1: ALREADY REGISTERED FEEDBACK */}
+            {alreadyRegisteredEmail ? (
+              <div className="p-4 sm:p-8 flex flex-col items-center text-center overflow-y-auto max-h-[94vh] sm:max-h-[85vh] [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.15)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-black/15 [&::-webkit-scrollbar-thumb]:rounded-full">
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center mb-3 border border-amber-200 shadow-xs">
+                  <FiInfo className="w-6 h-6 stroke-[2.5]" />
+                </div>
+
+                <div className="inline-block px-3 py-1 rounded-full bg-amber-100/70 text-amber-800 text-[11px] font-semibold mb-2 border border-amber-200">
+                  Email Already on Waitlist
+                </div>
+
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-normal font-rubik text-black tracking-tight">
+                  You're already on the list!
+                </h2>
+
+                <p className="mt-2 text-xs sm:text-sm text-black/70 max-w-sm font-montserrat leading-relaxed font-light">
+                  The email <span className="font-semibold text-black">{alreadyRegisteredEmail}</span> is already registered for Crezine early access.
+                </p>
+
+                {/* Status confirmation box */}
+                <div className="w-full mt-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-amber-50/70 border border-amber-200/80 text-left font-montserrat space-y-2">
+                  <div className="flex items-center gap-2 text-amber-900 font-semibold text-xs">
+                    <FiCheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                    <span>Early Access Status: Active &amp; Confirmed</span>
+                  </div>
+                  <p className="text-[11px] sm:text-xs text-black/70 font-light leading-relaxed">
+                    You don't need to sign up again. We will notify you at this email address as soon as private access doors open.
+                  </p>
+                </div>
+
+                {/* Perks Reminder */}
+                <div className="w-full mt-3 text-left bg-accent/30 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 border border-black/5 space-y-2 font-montserrat">
+                  <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-black/60">
+                    Your Reserved Perks
+                  </p>
+                  <div className="space-y-1.5 text-xs text-black/80 font-light">
+                    <div className="flex items-center gap-2">
+                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span><strong className="font-semibold text-black">0% platform fees</strong> on your first $1,000 processed</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <FiCheckCircle className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                      <span>Priority access to creative grants &amp; global client gigs</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Social Share */}
+                <div className="w-full mt-4 flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 font-montserrat">
+                  <button
+                    onClick={handleShareTwitter}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-black text-white text-xs font-medium hover:bg-black/90 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <FaXTwitter className="w-3.5 h-3.5" />
+                    <span>Share on X</span>
+                  </button>
+
+                  <button
+                    onClick={handleShareWhatsapp}
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <FaWhatsapp className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </button>
+
+                  <button
+                    onClick={handleCopyLink}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-black/5 text-black hover:bg-black/10 active:scale-95 text-xs font-medium transition-all cursor-pointer"
+                  >
+                    {copiedLink ? <FiCheck className="w-3.5 h-3.5 text-emerald-600" /> : <FiCopy className="w-3.5 h-3.5" />}
+                    <span>{copiedLink ? 'Copied' : 'Copy link'}</span>
+                  </button>
+                </div>
+
+                {/* Action buttons */}
+                <div className="w-full mt-4 flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAlreadyRegisteredEmail(null);
+                      setError(null);
+                    }}
+                    className="flex-1 py-2.5 sm:py-3 bg-black/5 text-black font-medium rounded-full hover:bg-black/10 active:scale-98 transition-all text-xs sm:text-sm cursor-pointer font-montserrat"
+                  >
+                    Use Another Email
+                  </button>
+                  <button
+                    type="button"
+                    onClick={closeWaitlistModal}
+                    className="flex-1 py-2.5 sm:py-3 bg-secondary text-white font-medium rounded-full hover:bg-secondary/90 active:scale-98 transition-all text-xs sm:text-sm cursor-pointer font-montserrat shadow-sm"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : submittedEntry ? (
+              /* STATE 2: NEW SUCCESS STATE */
               <div className="p-4 sm:p-8 flex flex-col items-center text-center overflow-y-auto max-h-[94vh] sm:max-h-[85vh] [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.15)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-black/15 [&::-webkit-scrollbar-thumb]:rounded-full">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2.5 sm:mb-3">
                   <FiCheck className="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" />
@@ -173,7 +291,7 @@ export const WaitlistModal: React.FC = () => {
                   We'll notify <span className="font-medium text-black">{submittedEntry.email}</span> as soon as your access is ready.
                 </p>
 
-                {/* Spot Card */}
+                {/* Priority Spot Card */}
                 <div className="w-full mt-4 sm:mt-5 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-accent/35 border border-black/5 flex items-center justify-between font-montserrat">
                   <div className="text-left">
                     <p className="text-[10px] sm:text-[11px] uppercase tracking-wider font-medium text-black/50">
@@ -216,7 +334,7 @@ export const WaitlistModal: React.FC = () => {
                     <FaXTwitter className="w-3.5 h-3.5" />
                     <span>Share on X</span>
                   </button>
-                  
+
                   <button
                     onClick={handleShareWhatsapp}
                     className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-full bg-emerald-600 text-white text-xs font-medium hover:bg-emerald-700 active:scale-95 transition-all cursor-pointer"
@@ -243,14 +361,14 @@ export const WaitlistModal: React.FC = () => {
                 </button>
               </div>
             ) : (
-              /* SIGNUP FORM STATE WITH FULL ACCESSIBILITY ON SMALL SCREENS */
+              /* STATE 3: SIGNUP FORM STATE */
               <div className="p-4 sm:p-7 md:p-8 max-h-[94vh] sm:max-h-[85vh] overflow-y-auto [scrollbar-width:thin] [scrollbar-color:rgba(0,0,0,0.15)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/15 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-black/25">
                 {/* Header info */}
                 <div className="text-center mb-4 sm:mb-6">
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-normal font-rubik text-black tracking-tight">
                     Join the waitlist.
                   </h2>
-                  
+
                   <p className="mt-1 text-xs sm:text-sm text-black/65 font-montserrat font-light leading-relaxed max-w-sm mx-auto">
                     Secure zero platform fees on your first $1,000, priority access to creative funding, and early onboarding.
                   </p>
@@ -270,15 +388,16 @@ export const WaitlistModal: React.FC = () => {
                   {/* Name Field */}
                   <div>
                     <label className="block text-[11px] sm:text-xs font-medium text-black/70 mb-1">
-                      Name
+                      Full Name <span className="text-secondary">*</span>
                     </label>
                     <div className="relative">
                       <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       <input
                         type="text"
+                        required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder="Your name"
+                        placeholder="Your full name"
                         className="w-full pl-9 pr-3.5 sm:pl-10 sm:pr-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-accent/25 rounded-xl border border-black/10 focus:outline-none focus:border-secondary focus:bg-white focus:ring-1 focus:ring-secondary text-black font-montserrat placeholder:text-black/30 transition-all font-light"
                       />
                     </div>
@@ -297,6 +416,23 @@ export const WaitlistModal: React.FC = () => {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com"
+                        className="w-full pl-9 pr-3.5 sm:pl-10 sm:pr-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-accent/25 rounded-xl border border-black/10 focus:outline-none focus:border-secondary focus:bg-white focus:ring-1 focus:ring-secondary text-black font-montserrat placeholder:text-black/30 transition-all font-light"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Optional Phone Field */}
+                  <div>
+                    <label className="block text-[11px] sm:text-xs font-medium text-black/70 mb-1">
+                      Phone number <span className="text-black/40 font-normal">(optional)</span>
+                    </label>
+                    <div className="relative">
+                      <FiPhone className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      <input
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="+254 700 000 000"
                         className="w-full pl-9 pr-3.5 sm:pl-10 sm:pr-4 py-2 sm:py-2.5 text-xs sm:text-sm bg-accent/25 rounded-xl border border-black/10 focus:outline-none focus:border-secondary focus:bg-white focus:ring-1 focus:ring-secondary text-black font-montserrat placeholder:text-black/30 transition-all font-light"
                       />
                     </div>
@@ -367,7 +503,7 @@ export const WaitlistModal: React.FC = () => {
                         <>
                           <span>Join the waitlist</span>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.90991 19.9201L15.4299 13.4001C16.1999 12.6301 16.1999 11.3701 15.4299 10.6001L8.90991 4.08008" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8.90991 19.9201L15.4299 13.4001C16.1999 12.6301 16.1999 11.3701 15.4299 10.6001L8.90991 4.08008" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                           </svg>
                         </>
                       )}

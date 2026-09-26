@@ -241,8 +241,13 @@ describe('Domain Services (API Mocking & Logic)', () => {
   });
 
   describe('waitlistService', () => {
-    it('joins waitlist, calls backend API, and caches locally', async () => {
-      const postSpy = vi.spyOn(api, 'post').mockResolvedValue({ status: 'ok' });
+    it('joins waitlist, calls backend API with JoinWaitlistDto, and caches locally', async () => {
+      const postSpy = vi.spyOn(api, 'post').mockResolvedValue({
+        id: 'wl_backend_123',
+        email: 'jane@example.com',
+        fullName: 'Jane Doe',
+        createdAt: '2026-09-26T12:00:00Z',
+      });
 
       const entry = await waitlistService.joinWaitlist({
         name: 'Jane Doe',
@@ -251,18 +256,31 @@ describe('Domain Services (API Mocking & Logic)', () => {
       });
 
       expect(postSpy).toHaveBeenCalledWith('/waitlist', expect.objectContaining({
-        name: 'Jane Doe',
+        fullName: 'Jane Doe',
         email: 'jane@example.com',
-        craft: 'Designer',
-        referralCode: expect.stringMatching(/^CRZ-/),
+        referralSource: 'Designer',
       }));
 
       expect(entry.name).toBe('Jane Doe');
       expect(entry.email).toBe('jane@example.com');
+      expect(entry.id).toBe('wl_backend_123');
       expect(entry.position).toBeGreaterThan(0);
       expect(waitlistService.hasJoinedWaitlist()).toBe(true);
       expect(waitlistService.getSavedEntry()).toEqual(entry);
       expect(waitlistService.getLocalSubscribers()).toHaveLength(1);
+    });
+
+    it('rejects duplicate email submissions when backend returns 409 conflict', async () => {
+      const conflictError = new Error('This email is already on the waitlist');
+      (conflictError as any).status = 409;
+      vi.spyOn(api, 'post').mockRejectedValue(conflictError);
+
+      await expect(
+        waitlistService.joinWaitlist({
+          name: 'Existing User',
+          email: 'duplicate@example.com',
+        })
+      ).rejects.toThrow('This email is already on the waitlist');
     });
 
     it('gracefully handles backend failure when joining waitlist and still persists locally', async () => {
@@ -285,6 +303,49 @@ describe('Domain Services (API Mocking & Logic)', () => {
 
       waitlistService.resetDismissals();
       expect(waitlistService.isModalDismissed()).toBe(false);
+    });
+
+    it('retrieves admin waitlist and statistics with fallback to local entries', async () => {
+      vi.spyOn(api, 'get').mockImplementation(async (endpoint: string) => {
+        if (endpoint === '/waitlist') {
+          return [
+            {
+              id: '1',
+              email: 'admin@crezine.com',
+              fullName: 'Admin User',
+              isVerified: true,
+              isNotified: false,
+            },
+          ];
+        }
+        if (endpoint === '/waitlist/stats') {
+          return {
+            total: 1,
+            verified: 1,
+            notified: 0,
+            unverified: 0,
+            pendingNotification: 1,
+          };
+        }
+        return {};
+      });
+
+      const list = await waitlistService.getAdminWaitlist();
+      expect(list).toHaveLength(1);
+      expect(list[0].email).toBe('admin@crezine.com');
+      expect(list[0].isVerified).toBe(true);
+
+      const stats = await waitlistService.getWaitlistStats();
+      expect(stats.total).toBe(1);
+      expect(stats.verified).toBe(1);
+      expect(stats.pendingNotification).toBe(1);
+    });
+
+    it('marks a waitlist applicant as notified', async () => {
+      const postSpy = vi.spyOn(api, 'post').mockResolvedValue({ success: true });
+      const result = await waitlistService.markAsNotified('user@crezine.com');
+      expect(result).toBe(true);
+      expect(postSpy).toHaveBeenCalledWith('/waitlist/notify/user%40crezine.com');
     });
   });
 });

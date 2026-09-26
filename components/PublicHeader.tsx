@@ -123,22 +123,22 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
 
       {/* Floating Main Navigation Bar with visible space below waitlist banner */}
       <header 
-        className={`fixed left-2.5 sm:left-3 right-2.5 sm:right-3 z-40 transition-all duration-500 ease-in-out transform ${
-          isBannerVisible ? 'top-[48px] sm:top-[56px] lg:top-[62px]' : 'top-2.5 sm:top-3'
+        className={`fixed left-2.5 sm:left-4 right-2.5 sm:right-4 z-40 transition-all duration-500 ease-in-out transform ${
+          isBannerVisible ? 'top-[48px] sm:top-[56px] lg:top-[62px]' : 'top-2.5 sm:top-3.5'
         } ${
           isVisible ? 'translate-y-0 opacity-100' : '-translate-y-36 opacity-0'
         } pointer-events-none`}
       >
-        <div className="max-w-7xl mx-auto pointer-events-auto" ref={dropdownRef}>
-          <div className="bg-white/95 backdrop-blur-md rounded-full shadow-lg border border-secondary/10 flex items-center justify-between h-12 lg:h-16 px-5 sm:px-6 lg:px-10 relative">
-            <div className="flex-shrink-0 cursor-pointer scale-90 lg:scale-105 origin-left">
+        <div className="max-w-6xl mx-auto pointer-events-auto" ref={dropdownRef}>
+          <div className="bg-white/95 backdrop-blur-md rounded-full shadow-lg border border-secondary/10 flex items-center justify-between h-12 sm:h-14 lg:h-16 px-4 sm:px-6 lg:px-8 relative">
+            <div className="flex-shrink-0 cursor-pointer scale-90 sm:scale-95 lg:scale-105 origin-left">
               <BrandLogo onClick={() => {
                 if (onLogoClick) onLogoClick();
                 handleLinkClick('/');
               }} />
             </div>
             
-            <nav className="hidden md:flex items-center space-x-4 lg:space-x-8">
+            <nav className="hidden md:flex items-center space-x-6 lg:space-x-10">
               {navLinks.map((link) => (
                 <div 
                   key={link.label} 
@@ -147,14 +147,14 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <button
-                    className="flex items-center space-x-1 text-sm lg:text-base font-normal text-secondary/80 hover:text-primary transition-colors duration-300 font-rubik py-2"
+                    className="flex items-center space-x-1.5 text-sm lg:text-base font-normal text-secondary/80 hover:text-primary transition-colors duration-300 font-rubik py-2"
                   >
                     <span>{link.label}</span>
                     <motion.div
                       animate={{ rotate: activeDropdown === link.label ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <FiChevronDown className="w-4 h-4 lg:w-5 lg:h-5" />
+                      <FiChevronDown className="w-4 h-4 lg:w-4.5 lg:h-4.5" />
                     </motion.div>
                   </button>
 
@@ -183,16 +183,14 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({ onLogoClick }) => {
               ))}
             </nav>
             
-            <div className="flex items-center">
-                <div className="hidden lg:block">
-                    <button 
-                        onClick={() => handleLinkClick('/onboarding')}
-                        className="bg-secondary text-white font-normal font-montserrat px-8 py-2.5 rounded-full text-sm lg:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg hover:shadow-secondary/20 active:scale-95 transform"
-                    >
-                        Open Cashdoor
-                    </button>
-                </div>
-              <div className="md:hidden ml-2">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button 
+                onClick={() => handleLinkClick('/onboarding')}
+                className="hidden sm:inline-flex items-center justify-center bg-secondary text-white font-normal font-montserrat px-5 sm:px-6 lg:px-8 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm lg:text-base transition-all duration-300 hover:bg-secondary/90 hover:shadow-lg hover:shadow-secondary/20 active:scale-95 transform whitespace-nowrap cursor-pointer"
+              >
+                Open Cashdoor
+              </button>
+              <div className="md:hidden ml-1">
                 <motion.button 
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setIsMenuOpen(!isMenuOpen)}

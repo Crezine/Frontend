@@ -19,6 +19,7 @@ const PaymentsView = lazy(() => import('./PaymentsView'));
 const TicketingView = lazy(() => import('./TicketingView'));
 const ProfileView = lazy(() => import('./ProfileView'));
 const TicketCheckoutView = lazy(() => import('./TicketCheckoutView'));
+const WaitlistAdminView = lazy(() => import('./WaitlistAdminView'));
 
 interface DashboardViewProps {
   navigate: (view: AppView) => void;
@@ -69,8 +70,8 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
       parentNavigate('landing');
     } else if (view === 'dashboard' || view === 'home') {
       navigate('/dashboard');
-    } else if (['wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding', 'profile', 'ticket-checkout'].includes(view)) {
-      const path = view === 'ticketing' ? 'ticket' : view;
+    } else if (['wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding', 'profile', 'ticket-checkout', 'waitlist', 'waitlist-admin'].includes(view)) {
+      const path = view === 'ticketing' ? 'ticket' : view === 'waitlist-admin' ? 'waitlist' : view;
       navigate(`/dashboard/${path}`);
     } else {
       parentNavigate(view);
@@ -126,6 +127,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({ navigate: parentNavigate,
                 <Route path="ticket" element={<TicketingView navigate={handleNavigation} />} />
                 <Route path="ticket-checkout" element={<TicketCheckoutView navigate={handleNavigation} />} />
                 <Route path="profile" element={<ProfileView navigate={handleNavigation} userData={userData} />} />
+                <Route path="waitlist" element={<WaitlistAdminView navigate={handleNavigation} />} />
 
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>

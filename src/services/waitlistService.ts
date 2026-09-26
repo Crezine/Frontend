@@ -1,4 +1,4 @@
-import { api } from './api';
+import { api, ApiError } from './api';
 
 export interface WaitlistFormData {
   name: string;
@@ -6,13 +6,36 @@ export interface WaitlistFormData {
   craft?: string;
   interests?: string[];
   notes?: string;
+  phoneNumber?: string;
+  referralSource?: string;
 }
 
-export interface WaitlistEntry extends WaitlistFormData {
+export interface WaitlistEntry {
   id: string;
+  name: string;
+  email: string;
+  fullName?: string;
+  phoneNumber?: string;
+  referralSource?: string;
+  craft?: string;
+  interests?: string[];
+  notes?: string;
   position: number;
   joinedAt: string;
   referralCode: string;
+  isVerified?: boolean;
+  isNotified?: boolean;
+  notifiedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface WaitlistStats {
+  total: number;
+  verified: number;
+  notified: number;
+  unverified: number;
+  pendingNotification: number;
 }
 
 const STORAGE_KEYS = {
@@ -33,43 +56,108 @@ const generateSpotNumber = (): number => {
 export const waitlistService = {
   /**
    * Submit a new waitlist request.
-   * Attempts to send to backend API, and safely persists locally as fallback.
+   * Sends to backend API (crezine-api /api/waitlist), with clear duplicate detection and offline fallback.
    */
   joinWaitlist: async (data: WaitlistFormData): Promise<WaitlistEntry> => {
-    const position = generateSpotNumber();
-    const referralCode = `CRZ-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
-    
-    const entry: WaitlistEntry = {
-      ...data,
-      id: `wl_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-      position,
-      joinedAt: new Date().toISOString(),
-      referralCode,
+    const email = data.email.trim().toLowerCase();
+    const fullName = data.name.trim();
+
+    // Check if email already exists in local storage cache
+    const existingList = waitlistService.getLocalSubscribers();
+    const existingIndex = existingList.findIndex(e => e.email.toLowerCase() === email);
+
+    // Prepare payload strictly matching backend JoinWaitlistDto:
+    // { email: string, fullName?: string, phoneNumber?: string, referralSource?: string }
+    const payload: {
+      email: string;
+      fullName?: string;
+      phoneNumber?: string;
+      referralSource?: string;
+    } = {
+      email,
+      fullName: fullName || undefined,
     };
 
+    if (data.phoneNumber?.trim()) {
+      payload.phoneNumber = data.phoneNumber.trim();
+    }
+
+    if (data.referralSource?.trim()) {
+      payload.referralSource = data.referralSource.trim();
+    } else if (data.craft?.trim()) {
+      payload.referralSource = data.craft.trim();
+    }
+
+    let backendId: string | undefined;
+    let backendCreatedAt: string | undefined;
+
     try {
-      // Try sending to the backend API endpoint
-      await api.post('/waitlist', {
-        name: data.name,
-        email: data.email,
-        craft: data.craft,
-        interests: data.interests,
-        notes: data.notes,
-        referralCode,
-        position,
-      });
-    } catch (err) {
-      // If backend endpoint isn't deployed yet (404/500/network error),
-      // we log gracefully and preserve the user's waitlist submission locally.
+      // Backend POST /api/waitlist returns created entry or throws 409 Conflict
+      const res = await api.post<any>('/waitlist', payload);
+      if (res && typeof res === 'object') {
+        backendId = res.id;
+        backendCreatedAt = res.createdAt;
+      }
+    } catch (err: any) {
+      // Check for 409 Conflict from backend (email already on waitlist)
+      const isConflict =
+        err?.status === 409 ||
+        (err?.message && /already on the waitlist|conflict/i.test(err.message));
+
+      if (isConflict) {
+        const conflictError = new Error('This email is already on the waitlist');
+        (conflictError as any).status = 409;
+        (conflictError as any).isAlreadyOnWaitlist = true;
+        throw conflictError;
+      }
+
+      // Check for 400 Bad Request
+      if (err?.status === 400) {
+        throw err;
+      }
+
+      // If backend endpoint is unavailable (offline, 404, 500, network failure),
+      // verify if already recorded locally before accepting as offline submission
+      if (existingIndex >= 0) {
+        const conflictError = new Error('This email is already on the waitlist');
+        (conflictError as any).status = 409;
+        (conflictError as any).isAlreadyOnWaitlist = true;
+        throw conflictError;
+      }
+
       console.warn('Backend waitlist API unavailable, saving entry locally:', err);
     }
+
+    const position = generateSpotNumber();
+    const referralCode = `CRZ-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+
+    const entry: WaitlistEntry = {
+      ...data,
+      id: backendId || `wl_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      name: fullName || 'Creative Pioneer',
+      fullName: fullName || 'Creative Pioneer',
+      email,
+      phoneNumber: data.phoneNumber,
+      referralSource: payload.referralSource,
+      craft: data.craft,
+      interests: data.interests,
+      notes: data.notes,
+      position,
+      joinedAt: backendCreatedAt || new Date().toISOString(),
+      referralCode,
+      isVerified: false,
+      isNotified: false,
+    };
 
     // Save user's entry to localStorage
     try {
       localStorage.setItem(STORAGE_KEYS.ENTRY, JSON.stringify(entry));
-      
-      const existingList = waitlistService.getLocalSubscribers();
-      existingList.push(entry);
+
+      if (existingIndex >= 0) {
+        existingList[existingIndex] = entry;
+      } else {
+        existingList.push(entry);
+      }
       localStorage.setItem(STORAGE_KEYS.LOCAL_LIST, JSON.stringify(existingList));
     } catch (e) {
       console.error('Failed to cache waitlist entry in localStorage', e);
@@ -79,7 +167,24 @@ export const waitlistService = {
   },
 
   /**
-   * Get all locally stored waitlist subscribers (useful for local admin/debugging)
+   * Check if an email is already registered locally
+   */
+  isEmailRegistered: (email: string): boolean => {
+    try {
+      const normalized = email.trim().toLowerCase();
+      const saved = waitlistService.getSavedEntry();
+      if (saved && saved.email.toLowerCase() === normalized) {
+        return true;
+      }
+      const list = waitlistService.getLocalSubscribers();
+      return list.some(item => item.email.toLowerCase() === normalized);
+    } catch {
+      return false;
+    }
+  },
+
+  /**
+   * Get all locally stored waitlist subscribers (useful for local fallback/debugging)
    */
   getLocalSubscribers: (): WaitlistEntry[] => {
     try {
@@ -170,5 +275,90 @@ export const waitlistService = {
     } catch (e) {
       console.error('Failed to reset dismissals', e);
     }
-  }
+  },
+
+  /**
+   * Get all waitlist subscribers for admin view.
+   * Calls GET /api/waitlist with fallback to local subscribers.
+   */
+  getAdminWaitlist: async (): Promise<WaitlistEntry[]> => {
+    try {
+      const response = await api.get<any[]>('/waitlist');
+      if (Array.isArray(response)) {
+        return response.map((item, index) => ({
+          id: item.id || `wl_${index}`,
+          name: item.fullName || item.name || 'Anonymous Creator',
+          fullName: item.fullName || item.name || 'Anonymous Creator',
+          email: item.email,
+          phoneNumber: item.phoneNumber,
+          referralSource: item.referralSource,
+          craft: item.craft || item.referralSource || 'Creator',
+          position: item.position || (index + 1),
+          joinedAt: item.createdAt || item.joinedAt || new Date().toISOString(),
+          referralCode: item.referralCode || `CRZ-${(item.id || index).toString().slice(0, 5).toUpperCase()}`,
+          isVerified: !!item.isVerified,
+          isNotified: !!item.isNotified,
+          notifiedAt: item.notifiedAt,
+        }));
+      }
+    } catch (err) {
+      console.warn('Failed to fetch waitlist from API, falling back to local subscribers:', err);
+    }
+    return waitlistService.getLocalSubscribers();
+  },
+
+  /**
+   * Get waitlist statistics for admin view.
+   * Calls GET /api/waitlist/stats with fallback calculation.
+   */
+  getWaitlistStats: async (): Promise<WaitlistStats> => {
+    try {
+      const stats = await api.get<WaitlistStats>('/waitlist/stats');
+      if (stats && typeof stats.total === 'number') {
+        return stats;
+      }
+    } catch (err) {
+      console.warn('Failed to fetch waitlist stats from API, calculating locally:', err);
+    }
+    const local = waitlistService.getLocalSubscribers();
+    const verified = local.filter(e => e.isVerified).length;
+    const notified = local.filter(e => e.isNotified).length;
+    return {
+      total: local.length,
+      verified,
+      notified,
+      unverified: local.length - verified,
+      pendingNotification: local.length - notified,
+    };
+  },
+
+  /**
+   * Mark a waitlist applicant as notified (admin action)
+   */
+  markAsNotified: async (email: string): Promise<boolean> => {
+    try {
+      await api.post(`/waitlist/notify/${encodeURIComponent(email)}`);
+    } catch (err) {
+      console.warn('Failed to mark notified via API, updating locally:', err);
+    }
+    // Update local cache
+    try {
+      const list = waitlistService.getLocalSubscribers();
+      const updated = list.map(item => {
+        if (item.email.toLowerCase() === email.toLowerCase()) {
+          return { ...item, isNotified: true, notifiedAt: new Date().toISOString() };
+        }
+        return item;
+      });
+      localStorage.setItem(STORAGE_KEYS.LOCAL_LIST, JSON.stringify(updated));
+
+      const saved = waitlistService.getSavedEntry();
+      if (saved && saved.email.toLowerCase() === email.toLowerCase()) {
+        localStorage.setItem(STORAGE_KEYS.ENTRY, JSON.stringify({ ...saved, isNotified: true, notifiedAt: new Date().toISOString() }));
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  },
 };

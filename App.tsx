@@ -24,6 +24,7 @@ const PrivacyPolicyView = lazy(() => import('./views/PrivacyPolicyView'));
 const TermsOfServiceView = lazy(() => import('./views/TermsOfServiceView'));
 const NotFoundView = lazy(() => import('./views/NotFoundView'));
 const UnauthorizedView = lazy(() => import('./views/UnauthorizedView'));
+const WaitlistAdminView = lazy(() => import('./views/WaitlistAdminView'));
 
 import Footer from './components/Footer';
 import BackToTop from './components/BackToTop';
@@ -122,6 +123,9 @@ const getPageTitle = (pathname: string): string => {
   }
   if (pathname.startsWith('/unauthorized')) {
     return `Unauthorized | ${suffix}`;
+  }
+  if (pathname.startsWith('/admin/waitlist')) {
+    return `Waitlist Admin | ${suffix}`;
   }
 
   return `Crezine | ${suffix}`;
@@ -278,7 +282,8 @@ const App: React.FC = () => {
       
       localStorage.setItem('userData', JSON.stringify(user));
       setUserData(user);
-      navigate('/dashboard');
+      const redirectPath = location.state?.from?.pathname || '/dashboard';
+      navigate(redirectPath);
     } catch (error) {
       console.error("Login failed", error);
     } finally {
@@ -391,7 +396,22 @@ const App: React.FC = () => {
             <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
             <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
             <Route path="/whatsapp" element={<WhatsAppView />} />
-            <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
+            {/* Private Waitlist Admin Route */}
+            <Route 
+              path="/admin/waitlist" 
+              element={
+                !authReady || isLoading ? (
+                  <div className="min-h-screen flex items-center justify-center font-montserrat text-secondary">
+                    Loading...
+                  </div>
+                ) : authUser && userData ? (
+                  <WaitlistAdminView navigate={handleNavigate} />
+                ) : (
+                  <Navigate to="/onboarding" state={{ from: location }} replace />
+                )
+              } 
+            />
+            <Route path="/admin" element={<Navigate to="/admin/waitlist" replace />} />
             
             {/* Catch-all route for 404 Page Not Found */}
             <Route path="*" element={<NotFoundView navigate={handleNavigate} />} />

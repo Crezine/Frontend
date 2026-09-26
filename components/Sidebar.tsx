@@ -18,6 +18,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, navigate, activeView
     { view: 'funding', label: 'Residencies' },
     { view: 'events', label: 'Creative Grants' },
     { view: 'wallet', label: 'Transaction History' },
+    { view: 'waitlist-admin', label: 'Waitlist Admin' },
   ];
 
   const handleNavClick = (view: AppView) => {
