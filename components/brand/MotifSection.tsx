@@ -40,7 +40,7 @@ export const MotifSection: React.FC = () => {
             </div>
             <div>
               <span className="text-xs font-mono text-black/50 block uppercase">Domain</span>
-              <span className="font-normal text-secondary text-sm md:text-base">crezine.app</span>
+              <span className="font-normal text-secondary text-sm md:text-base">crezine.tech</span>
             </div>
             <div>
               <span className="text-xs font-mono text-black/50 block uppercase">Format</span>

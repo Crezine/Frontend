@@ -3,12 +3,14 @@ import { motion } from 'framer-motion';
 import PublicHeader from '../components/PublicHeader';
 import { AppView } from '../types';
 import { RiBookOpenLine, RiQuestionLine, RiShieldKeyholeLine, RiMoneyDollarCircleLine } from 'react-icons/ri';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface HelpCenterProps {
   navigate: (view: AppView) => void;
 }
 
 const HelpCenterView: React.FC<HelpCenterProps> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const categories = [
     {
       title: "Getting Started",
@@ -53,7 +55,9 @@ const HelpCenterView: React.FC<HelpCenterProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen overflow-x-hidden flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-1 flex flex-col px-6 pt-32 pb-20">
+      <main className={`flex-1 flex flex-col px-6 pb-20 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         {/* Hero Section */}
         <section className="max-w-4xl mx-auto text-center mb-16">
           <motion.div

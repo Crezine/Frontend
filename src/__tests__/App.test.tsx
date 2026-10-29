@@ -129,12 +129,29 @@ describe('App Root Component (Routing, Auth Guards, and Global Listeners)', () =
     expect(document.title).toContain('Pricing | The Creative cashdoor');
     unmount();
 
-    render(
+    const { unmount: unmountAbout } = render(
       <MemoryRouter initialEntries={['/about']}>
         <App />
       </MemoryRouter>
     );
     expect(document.title).toContain('About | The Creative cashdoor');
+    unmountAbout();
+
+    const { unmount: unmountPrivacy } = render(
+      <MemoryRouter initialEntries={['/privacy-policy']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(document.title).toContain('Privacy Policy | The Creative cashdoor');
+    unmountPrivacy();
+
+    const { unmount: unmountCookies } = render(
+      <MemoryRouter initialEntries={['/cookie-settings']}>
+        <App />
+      </MemoryRouter>
+    );
+    expect(document.title).toContain('Cookie Settings | The Creative cashdoor');
+    unmountCookies();
   });
 
   it('renders 404 Not Found for unrecognized route paths', async () => {

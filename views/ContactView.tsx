@@ -5,12 +5,14 @@ import { AppView } from '../types';
 import { RiMailLine, RiPhoneLine, RiSendPlaneFill, RiArrowDownSLine, RiGlobalLine, RiCheckLine } from 'react-icons/ri';
 import { FaInstagram, FaWhatsapp, FaTiktok } from 'react-icons/fa';
 import { SiX } from 'react-icons/si';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface ContactProps {
   navigate: (view: AppView) => void;
 }
 
 const ContactView: React.FC<ContactProps> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedSubject, setSelectedSubject] = useState('General inquiry');
 
@@ -26,8 +28,8 @@ const ContactView: React.FC<ContactProps> = ({ navigate }) => {
     { 
       icon: <RiMailLine className="text-xl md:text-2xl" />, 
       title: "Email us", 
-      detail: "hello@crezine.app", 
-      href: "mailto:hello@crezine.app",
+      detail: "hello@crezine.tech", 
+      href: "mailto:hello@crezine.tech",
       isClickable: true
     },
     { 
@@ -96,7 +98,9 @@ const ContactView: React.FC<ContactProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen overflow-x-hidden flex flex-col font-montserrat">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-1 flex flex-col px-4 sm:px-6 pt-28 md:pt-32 pb-20">
+      <main className={`flex-1 flex flex-col px-4 sm:px-6 pb-20 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         {/* Hero Section */}
         <section className="max-w-4xl mx-auto text-center mb-12 md:mb-20 px-4">
           <motion.div
@@ -208,7 +212,7 @@ const ContactView: React.FC<ContactProps> = ({ navigate }) => {
                     <label className="text-xs font-normal text-secondary/70 ml-1">Email address</label>
                     <input 
                       type="email" 
-                      placeholder="jane@crezine.app" 
+                      placeholder="jane@crezine.tech" 
                       className="w-full px-5 py-3 md:py-4 rounded-xl md:rounded-2xl bg-accent border border-transparent focus:border-secondary/20 focus:bg-white transition-all font-normal text-sm outline-none"
                     />
                   </div>

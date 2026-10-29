@@ -115,8 +115,8 @@ const Footer: React.FC<FooterProps> = ({ hideMovementCard = false }) => {
             &copy; CrezineCashdoor 2026. All rights reserved
           </p>
           <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
-            <button onClick={() => navigate('/privacy-policy' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors underline-offset-4 hover:underline font-rubik font-light">Privacy Policy</button>
-            <button onClick={() => navigate('/terms-of-service' as any)} className="text-black hover:text-primary text-sm md:text-base transition-colors underline-offset-4 hover:underline font-rubik font-light">Terms of Service</button>
+            <button onClick={() => navigate('/privacy-policy')} className="text-black hover:text-primary text-sm md:text-base transition-colors underline-offset-4 hover:underline font-rubik font-light">Privacy Policy</button>
+            <button onClick={() => navigate('/terms-of-service')} className="text-black hover:text-primary text-sm md:text-base transition-colors underline-offset-4 hover:underline font-rubik font-light">Terms of Service</button>
           </div>
         </div>
 

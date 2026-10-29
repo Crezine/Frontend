@@ -1,0 +1,21 @@
+{
+  "short_name": "Crezine",
+  "name": "Crezine — The Creative Cashdoor",
+  "description": "Global creative fintech platform: digital wallets, escrow protection, and event ticketing.",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/crezine.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#F69C31",
+  "background_color": "#E9E0D8"
+}

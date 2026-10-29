@@ -3,8 +3,10 @@ import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import { RiQuestionLine, RiChat3Line, RiBookOpenLine, RiMailLine } from 'react-icons/ri';
 import { motion } from 'framer-motion';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const faqs = [
     { q: "How do I receive payments?", a: "Once you open your Cashdoor, you can generate payment links or professional invoices. Clients pay via card, bank transfer, or Apple/Google Pay, and funds are automatically converted to your selected currency." },
     { q: "Is Crezine available in my country?", a: "We currently support creators in 150+ countries across Africa, Europe, Americas, and Asia. If you can access the internet, you can likely open a Cashdoor." },
@@ -16,7 +18,9 @@ const SupportView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
     <div className="bg-accent min-h-screen flex flex-col overflow-x-hidden">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow pt-28 md:pt-32 pb-20 px-4">
+      <main className={`flex-grow pb-20 px-4 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         <div className="max-w-6xl mx-auto">
           {/* Hero Section */}
           <div className="text-center mb-12 md:mb-20 flex flex-col items-center px-4">

@@ -192,7 +192,11 @@ const App: React.FC = () => {
           setUserData(data);
           localStorage.setItem('userData', JSON.stringify(data));
         } catch (error) {
-          console.error("Auth profile fetch failed", error);
+          if (error instanceof ApiError && error.status === 401) {
+            console.warn("Session expired or unauthorized (401), resetting profile state");
+          } else {
+            console.error("Auth profile fetch failed", error);
+          }
           const canUseCachedProfile =
             !(error instanceof ApiError) || ![401, 403].includes(error.status);
           const saved = canUseCachedProfile ? localStorage.getItem('userData') : null;
@@ -235,18 +239,19 @@ const App: React.FC = () => {
     return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
   }, [location.pathname, navigate]);
 
-  const handleNavigate = (view: AppView) => {
-    if (view === 'landing') {
+  const handleNavigate = (view: AppView | string) => {
+    const cleanView = view.startsWith('/') ? view.replace(/^\/+/, '') : view;
+    if (cleanView === 'landing' || cleanView === '') {
       navigate('/');
-    } else if (['home', 'wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding'].includes(view)) {
-      if (view === 'home') {
+    } else if (['home', 'wallet', 'pay', 'payments', 'escrow', 'events', 'ticket', 'ticketing', 'fund', 'funding'].includes(cleanView)) {
+      if (cleanView === 'home') {
         navigate('/dashboard');
       } else {
-        const path = view === 'ticketing' ? 'ticket' : view;
+        const path = cleanView === 'ticketing' ? 'ticket' : cleanView;
         navigate(`/dashboard/${path}`);
       }
     } else {
-      navigate(`/${view}`);
+      navigate(`/${cleanView}`);
     }
   };
 
@@ -317,7 +322,22 @@ const App: React.FC = () => {
               },
             }}
           />
-          <Analytics />
+          {!import.meta.env.DEV && (
+            <Analytics
+              scriptSrc="https://va.vercel-scripts.com/v1/script.js"
+              beforeSend={(event) => {
+                if (
+                  typeof window !== 'undefined' &&
+                  (window.location.hostname === 'localhost' ||
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname.endsWith('.local'))
+                ) {
+                  return null;
+                }
+                return event;
+              }}
+            />
+          )}
           <OfflineBanner />
           <WaitlistModal />
         
@@ -394,8 +414,15 @@ const App: React.FC = () => {
             <Route path="/checkout" element={<CheckoutView navigate={handleNavigate} />} />
             <Route path="/ticket-checkout" element={<TicketCheckoutView navigate={handleNavigate} />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyView navigate={handleNavigate} />} />
+            <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
             <Route path="/terms-of-service" element={<TermsOfServiceView navigate={handleNavigate} />} />
+            <Route path="/terms" element={<Navigate to="/terms-of-service" replace />} />
+            <Route path="/cookie-settings" element={<CookieSettingsView navigate={handleNavigate} />} />
+            <Route path="/cookies" element={<Navigate to="/cookie-settings" replace />} />
             <Route path="/whatsapp" element={<WhatsAppView />} />
+            <Route path="/community" element={<Navigate to="/whatsapp" replace />} />
+            <Route path="/statistics" element={<Navigate to="/features" replace />} />
+            <Route path="/share" element={<Navigate to="/whatsapp" replace />} />
             {/* Private Waitlist Admin Route */}
             <Route 
               path="/admin/waitlist" 

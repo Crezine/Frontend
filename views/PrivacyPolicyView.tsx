@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import PublicHeader from '../components/PublicHeader';
 import { AppView } from '../types';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface PrivacyPolicyProps {
   navigate: (view: AppView) => void;
 }
 
 const PrivacyPolicyView: React.FC<PrivacyPolicyProps> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const [activeSection, setActiveSection] = useState<string>('01');
 
   useEffect(() => {
@@ -131,7 +133,9 @@ const PrivacyPolicyView: React.FC<PrivacyPolicyProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen flex flex-col font-montserrat relative">
       <PublicHeader />
       
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 pt-32 pb-20">
+      <main className={`flex-1 max-w-7xl mx-auto w-full px-6 pb-20 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         <div className="lg:grid lg:grid-cols-[1fr_260px] gap-16 relative">
           {/* Left Content Area */}
           <div className="flex-1 min-w-0">
@@ -226,7 +230,7 @@ const PrivacyPolicyView: React.FC<PrivacyPolicyProps> = ({ navigate }) => {
         <div id="concerns" className="mt-40 pt-16 border-t border-secondary/10 bg-accent relative z-10">
           <h3 className="text-xl font-rubik font-normal text-secondary mb-4 tracking-tighter">Privacy concerns?</h3>
           <p className="text-black/60 text-sm mb-6 font-normal">Our data protection officer is ready to assist with any questions regarding your digital footprint.</p>
-          <a href="mailto:privacy@crezine.app" className="text-primary text-sm font-semibold hover:underline">privacy@crezine.app</a>
+          <a href="mailto:privacy@crezine.tech" className="text-primary text-sm font-semibold hover:underline">privacy@crezine.tech</a>
         </div>
       </main>
     </div>

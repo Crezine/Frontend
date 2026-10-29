@@ -27,7 +27,7 @@ export const PartnershipSection: React.FC = () => {
         <div>
           <h4 className="font-normal text-secondary text-sm md:text-base">Attribution Link</h4>
           <p className="text-black font-light opacity-80 leading-relaxed">
-            Always link Crezine brand elements to <code>https://crezine.app</code> or <code>https://crezine.vercel.app</code>.
+            Always link Crezine brand elements to <code>https://crezine.tech</code>.
           </p>
         </div>
       </div>

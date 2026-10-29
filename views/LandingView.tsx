@@ -94,15 +94,22 @@ const LandingView: React.FC<LandingViewProps> = ({
               Sell Experiences, Ticket Events and access creative fund and residencies
               all Behind One Cashdoor.
             </p>
-            <div className="flex flex-col sm:flex-row items-start justify-start gap-3 sm:gap-4 w-full sm:w-auto">
-              <button
+            <motion.div 
+              initial={hasInitialAnimated ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="flex flex-col sm:flex-row items-start justify-start gap-3 sm:gap-4 w-full sm:w-auto"
+            >
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('onboarding' as AppView)}
                 className="bg-secondary text-white font-normal font-montserrat tracking-tight px-8 py-3 rounded-full text-sm transition-all duration-300 hover:bg-secondary/90 hover:shadow-xl hover:shadow-secondary/30 active:scale-95 transform whitespace-nowrap h-[48px] min-w-[160px]"
               >
                 Create your cashdoor
-              </button>
+              </motion.button>
               <AnimatedButton onClick={() => navigate('features' as AppView)} />
-            </div>
+            </motion.div>
           </div>
 
           {/* Right Side Image - Creative Mobile Display */}

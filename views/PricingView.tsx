@@ -3,8 +3,10 @@ import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import { RiCheckboxCircleFill } from 'react-icons/ri';
 import { motion } from 'framer-motion';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const plans = [
     {
       name: "Starter",
@@ -56,7 +58,9 @@ const PricingView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate
     <div className="bg-accent min-h-screen flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-grow pt-28 md:pt-32 pb-20 px-4">
+      <main className={`flex-grow pb-20 px-4 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 md:mb-16 flex flex-col items-center">
             <motion.h1 

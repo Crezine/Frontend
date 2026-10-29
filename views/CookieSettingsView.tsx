@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PublicHeader from '../components/PublicHeader';
 import { AppView } from '../types';
 import { RiShieldCheckLine, RiPieChartLine, RiAdvertisementLine, RiCheckLine, RiLockLine } from 'react-icons/ri';
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface CookieSettingsProps {
   navigate: (view: AppView) => void;
 }
 
 const CookieSettingsView: React.FC<CookieSettingsProps> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const [settings, setSettings] = useState({
     necessary: true,
     analytical: true,
@@ -76,7 +78,9 @@ const CookieSettingsView: React.FC<CookieSettingsProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen flex flex-col font-montserrat relative">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-1 container mx-auto px-6 pt-32 pb-24 max-w-3xl">
+      <main className={`flex-1 container mx-auto px-6 pb-24 max-w-3xl transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}

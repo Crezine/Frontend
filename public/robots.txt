@@ -1,0 +1,10 @@
+# Robots.txt for Crezine (https://crezine.tech)
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /unauthorized
+Disallow: /cookie-settings
+
+# Sitemaps
+Sitemap: https://crezine.tech/sitemap.xml

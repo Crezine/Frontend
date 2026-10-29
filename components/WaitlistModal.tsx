@@ -126,7 +126,7 @@ export const WaitlistModal: React.FC = () => {
 
   const referralUrl = typeof window !== 'undefined' 
     ? `${window.location.origin}?ref=${submittedEntry?.referralCode || 'EARLY'}`
-    : 'https://crezine.app';
+    : 'https://crezine.tech';
 
   const shareText = `I just joined the waitlist for Crezine — the global creative cashdoor for payments, gigs, and funding. Check it out:`;
 

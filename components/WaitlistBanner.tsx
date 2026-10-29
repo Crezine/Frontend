@@ -26,7 +26,7 @@ const WaitlistBanner: React.FC<WaitlistBannerProps> = ({ onOpenModal }) => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -8, scale: 0.98 }}
           transition={{ duration: 0.22 }}
-          className="pointer-events-auto bg-white/95 backdrop-blur-md border border-black/10 rounded-full px-3 sm:px-5 md:px-6 py-1 sm:py-1.5 shadow-xs flex items-center justify-center gap-2 sm:gap-3.5 max-w-4xl w-auto mx-auto font-montserrat min-h-[34px] sm:min-h-[38px]"
+          className="relative pointer-events-auto bg-white/95 backdrop-blur-md border border-black/10 rounded-full px-3 sm:px-5 md:px-6 py-1 sm:py-1.5 shadow-xs flex items-center justify-center gap-2 sm:gap-3.5 max-w-4xl w-auto mx-auto font-montserrat min-h-[34px] sm:min-h-[38px]"
         >
           {/* Responsive Center Text */}
           <p className="text-[11px] sm:text-xs md:text-sm font-medium text-black/85 text-center truncate max-w-[170px] xs:max-w-[220px] sm:max-w-none">
@@ -53,7 +53,7 @@ const WaitlistBanner: React.FC<WaitlistBannerProps> = ({ onOpenModal }) => {
               <span className="hidden xs:inline">{hasJoined ? 'View Status' : 'Join Waitlist'}</span>
               <span className="xs:hidden">{hasJoined ? 'Status' : 'Join'}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8.90991 19.9201L15.4299 13.4001C16.1999 12.6301 16.1999 11.3701 15.4299 10.6001L8.90991 4.08008" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.90991 19.9201L15.4299 13.4001C16.1999 12.6301 16.1999 11.3701 15.4299 10.6001L8.90991 4.08008" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
 

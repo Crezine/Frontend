@@ -5,12 +5,14 @@ import { AppView } from '../types';
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { GiArtificialIntelligence } from "react-icons/gi";
 import { RiUserCommunityLine } from "react-icons/ri";
+import { useWaitlist } from '../src/context/WaitlistContext';
 
 interface AboutProps {
   navigate: (view: AppView) => void;
 }
 
 const About: React.FC<AboutProps> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   const cards = [
     {
       number: "01",
@@ -190,7 +192,9 @@ const About: React.FC<AboutProps> = ({ navigate }) => {
     <div className="bg-accent min-h-screen overflow-x-hidden flex flex-col">
       <PublicHeader navigate={navigate} />
       
-      <main className="flex-1 flex flex-col px-4 sm:px-6 pt-28 md:pt-32 pb-20">
+      <main className={`flex-1 flex flex-col px-4 sm:px-6 pb-20 transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         {/* Hero Section */}
         <section className="max-w-4xl mx-auto text-center mb-16 md:mb-24 px-4">
           <motion.div

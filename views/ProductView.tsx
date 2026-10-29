@@ -3,14 +3,18 @@ import { AppView } from '../types';
 import PublicHeader from '../components/PublicHeader';
 import AnimatedButton from '../components/AnimatedButton';
 import { motion } from 'framer-motion';
+import { useWaitlist } from '../src/context/WaitlistContext';
 import { RiRocketLine, RiGlobalLine, RiShieldFlashLine, RiMagicLine } from 'react-icons/ri';
 
 const ProductView: React.FC<{ navigate: (view: AppView) => void }> = ({ navigate }) => {
+  const { isBannerVisible } = useWaitlist();
   return (
     <div className="min-h-screen bg-accent flex flex-col overflow-x-hidden">
       <PublicHeader navigate={navigate} />
       
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 pt-28 md:pt-32 pb-20 overflow-hidden">
+      <main className={`w-full max-w-7xl mx-auto px-4 sm:px-6 pb-20 overflow-hidden transition-all duration-300 ${
+        isBannerVisible ? 'pt-44 sm:pt-48 md:pt-52' : 'pt-32 sm:pt-36 md:pt-40'
+      }`}>
         {/* Hero Section */}
         <section className="relative overflow-hidden mb-12 md:mb-20 py-8 md:py-12 flex flex-col items-center text-center">
           <div className="absolute top-0 right-0 -mt-20 -mr-20 w-64 md:w-96 h-64 md:h-96 bg-primary/5 rounded-full blur-3xl"></div>
